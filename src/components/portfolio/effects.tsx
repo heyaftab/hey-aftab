@@ -27,7 +27,7 @@ export function Tilt({ children, className = "" }: { children: ReactNode; classN
   };
   return (
     <div ref={ref} onMouseMove={onMove} onMouseLeave={() => ref.current && (ref.current.style.transform = "")}
-      className={`transition-transform duration-500 ease-out will-change-transform ${className}`}>
+      className={`transition-transform duration-500 ease-out motion-safe:will-change-transform ${className}`}>
       {children}
     </div>
   );
@@ -41,15 +41,16 @@ export function NetworkField() {
     if (!canvas) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const mobile = window.innerWidth < 768;
+    const lowPower = mobile || reduce;
     const ctx = canvas.getContext("2d")!;
     let w = 0, h = 0, raf = 0;
     const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
-    const N = mobile ? 28 : 64;
+    const N = mobile ? 18 : 64;
     const pts = Array.from({ length: N }, () => ({
       x: Math.random() * 2 - 1, y: Math.random() * 2 - 1, z: Math.random() * 2 - 1,
     }));
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio, 2);
+      const dpr = Math.min(window.devicePixelRatio, mobile ? 1.25 : 2);
       w = canvas.clientWidth; h = canvas.clientHeight;
       canvas.width = w * dpr; canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -57,12 +58,12 @@ export function NetworkField() {
     resize();
     const onMove = (e: MouseEvent) => { mouse.tx = e.clientX / window.innerWidth - 0.5; mouse.ty = e.clientY / window.innerHeight - 0.5; };
     window.addEventListener("resize", resize);
-    window.addEventListener("mousemove", onMove);
+    if (!lowPower) window.addEventListener("mousemove", onMove);
     const css = getComputedStyle(document.documentElement);
     const accent = css.getPropertyValue("--primary").trim() || "oklch(0.82 0.12 75)";
     let t = 0;
     const draw = () => {
-      t += reduce ? 0 : 0.0016;
+      t += lowPower ? 0 : 0.0016;
       mouse.x += (mouse.tx - mouse.x) * 0.05; mouse.y += (mouse.ty - mouse.y) * 0.05;
       const ay = t + mouse.x * 0.8, ax = mouse.y * 0.6;
       const s = Math.min(w, h) * 0.42;
@@ -88,7 +89,7 @@ export function NetworkField() {
         ctx.fillStyle = `color-mix(in oklab, ${accent} ${Math.round(40 + (1 - p.d) * 60)}%, transparent)`;
         ctx.beginPath(); ctx.arc(p.x, p.y, 1.2 + (1 - p.d) * 1.6, 0, Math.PI * 2); ctx.fill();
       }
-      raf = requestAnimationFrame(draw);
+      if (!lowPower) raf = requestAnimationFrame(draw);
     };
     draw();
     return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); window.removeEventListener("mousemove", onMove); };

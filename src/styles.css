@@ -88,6 +88,12 @@
   backdrop-filter: blur(18px) saturate(140%);
   border: 1px solid var(--border);
 }
+
+@media (max-width: 767px) {
+  .glass { backdrop-filter: blur(10px) saturate(120%); }
+  .float-slow { animation: none; }
+  .reveal { transition-duration: 0.45s; }
+}
 @utility text-gradient {
   background: var(--gradient-text);
   -webkit-background-clip: text;
@@ -110,6 +116,12 @@
 @utility glow-orb {
   background: radial-gradient(circle, var(--glow), transparent 65%);
   filter: blur(40px);
+}
+@utility panel-grid {
+  background-image:
+    linear-gradient(to right, oklch(1 0 0 / 3%) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(1 0 0 / 3%) 1px, transparent 1px);
+  background-size: 26px 26px;
 }
 @utility eyebrow {
   font-family: var(--font-mono);

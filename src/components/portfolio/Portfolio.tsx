@@ -5,11 +5,10 @@ import { Cursor, NetworkField, Reveal, Tilt } from "./effects";
 
 const LINKS = {
   github: "https://github.com/heyaftab",
-  linkedin: "https://www.linkedin.com/in/aftab-uddin-ahmad-7b3034294/",
+  linkedin: "https://www.linkedin.com/in/aftab-uddin-ahmad-7b303429/",
   email: "aftabuddinahmad26@gmail.com",
   phone: "01795364351",
-  // Place your resume at public/resume.pdf
-  resume: "/resume.pdf",
+  resume: "/Aftab_Uddin_Ahmad_AI_Engineer_CV.docx",
 };
 
 /** CONTACT FORM CONFIG — set an endpoint (e.g. Formspree URL) to enable real sending. */
@@ -17,11 +16,17 @@ const CONTACT_ENDPOINT = "";
 
 const NAV = ["Home", "About", "Skills", "Projects", "Achievements", "Journey", "Contact"];
 
+const ACTIVE_SECTION_IDS = NAV.map((section) => section.toLowerCase());
+
 function Section({ id, eyebrow, title, children, className = "" }: { id?: string; eyebrow: string; title: ReactNode; children: ReactNode; className?: string }) {
   return (
     <section id={id} className={`relative mx-auto max-w-6xl px-5 py-24 sm:px-8 md:py-36 ${className}`}>
+      <div className="pointer-events-none absolute inset-x-0 top-0 hidden h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent md:block" />
       <Reveal>
-        <p className="eyebrow">{eyebrow}</p>
+        <div className="flex items-center gap-3">
+          <span className="h-px w-10 bg-gradient-to-r from-primary/0 via-primary/80 to-primary/0" />
+          <p className="eyebrow">{eyebrow}</p>
+        </div>
         <h2 className="text-gradient mt-4 text-4xl font-semibold sm:text-5xl md:text-6xl">{title}</h2>
       </Reveal>
       <div className="mt-14">{children}</div>
@@ -32,26 +37,67 @@ function Section({ id, eyebrow, title, children, className = "" }: { id?: string
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState("home");
+
   useEffect(() => {
-    const f = () => setScrolled(window.scrollY > 24);
-    f(); window.addEventListener("scroll", f, { passive: true });
-    return () => window.removeEventListener("scroll", f);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) {
+          setActive(visible.target.id);
+        }
+      },
+      { threshold: [0.25, 0.5, 0.75] },
+    );
+
+    ACTIVE_SECTION_IDS.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      observer.disconnect();
+    };
   }, []);
+
   return (
     <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled || open ? "glass border-x-0 border-t-0" : "border-b border-transparent"}`}>
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
         <a href="#home" className="font-display text-sm font-semibold tracking-[0.2em]">AUA<span className="text-primary">.</span></a>
         <ul className="hidden items-center gap-7 md:flex">
-          {NAV.map((n) => (
-            <li key={n}><a href={`#${n.toLowerCase()}`} className="text-sm text-muted-foreground transition-colors hover:text-foreground">{n}</a></li>
-          ))}
+          {NAV.map((n) => {
+            const id = n.toLowerCase();
+            const isActive = active === id;
+            return (
+              <li key={n}>
+                <a
+                  href={`#${id}`}
+                  className={`group relative text-sm transition-colors duration-200 ${isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  <span className="relative inline-flex items-center">
+                    {n}
+                    <span className={`absolute -bottom-2 left-0 h-px w-full origin-left transition-transform duration-300 ${isActive ? "scale-x-100 bg-primary" : "scale-x-0 bg-primary/70 group-hover:scale-x-100"}`} />
+                  </span>
+                </a>
+              </li>
+            );
+          })}
         </ul>
         <button className="md:hidden" aria-label="Toggle menu" onClick={() => setOpen(!open)}>{open ? <X size={20} /> : <Menu size={20} />}</button>
       </nav>
       {open && (
         <ul className="flex flex-col gap-1 px-5 pb-6 md:hidden">
           {NAV.map((n) => (
-            <li key={n}><a onClick={() => setOpen(false)} href={`#${n.toLowerCase()}`} className="block border-b py-3 font-display text-2xl">{n}</a></li>
+            <li key={n}>
+              <a onClick={() => setOpen(false)} href={`#${n.toLowerCase()}`} className="block border-b py-3 font-display text-2xl">{n}</a>
+            </li>
           ))}
         </ul>
       )}
@@ -59,48 +105,83 @@ function Nav() {
   );
 }
 
+function MagneticButton({ href, className = "", children, download = false, target, rel }: { href: string; className?: string; children: ReactNode; download?: boolean; target?: string; rel?: string }) {
+  const ref = useRef<HTMLAnchorElement>(null);
+
+  const onMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!ref.current || window.matchMedia("(hover: none)").matches) return;
+    const rect = ref.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    ref.current.style.transform = `translate3d(${x * 10}px, ${y * 10}px, 0)`;
+  };
+
+  return (
+    <a
+      ref={ref}
+      href={href}
+      download={download || undefined}
+      target={target}
+      rel={rel}
+      onMouseMove={onMove}
+      onMouseLeave={() => { if (ref.current) ref.current.style.transform = ""; }}
+      className={`inline-flex items-center gap-2 rounded-md transition-all duration-300 ease-out will-change-transform ${className}`}
+    >
+      {children}
+    </a>
+  );
+}
+
 function Hero() {
   const img = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    if (window.matchMedia("(hover: none), (prefers-reduced-motion: reduce)").matches) return;
     const f = () => { if (img.current) img.current.style.transform = `translate3d(0, ${window.scrollY * 0.12}px, 0)`; };
     window.addEventListener("scroll", f, { passive: true });
     return () => window.removeEventListener("scroll", f);
   }, []);
+
   return (
-    <section id="home" className="relative min-h-screen overflow-hidden pt-24">
+    <section id="home" className="relative min-h-[100svh] overflow-hidden pt-20 sm:min-h-screen sm:pt-24">
       <div className="grid-bg absolute inset-0" />
       <div className="glow-orb absolute -top-40 right-0 h-[520px] w-[520px] opacity-60" />
       <div className="absolute inset-0 opacity-70 md:left-[30%]"><NetworkField /></div>
-      <div className="relative mx-auto grid min-h-[calc(100vh-6rem)] max-w-6xl items-center gap-12 px-5 pb-16 sm:px-8 lg:grid-cols-[1.25fr_1fr]">
+      <div className="pointer-events-none absolute inset-x-0 top-32 mx-auto hidden max-w-6xl justify-between px-5 text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground/70 md:flex sm:px-8">
+        <span>CODE</span>
+        <span>API</span>
+        <span>DATABASE</span>
+        <span>SYSTEM</span>
+      </div>
+      <div className="relative mx-auto grid min-h-[calc(100svh-5rem)] max-w-6xl items-center gap-8 px-5 pb-12 sm:min-h-[calc(100vh-6rem)] sm:gap-12 sm:px-8 sm:pb-16 lg:grid-cols-[1.25fr_1fr]">
         <div className="order-2 lg:order-1">
-          <p className="eyebrow rise flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-primary" style={{ animation: "pulse-dot 2s infinite" }} />Dhaka, Bangladesh · Open to internships</p>
-          <h1 className="text-gradient rise mt-6 text-5xl font-semibold leading-[0.95] sm:text-7xl xl:text-8xl" style={{ animationDelay: "120ms" }}>
+          <p className="eyebrow rise flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-primary" style={{ animation: "pulse-dot 2s infinite" }} />Dhaka, Bangladesh · Open to AI opportunities</p>
+          <h1 className="text-gradient rise mt-5 text-[clamp(2.6rem,11vw,4.5rem)] font-semibold leading-[0.94] sm:mt-6 sm:text-7xl xl:text-8xl" style={{ animationDelay: "120ms" }}>
             AFTAB<br />UDDIN AHMAD
           </h1>
           <p className="rise mt-6 font-mono text-sm text-muted-foreground sm:text-base" style={{ animationDelay: "240ms" }}>
-            Computer Science Student <span className="text-primary">→</span> <span className="text-foreground">Software Engineer</span>
+            Computer Science Student <span className="text-primary">→</span> <span className="text-foreground">AI Engineer</span>
           </p>
-          <p className="rise mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground" style={{ animationDelay: "360ms" }}>
-            I build modern software systems, full-stack web applications, and technology-driven products with a focus on solving real problems.
+          <p className="rise mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg" style={{ animationDelay: "360ms" }}>
+            I am working toward a career in AI engineering, building a foundation in machine learning and intelligent systems while creating technology that solves real problems.
           </p>
           <div className="rise mt-10 flex flex-wrap gap-3" style={{ animationDelay: "480ms" }}>
-            <a href="#projects" className="group inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_0_40px_-8px_var(--glow)] transition-transform hover:-translate-y-0.5">
+            <MagneticButton href="#projects" className="group bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_0_40px_-8px_var(--glow)] hover:shadow-[0_16px_32px_-14px_var(--glow)]">
               Explore My Work <ArrowDown size={16} className="transition-transform group-hover:translate-y-0.5" />
-            </a>
-            <a href={LINKS.resume} download className="glass inline-flex items-center gap-2 rounded-md px-6 py-3.5 text-sm font-semibold transition-colors hover:border-primary/50">
+            </MagneticButton>
+            <MagneticButton href={LINKS.resume} download className="glass px-6 py-3.5 text-sm font-semibold hover:border-primary/50">
               Download Resume <Download size={16} />
-            </a>
+            </MagneticButton>
           </div>
-          <div className="rise mt-8 flex gap-6 font-mono text-xs text-muted-foreground" style={{ animationDelay: "600ms" }}>
-            <a href={LINKS.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 hover:text-foreground"><Github size={14} /> GitHub</a>
-            <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 hover:text-foreground"><Linkedin size={14} /> LinkedIn</a>
+          <div className="rise mt-8 flex flex-wrap gap-5 font-mono text-xs text-muted-foreground" style={{ animationDelay: "600ms" }}>
+            <a href={LINKS.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"><Github size={14} /> GitHub</a>
+            <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"><Linkedin size={14} /> LinkedIn</a>
           </div>
         </div>
-        <div className="rise order-1 mx-auto w-full max-w-[300px] sm:max-w-sm lg:order-2" style={{ animationDelay: "200ms" }}>
+        <div className="rise order-1 mx-auto w-full max-w-[min(62vw,240px)] sm:max-w-sm lg:order-2" style={{ animationDelay: "200ms" }}>
           <div ref={img} className="relative will-change-transform">
             <div className="glow-orb absolute -inset-10 opacity-70" />
-            <div className="float-slow absolute -left-8 top-10 h-14 w-14 rotate-12 border border-primary/40" />
-            <div className="float-slow absolute -right-6 bottom-16 h-10 w-10 rounded-full border border-accent/50" style={{ animationDelay: "-3s" }} />
+            <div className="float-slow absolute -left-5 top-10 hidden h-14 w-14 rotate-12 border border-primary/40 sm:block" />
+            <div className="float-slow absolute -right-6 bottom-16 hidden h-10 w-10 rounded-full border border-accent/50 sm:block" style={{ animationDelay: "-3s" }} />
             <div className="float-slow absolute -right-10 top-4 font-mono text-xs text-muted-foreground" style={{ animationDelay: "-5s" }}>{"</>"}</div>
             <Tilt>
               <div className="glass relative rounded-lg p-2.5">
@@ -120,27 +201,59 @@ function Hero() {
   );
 }
 
+function SystemMap() {
+  const nodes = ["CODE", "API", "DB", "SYSTEM"];
+
+  return (
+    <div className="relative overflow-hidden rounded-lg border border-border bg-background/70 p-5">
+      <div className="grid-bg absolute inset-0 opacity-40" />
+      <div className="relative flex items-center justify-between gap-2">
+        {nodes.map((node, index) => (
+          <div key={node} className="relative flex flex-1 items-center justify-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-primary/40 bg-surface/80 font-mono text-[9px] tracking-[0.2em] text-primary">
+              {node}
+            </div>
+            {index < nodes.length - 1 && (
+              <div className="absolute left-[calc(50%+1.5rem)] right-[-0.6rem] h-px bg-gradient-to-r from-primary/70 via-primary/30 to-transparent" />
+            )}
+          </div>
+        ))}
+      </div>
+      <div className="relative mt-5 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground/80">
+        <span>logic</span>
+        <span>interface</span>
+        <span>data</span>
+        <span>delivery</span>
+      </div>
+    </div>
+  );
+}
+
 function About() {
   const cards = [
-    { icon: Code2, t: "BUILD", d: "Turning ideas into working software." },
-    { icon: BookOpen, t: "LEARN", d: "Continuously expanding my engineering knowledge." },
-    { icon: Puzzle, t: "SOLVE", d: "Breaking complex problems into practical solutions." },
+    { icon: Code2, t: "BUILD", d: "Turning ideas into working software systems." },
+    { icon: BookOpen, t: "LEARN", d: "Continuously improving engineering fundamentals and product thinking." },
+    { icon: Puzzle, t: "SOLVE", d: "Breaking complex problems into practical, scalable solutions." },
   ];
   return (
-    <Section id="about" eyebrow="01 — About me" title="Engineering, taken seriously.">
+    <Section id="about" eyebrow="01 — About me" title="Building toward intelligent systems.">
       <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
         <Reveal className="space-y-6 text-lg leading-relaxed text-muted-foreground">
-          <p>I am a Computer Science & Engineering student at <span className="text-foreground">United International University</span> focused on becoming a strong software engineer. I enjoy building practical software, exploring full-stack development, working with databases and learning how modern systems are designed and deployed.</p>
-          <p>I am particularly interested in software engineering, web development, backend systems and building technology that solves real-world problems.</p>
+          <p>I am a Computer Science & Engineering student at <span className="text-foreground">United International University</span> developing toward a career in AI engineering. I am interested in machine learning, intelligent systems, and building technology that helps people solve real problems.</p>
+          <p>I enjoy working across the stack: designing clean interfaces, building backend logic, managing data, and shipping systems that feel reliable and deliberate. I’m focused on growing strong engineering fundamentals while creating products that combine technical depth with real-world usefulness.</p>
         </Reveal>
         <Reveal delay={150}>
           <div className="glass relative overflow-hidden rounded-lg p-7">
+            <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-primary/0 via-primary/70 to-primary/0" />
             <p className="eyebrow">Education</p>
             <h3 className="mt-4 text-2xl font-semibold">United International University</h3>
             <p className="mt-1 text-muted-foreground">B.Sc. in Computer Science & Engineering</p>
             <div className="mt-6 grid grid-cols-2 gap-4 border-t pt-6">
               <div><p className="font-mono text-xs text-muted-foreground">EXPECTED</p><p className="mt-1 font-display text-3xl">2028</p></div>
               <div><p className="font-mono text-xs text-muted-foreground">CGPA</p><p className="mt-1 font-display text-3xl">3.34<span className="text-base text-muted-foreground"> / 4.00</span></p></div>
+            </div>
+            <div className="mt-6">
+              <SystemMap />
             </div>
           </div>
         </Reveal>
@@ -161,6 +274,7 @@ function About() {
 }
 
 const SKILLS: { cat: string; items: string[] }[] = [
+  { cat: "Software Engineering Foundation", items: ["Python", "Data Structures & Algorithms", "OOP", "FastAPI", "REST APIs"] },
   { cat: "Programming", items: ["C", "C++", "Python", "JavaScript", "TypeScript", "PHP", "Java"] },
   { cat: "Frontend", items: ["HTML", "CSS", "React", "Next.js", "Tailwind CSS"] },
   { cat: "Backend", items: ["Laravel", "Node.js", "Express", "FastAPI", "REST APIs"] },
@@ -238,20 +352,20 @@ function Projects() {
   const projects = [
     {
       n: "01", title: "Goynar Gontobbo", cat: "Full-Stack E-Commerce Platform", badge: "Real-world project",
-      desc: "A full-stack jewellery e-commerce platform being developed for a real jewellery business, combining customer shopping functionality with administrative product and order management.",
+      desc: "Building a production-oriented jewellery commerce platform for a real business. The system connects a Next.js storefront to a Laravel API and MySQL data model, with structured catalogs, product variants, inventory, and separate customer and admin workflows for product and order operations.",
       tech: ["Next.js", "TypeScript", "Tailwind CSS", "Laravel", "PHP", "MySQL"],
       visual: <Flow vertical steps={["CUSTOMER", "FRONTEND · NEXT.JS", "LARAVEL API", "MYSQL"]} />,
     },
     {
-      n: "02", title: "National Healthcare Record Exchange", cat: "NHRE · Enterprise Records System",
-      desc: "A centralized healthcare record exchange platform designed to support the management and exchange of healthcare information between different system users.",
+      n: "02", title: "National Healthcare Record Exchange", cat: "NHRE · Healthcare Information System",
+      desc: "Developing a centralized platform for managing and sharing healthcare information. The application brings together authentication, registration, role-based workflows, clinical records, notifications, and relational data management in one system, with a foundation designed to grow toward larger database platforms.",
       tech: ["PHP", "MySQL", "HTML", "CSS", "JavaScript"],
       github: "https://github.com/heyaftab/national-healthcare-record-exchange",
       visual: <Flow steps={["PATIENT", "PROVIDER", "RECORDS", "DATABASE", "NOTIFY"]} />,
     },
     {
-      n: "03", title: "Smart CNC Plotter", cat: "Microprocessors & Microcontrollers Project", badge: "Team project",
-      desc: "A team-developed Smart CNC Plotter created as part of a Microprocessors & Microcontrollers project, combining embedded programming, hardware interfacing and automated plotting.",
+      n: "03", title: "Smart CNC Plotter", cat: "Embedded Systems · Microprocessors & Microcontrollers", badge: "Team project",
+      desc: "Designed and built an automated plotting prototype with a team, connecting microcontroller programming to physical motion. The work covered motor control, electronics and hardware interfacing, translating drawing commands into coordinated plotter movement.",
       tech: ["Embedded Programming", "Hardware Interfacing", "Automation"],
       details: "https://lnkd.in/p/gNNXr2y6",
       visual: <div className="h-48 w-full"><CncVisual /></div>,
@@ -351,11 +465,11 @@ function Mindset() {
 function Journey() {
   const items = [
     ["2023", "Started B.Sc. in Computer Science & Engineering."],
-    ["2026", "Developing software engineering and full-stack development skills."],
+    ["2026", "Building foundations in AI, machine learning, and software engineering."],
     ["2026", "Built Smart CNC Plotter project."],
     ["2026", "Achieved 3rd place in a 12-hour hackathon."],
     ["2027", "Advanced project development and internship preparation."],
-    ["2028", "Expected B.Sc. graduation and transition into software engineering."],
+    ["2028", "Expected B.Sc. graduation and transition into AI engineering."],
   ];
   return (
     <Section id="journey" eyebrow="06 — Journey" title="The road so far.">
@@ -391,7 +505,7 @@ function GithubAndResume() {
           <div className="glow-orb absolute -right-16 -top-16 h-56 w-56 opacity-60" />
           <p className="eyebrow relative">Resume</p>
           <h3 className="relative mt-8 text-3xl font-semibold leading-tight">Explore my work.<br />Then let's talk.</h3>
-          <p className="relative mt-4 text-muted-foreground">For a traditional overview of my education, skills and projects, download my resume.</p>
+          <p className="relative mt-4 text-muted-foreground">Get my AI-engineering focused CV for an overview of my education, technical foundation and project experience.</p>
           <a href={LINKS.resume} download className="relative mt-8 inline-flex w-fit items-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5">Download Resume <Download size={15} /></a>
         </div>
       </Reveal>
@@ -429,7 +543,7 @@ function Contact() {
   const field = "w-full rounded-md border bg-background/60 px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/60";
   const contacts = [
     { icon: Mail, l: "Email", v: LINKS.email, h: `mailto:${LINKS.email}` },
-    { icon: Linkedin, l: "LinkedIn", v: "aftab-uddin-ahmad", h: LINKS.linkedin },
+    { icon: Linkedin, l: "LinkedIn", v: "aftab-uddin-ahmed", h: LINKS.linkedin },
     { icon: Github, l: "GitHub", v: "heyaftab", h: LINKS.github },
     { icon: Phone, l: "Phone", v: LINKS.phone, h: `tel:${LINKS.phone}` },
   ];
@@ -437,7 +551,7 @@ function Contact() {
     <Section id="contact" eyebrow="07 — Contact" title="Let's build something.">
       <div className="grid gap-12 lg:grid-cols-2">
         <Reveal>
-          <p className="text-lg leading-relaxed text-muted-foreground">I'm currently developing my skills and looking for opportunities to grow through internships, real-world projects and challenging software development work.</p>
+          <p className="text-lg leading-relaxed text-muted-foreground">I’m building a strong engineering foundation and looking for opportunities to work on real products, software systems, and ambitious digital experiences that solve meaningful problems.</p>
           <ul className="mt-10 divide-y border-y">
             {contacts.map((c) => (
               <li key={c.l}>
@@ -483,7 +597,7 @@ function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-14 sm:px-8 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="font-display text-2xl font-semibold tracking-tight">AFTAB UDDIN AHMAD</p>
-          <p className="mt-2 text-sm text-muted-foreground">Computer Science & Engineering<br />United International University</p>
+          <p className="mt-2 text-sm text-muted-foreground">Aspiring AI Engineer · Computer Science & Engineering<br />United International University</p>
         </div>
         <div className="flex flex-col gap-3 md:items-end">
           <div className="flex gap-5 font-mono text-xs text-muted-foreground">

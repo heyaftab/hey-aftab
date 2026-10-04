@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Portfolio } from "@/components/portfolio/Portfolio";
 
-const title = "Aftab Uddin Ahmad — Aspiring Software Engineer";
+const title = "Aftab Uddin Ahmad — Computer Science Student & AI Engineer";
 const description =
-  "Portfolio of Aftab Uddin Ahmad, CSE student at United International University building full-stack web applications and software systems.";
+  "Portfolio of Aftab Uddin Ahmad, a Computer Science student at United International University aspiring to become an AI engineer and build intelligent, useful technology.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
