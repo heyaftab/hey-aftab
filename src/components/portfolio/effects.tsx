@@ -76,7 +76,7 @@ export function NetworkField() {
         return { x: w / 2 + x1 * s * k, y: h / 2 + y1 * s * k, d: (z2 + 1) / 2 };
       });
       for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) {
-        const a = proj[i], b = proj[j];
+        const a = proj[i]!, b = proj[j]!;
         const dist = Math.hypot(a.x - b.x, a.y - b.y);
         if (dist < s * 0.42) {
           ctx.strokeStyle = `color-mix(in oklab, ${accent} ${Math.round((1 - dist / (s * 0.42)) * 28)}%, transparent)`;
