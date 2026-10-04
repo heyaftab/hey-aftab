@@ -9,7 +9,7 @@
   --radius-md: var(--radius);
   --radius-lg: calc(var(--radius) + 2px);
   --radius-xl: calc(var(--radius) + 4px);
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --color-background: var(--background);
@@ -100,21 +100,41 @@
 
 @layer base {
   * { border-color: var(--color-border); }
-  html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    scrollbar-color: color-mix(in oklch, var(--primary) 65%, var(--surface)) var(--background);
+    scrollbar-width: thin;
+  }
   body {
     background-color: var(--color-background);
     background-image:
       radial-gradient(ellipse 55% 35% at 85% -8%, color-mix(in oklch, var(--primary) 13%, transparent), transparent 72%),
       radial-gradient(ellipse 45% 28% at -10% 42%, color-mix(in oklch, var(--accent) 8%, transparent), transparent 76%);
     background-attachment: fixed;
+    background-size: 140% 140%, 140% 140%;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
     transition: background-color 350ms ease, color 350ms ease;
+    animation: ambient-drift 28s ease-in-out infinite alternate;
   }
-  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
-  ::selection { background: var(--glow); }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-feature-settings: "ss01" on;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+  #home h1 { font-weight: 800; letter-spacing: -0.065em; }
+  .font-mono { font-variant-numeric: tabular-nums; }
+  ::selection { background: color-mix(in oklch, var(--primary) 36%, transparent); color: var(--foreground); }
+  :where(a, button, input, textarea) { -webkit-tap-highlight-color: transparent; }
+  :where(a, button, input, textarea, select):focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 4px;
+  }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -129,12 +149,110 @@
   backdrop-filter: blur(18px) saturate(140%);
   border: 1px solid var(--border);
   box-shadow: 0 24px 80px -56px color-mix(in oklch, var(--primary) 35%, transparent);
+  transition: background-color 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
 }
+
+article.glass {
+  position: relative;
+  isolation: isolate;
+  transition: transform 450ms cubic-bezier(.2,.7,.2,1), border-color 350ms ease, box-shadow 450ms ease;
+}
+
+article.glass::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(115deg, color-mix(in oklch, var(--primary) 15%, transparent), transparent 36%, color-mix(in oklch, var(--accent) 10%, transparent));
+  content: "";
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+article.glass:hover {
+  transform: translateY(-5px);
+  border-color: color-mix(in oklch, var(--primary) 45%, var(--border));
+  box-shadow: 0 28px 76px -48px color-mix(in oklch, var(--primary) 48%, transparent);
+}
+
+article.glass:hover::before { opacity: 1; }
+
+.portrait-stage { perspective: 1100px; transform-style: preserve-3d; }
+
+.portrait-depth-ring {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  border: 1px solid color-mix(in oklch, var(--primary) 58%, transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 28px -12px color-mix(in oklch, var(--primary) 80%, transparent), inset 0 0 24px -18px color-mix(in oklch, var(--primary) 70%, transparent);
+  transform-style: preserve-3d;
+}
+
+.portrait-depth-ring-one {
+  inset: 7% -15%;
+  transform: rotateX(66deg) rotateZ(-22deg);
+  animation: portrait-orbit 18s linear infinite;
+}
+
+.portrait-depth-ring-two {
+  inset: -2% -5%;
+  border-color: color-mix(in oklch, var(--accent) 55%, transparent);
+  box-shadow: 0 0 32px -14px color-mix(in oklch, var(--accent) 80%, transparent), inset 0 0 22px -18px color-mix(in oklch, var(--accent) 70%, transparent);
+  transform: rotateY(62deg) rotateZ(30deg);
+  animation: portrait-orbit-reverse 24s linear infinite;
+}
+
+.hero-photo-card {
+  transform: translateZ(26px);
+  box-shadow: 0 30px 90px -54px color-mix(in oklch, var(--primary) 68%, transparent);
+  transition: box-shadow 400ms ease, border-color 400ms ease;
+}
+
+.hero-photo-card:hover {
+  border-color: color-mix(in oklch, var(--primary) 55%, var(--border));
+  box-shadow: 0 36px 100px -50px color-mix(in oklch, var(--primary) 78%, transparent);
+}
+
+a.bg-primary, button.bg-primary {
+  background-image: linear-gradient(125deg, color-mix(in oklch, var(--primary) 88%, white), var(--primary) 55%, color-mix(in oklch, var(--primary) 78%, var(--accent)));
+  box-shadow: 0 8px 24px -16px color-mix(in oklch, var(--primary) 85%, transparent);
+  transition: transform 250ms ease, box-shadow 300ms ease, filter 250ms ease;
+}
+
+a.bg-primary:hover, button.bg-primary:hover { filter: saturate(1.14) brightness(1.04); }
+
+#about .group.h-full {
+  position: relative;
+  overflow: hidden;
+  transition: color 300ms ease, background-color 300ms ease;
+}
+
+#about .group.h-full::after {
+  position: absolute;
+  right: 1.75rem;
+  bottom: 0;
+  left: 1.75rem;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 450ms cubic-bezier(.2,.7,.2,1);
+}
+
+#about .group.h-full:hover::after { transform: scaleX(1); }
+
+#skills button, #skills span { transition: transform 220ms ease, color 220ms ease, background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease; }
+#skills button:hover, #skills span:hover { transform: translateY(-2px); }
 
 @media (max-width: 767px) {
   .glass { backdrop-filter: blur(10px) saturate(120%); }
   .float-slow { animation: none; }
   .reveal { transition-duration: 0.45s; }
+  article.glass:hover { transform: none; }
+  .portrait-depth-ring-one { inset-inline: -8%; }
+  .portrait-depth-ring-two { inset-inline: 0; }
 }
 @utility text-gradient {
   background: var(--gradient-text);
@@ -158,6 +276,7 @@
 @utility glow-orb {
   background: radial-gradient(circle, var(--glow), transparent 65%);
   filter: blur(40px);
+  animation: glow-breathe 8s ease-in-out infinite alternate;
 }
 @utility panel-grid {
   background-image:
@@ -171,6 +290,7 @@
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-primary);
+  text-shadow: 0 0 24px color-mix(in oklch, var(--primary) 32%, transparent);
 }
 @utility reveal {
   opacity: 0;
@@ -189,3 +309,7 @@
 @keyframes rise { from { opacity: 0; transform: translateY(40px); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
 @keyframes flow { to { stroke-dashoffset: -24; } }
 @keyframes pulse-dot { 0%,100% { opacity: .4; } 50% { opacity: 1; } }
+@keyframes ambient-drift { from { background-position: 0% 0%, 100% 100%; } to { background-position: 100% 20%, 0% 80%; } }
+@keyframes glow-breathe { from { opacity: .62; transform: scale(.94); } to { opacity: 1; transform: scale(1.06); } }
+@keyframes portrait-orbit { from { rotate: 0deg; } to { rotate: 360deg; } }
+@keyframes portrait-orbit-reverse { from { rotate: 360deg; } to { rotate: 0deg; } }

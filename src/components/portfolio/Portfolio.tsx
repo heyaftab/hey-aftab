@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { ArrowDown, ArrowUpRight, Download, Github, Linkedin, Mail, Phone, MapPin, Menu, X, Trophy, Code2, BookOpen, Puzzle, ArrowRight } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Download, Github, Linkedin, Facebook, Mail, Phone, MapPin, Menu, X, Trophy, Code2, BookOpen, Puzzle, ArrowRight } from "lucide-react";
 import { Cursor, NetworkField, Reveal, Tilt } from "./effects";
 import { ThemePicker } from "./ThemePicker";
 import { PortfolioAssistant } from "./PortfolioAssistant";
@@ -7,6 +7,7 @@ import { PortfolioAssistant } from "./PortfolioAssistant";
 const LINKS = {
   github: "https://github.com/heyaftab",
   linkedin: "https://www.linkedin.com/in/aftab-uddin-ahmad-7b303429/",
+  facebook: "https://www.facebook.com/aftabuddinahmad26/",
   email: "aftabuddinahmad26@gmail.com",
   phone: "01795364351",
   resume: "/Aftab_Uddin_Ahmad_AI_Engineer_CV.docx",
@@ -165,7 +166,7 @@ function Hero() {
             AFTAB<br />UDDIN AHMAD
           </h1>
           <p className="rise mt-6 font-mono text-sm text-muted-foreground sm:text-base" style={{ animationDelay: "240ms" }}>
-            Computer Science Student <span className="text-primary">→</span> <span className="text-foreground">AI Engineer</span>
+            Computer Science Student <span className="text-primary">→</span> <span className="text-accent-gradient font-display font-semibold">AI Engineer</span>
           </p>
           <p className="rise mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg" style={{ animationDelay: "360ms" }}>
             I am working toward a career in AI engineering, building a foundation in machine learning and intelligent systems while creating technology that solves real problems.
@@ -181,16 +182,19 @@ function Hero() {
           <div className="rise mt-8 flex flex-wrap gap-5 font-mono text-xs text-muted-foreground" style={{ animationDelay: "600ms" }}>
             <a href={LINKS.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"><Github size={14} /> GitHub</a>
             <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"><Linkedin size={14} /> LinkedIn</a>
+            <a href={LINKS.facebook} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"><Facebook size={14} /> Facebook</a>
           </div>
         </div>
         <div className="rise order-1 mx-auto w-full max-w-[min(62vw,240px)] sm:max-w-sm lg:order-2" style={{ animationDelay: "200ms" }}>
-          <div ref={img} className="relative will-change-transform">
+          <div ref={img} className="portrait-stage relative will-change-transform">
             <div className="glow-orb absolute -inset-10 opacity-70" />
+            <div className="portrait-depth-ring portrait-depth-ring-one" aria-hidden="true" />
+            <div className="portrait-depth-ring portrait-depth-ring-two" aria-hidden="true" />
             <div className="float-slow absolute -left-5 top-10 hidden h-14 w-14 rotate-12 border border-primary/40 sm:block" />
             <div className="float-slow absolute -right-6 bottom-16 hidden h-10 w-10 rounded-full border border-accent/50 sm:block" style={{ animationDelay: "-3s" }} />
             <div className="float-slow absolute -right-10 top-4 font-mono text-xs text-muted-foreground" style={{ animationDelay: "-5s" }}>{"</>"}</div>
-            <Tilt>
-              <div className="glass relative rounded-lg p-2.5">
+            <Tilt className="relative z-10">
+              <div className="hero-photo-card glass relative rounded-lg p-2.5">
                 <div className="relative aspect-[4/5] overflow-hidden rounded-md">
                   <img src="/assets/Aftab.png" alt="Portrait of Aftab Uddin Ahmad" className="h-full w-full object-cover object-center" fetchPriority="high" />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
@@ -254,9 +258,8 @@ function About() {
             <p className="eyebrow">Education</p>
             <h3 className="mt-4 text-2xl font-semibold">United International University</h3>
             <p className="mt-1 text-muted-foreground">B.Sc. in Computer Science & Engineering</p>
-            <div className="mt-6 grid grid-cols-2 gap-4 border-t pt-6">
-              <div><p className="font-mono text-xs text-muted-foreground">EXPECTED</p><p className="mt-1 font-display text-3xl">2028</p></div>
-              <div><p className="font-mono text-xs text-muted-foreground">CGPA</p><p className="mt-1 font-display text-3xl">3.34<span className="text-base text-muted-foreground"> / 4.00</span></p></div>
+            <div className="mt-6 grid grid-cols-1 gap-4 border-t pt-6">
+              <div><p className="font-mono text-xs text-muted-foreground">EXPECTED GRADUATION</p><p className="mt-1 font-display text-3xl">2028</p></div>
             </div>
             <div className="mt-6">
               <SystemMap />
@@ -355,22 +358,37 @@ function CncVisual() {
 }
 
 function Projects() {
-  const projects = [
+  const projects: { n: string; title: string; cat: string; badge?: string; desc: string; tech: string[]; github?: string; demo?: string; presentation?: string; details?: string; visual: ReactNode }[] = [
     {
-      n: "01", title: "Goynar Gontobbo", cat: "Full-Stack E-Commerce Platform", badge: "Real-world project",
+      n: "01", title: "National Healthcare Record Exchange", cat: "NHRE · Healthcare Information System", badge: "Featured presentation",
+      desc: "A presentation introducing a centralized platform for managing and sharing healthcare information. It covers authentication, role-based workflows, clinical records, notifications, and relational data management.",
+      tech: ["PHP", "MySQL", "HTML", "CSS", "JavaScript"],
+      github: "https://github.com/heyaftab/national-healthcare-record-exchange",
+      presentation: "https://nhre.lovable.app",
+      visual: <Flow steps={["PATIENT", "PROVIDER", "RECORDS", "DATABASE", "NOTIFY"]} />,
+    },
+    {
+      n: "02", title: "Goynar Gontobbo", cat: "Full-Stack E-Commerce Platform", badge: "Real-world project",
       desc: "Building a production-oriented jewellery commerce platform for a real business. The system connects a Next.js storefront to a Laravel API and MySQL data model, with structured catalogs, product variants, inventory, and separate customer and admin workflows for product and order operations.",
       tech: ["Next.js", "TypeScript", "Tailwind CSS", "Laravel", "PHP", "MySQL"],
       visual: <Flow vertical steps={["CUSTOMER", "FRONTEND · NEXT.JS", "LARAVEL API", "MYSQL"]} />,
     },
     {
-      n: "02", title: "National Healthcare Record Exchange", cat: "NHRE · Healthcare Information System",
-      desc: "Developing a centralized platform for managing and sharing healthcare information. The application brings together authentication, registration, role-based workflows, clinical records, notifications, and relational data management in one system, with a foundation designed to grow toward larger database platforms.",
-      tech: ["PHP", "MySQL", "HTML", "CSS", "JavaScript"],
-      github: "https://github.com/heyaftab/national-healthcare-record-exchange",
-      visual: <Flow steps={["PATIENT", "PROVIDER", "RECORDS", "DATABASE", "NOTIFY"]} />,
+      n: "03", title: "BozoScope", cat: "Browser Camera App", badge: "1st Place · Tech Adda",
+      desc: "A live camera app built solo in a 40-minute challenge. BozoScope adds nine playful filters, lets visitors capture photos, and downloads the results locally.",
+      demo: "https://lnkd.in/gNA4abVE",
+      tech: ["Live Camera", "9 Photo Filters", "Photo Capture", "Local Download"],
+      visual: <Flow vertical steps={["LIVE CAMERA", "9 FILTERS", "CAPTURE PHOTO", "SAVE LOCALLY"]} />,
     },
     {
-      n: "03", title: "Smart CNC Plotter", cat: "Embedded Systems · Microprocessors & Microcontrollers", badge: "Team project",
+      n: "04", title: "UIU CSE Course Planner", cat: "Academic Planning Tool",
+      desc: "A course planning app for UIU Computer Science & Engineering students. Browse and search courses, organize completed and upcoming courses by trimester, and track credit progress. The app uses a FastAPI backend with SQLite storage and a responsive web interface.",
+      github: "https://github.com/heyaftab/uiu-course-planner",
+      tech: ["Python", "FastAPI", "SQLite", "HTML", "CSS", "JavaScript"],
+      visual: <Flow vertical steps={["COURSE CATALOG", "TRIMESTER PLANS", "CREDIT TRACKING", "SQLITE"]} />,
+    },
+    {
+      n: "05", title: "Smart CNC Plotter", cat: "Embedded Systems · Microprocessors & Microcontrollers", badge: "Team project",
       desc: "Designed and built an automated plotting prototype with a team, connecting microcontroller programming to physical motion. The work covered motor control, electronics and hardware interfacing, translating drawing commands into coordinated plotter movement.",
       tech: ["Embedded Programming", "Hardware Interfacing", "Automation"],
       details: "https://lnkd.in/p/gNNXr2y6",
@@ -396,9 +414,11 @@ function Projects() {
                     {p.tech.map((t) => <span key={t} className="rounded border px-2.5 py-1 font-mono text-[11px] text-muted-foreground">{t}</span>)}
                   </div>
                   <div className="mt-8 flex flex-wrap gap-3 pt-2 lg:mt-auto">
-                    {p.github && <a href={p.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"><Github size={15} /> GitHub</a>}
+                    {p.presentation && <a href={p.presentation} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"><BookOpen size={15} /> View NHRE presentation <ArrowUpRight size={15} /></a>}
+                    {p.github && <a href={p.github} target="_blank" rel="noreferrer" className={`inline-flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-transform hover:-translate-y-0.5 ${p.presentation ? "border hover:border-primary/50" : "bg-primary text-primary-foreground"}`}><Github size={15} /> GitHub</a>}
+                    {p.demo && <a href={p.demo} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-md border px-4 py-2.5 text-sm transition-colors hover:border-primary/50">Try BozoScope <ArrowUpRight size={15} /></a>}
                     {p.details && <a href={p.details} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-md border px-4 py-2.5 text-sm transition-colors hover:border-primary/50">Project details <ArrowUpRight size={15} /></a>}
-                    {!p.github && !p.details && <span className="inline-flex items-center gap-2 rounded-md border px-4 py-2.5 font-mono text-xs text-muted-foreground">In active development</span>}
+                    {!p.github && !p.details && !p.demo && <span className="inline-flex items-center gap-2 rounded-md border px-4 py-2.5 font-mono text-xs text-muted-foreground">In active development</span>}
                   </div>
                 </div>
                 <div className="relative flex items-center justify-center border-t bg-surface/60 p-8 sm:p-10 lg:border-l lg:border-t-0">
@@ -551,6 +571,7 @@ function Contact() {
     { icon: Mail, l: "Email", v: LINKS.email, h: `mailto:${LINKS.email}` },
     { icon: Linkedin, l: "LinkedIn", v: "aftab-uddin-ahmed", h: LINKS.linkedin },
     { icon: Github, l: "GitHub", v: "heyaftab", h: LINKS.github },
+    { icon: Facebook, l: "Facebook", v: "aftabuddinahmad26", h: LINKS.facebook },
     { icon: Phone, l: "Phone", v: LINKS.phone, h: `tel:${LINKS.phone}` },
   ];
   return (
@@ -609,6 +630,7 @@ function Footer() {
           <div className="flex gap-5 font-mono text-xs text-muted-foreground">
             <a href={LINKS.github} target="_blank" rel="noreferrer" className="hover:text-foreground">GitHub</a>
             <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className="hover:text-foreground">LinkedIn</a>
+            <a href={LINKS.facebook} target="_blank" rel="noreferrer" className="hover:text-foreground">Facebook</a>
             <a href={`mailto:${LINKS.email}`} className="hover:text-foreground">Email</a>
           </div>
           <p className="font-mono text-xs text-muted-foreground">© 2026 Aftab Uddin Ahmad</p>

@@ -7,17 +7,17 @@ A personal portfolio for Aftab Uddin Ahmad, a Computer Science & Engineering stu
 ## What the site includes
 
 - **Profile and introduction** — hero section, portrait, location, and career direction.
-- **About and education** — degree, university, expected graduation, and CGPA.
+- **About and education** — degree, university, and expected graduation.
 - **Skills** — filterable programming, frontend, backend, database, and infrastructure skills.
-- **Featured projects** — Goynar Gontobbo, National Healthcare Record Exchange, and Smart CNC Plotter.
+- **Featured projects** — Goynar Gontobbo, BozoScope, UIU CSE Course Planner, National Healthcare Record Exchange, and Smart CNC Plotter.
 - **Achievements and journey** — hackathon result and career timeline.
-- **Resume and contact** — downloadable CV, contact links, and a form that opens a prefilled email in the visitor’s mail app.
+- **Resume and contact** — downloadable CV, email and social profile links (LinkedIn, GitHub, and Facebook), and a form that opens a prefilled email in the visitor’s mail app.
 - **Theme switcher** — cycles through three color themes and remembers the selection in the browser.
 - **Portfolio guide** — a floating chat interface that answers questions using a curated set of facts about the portfolio.
 
 ## Chat assistant behavior
 
-The assistant uses local, predefined answers in `src/components/portfolio/PortfolioAssistant.tsx`. It can answer common questions about Aftab’s education, skills, career goal, projects, achievement, and contact details. It does not call an AI model or an external API, and it only knows the details maintained in that file. Update the answer list there when portfolio information changes.
+The portfolio assistant uses concise, professional answers from a local knowledge base in `src/components/portfolio/PortfolioAssistant.tsx`. It covers Aftab’s education, skills, career goal, projects, achievements, and profile links. It matches questions to curated portfolio details; it does not fetch live content from social profiles or call an AI model or external API. Keep its answers factual and aligned with the public portfolio information.
 
 ## Technology
 
