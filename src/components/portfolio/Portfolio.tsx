@@ -13,9 +13,6 @@ const LINKS = {
   resume: "/Aftab_Uddin_Ahmad_AI_Engineer_CV.docx",
 };
 
-/** CONTACT FORM CONFIG — set an endpoint (e.g. Formspree URL) to enable real sending. */
-const CONTACT_ENDPOINT = "";
-
 const NAV = ["Home", "About", "Skills", "Projects", "Achievements", "Journey", "Contact"];
 
 const ACTIVE_SECTION_IDS = NAV.map((section) => section.toLowerCase());
@@ -541,7 +538,7 @@ function GithubAndResume() {
 
 function Contact() {
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [status, setStatus] = useState<"" | "ok" | "sending" | "fail">("");
+  const [status, setStatus] = useState<"" | "ok" | "sending" | "fail" | "setup">("");
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
@@ -554,16 +551,15 @@ function Contact() {
     if (message.length < 10) errs.message = "Message should be at least 10 characters.";
     setErrors(errs);
     if (Object.keys(errs).length) return;
-    if (!CONTACT_ENDPOINT) {
-      // Not connected yet: open the visitor's email app with the message pre-filled.
-      window.location.href = `mailto:${LINKS.email}?subject=${encodeURIComponent(`Portfolio message from ${name}`)}&body=${encodeURIComponent(`${message}\n\n— ${name} (${email})`)}`;
-      setStatus("ok");
-      return;
-    }
     setStatus("sending");
     try {
-      const r = await fetch(CONTACT_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ name, email, message }) });
-      setStatus(r.ok ? "ok" : "fail");
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ name, email, message, website: fd.get("website") }),
+      });
+      const result = await response.json().catch(() => ({})) as { error?: string };
+      setStatus(response.ok ? "ok" : result.error === "email_not_configured" ? "setup" : "fail");
     } catch { setStatus("fail"); }
   };
   const field = "w-full rounded-md border bg-background/60 px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/60";
@@ -594,6 +590,10 @@ function Contact() {
         </Reveal>
         <Reveal delay={120}>
           <form onSubmit={onSubmit} noValidate className="glass space-y-4 rounded-lg p-6 sm:p-8">
+            <div aria-hidden="true" className="pointer-events-none absolute -left-[10000px] h-px w-px overflow-hidden">
+              <label htmlFor="website">Leave this field empty</label>
+              <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+            </div>
             {(["name", "email"] as const).map((f) => (
               <div key={f}>
                 <label htmlFor={f} className="mb-2 block font-mono text-[11px] uppercase tracking-widest text-muted-foreground">{f}</label>
@@ -609,7 +609,8 @@ function Contact() {
             <button type="submit" disabled={status === "sending"} className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5 disabled:opacity-60">
               {status === "sending" ? "Sending…" : "Send Message"} <ArrowRight size={15} />
             </button>
-            {status === "ok" && <p className="text-sm text-muted-foreground">{CONTACT_ENDPOINT ? "Thanks — your message was sent." : "Your email app should open with the message ready to send."}</p>}
+            {status === "ok" && <p role="status" className="text-sm text-muted-foreground">Message sent. Aftab will receive it by email.</p>}
+            {status === "setup" && <p role="status" className="text-sm text-muted-foreground">Email delivery is not configured yet. Please email me directly for now.</p>}
             {status === "fail" && <p className="text-sm text-destructive">Couldn't send right now. Please email me directly.</p>}
           </form>
         </Reveal>

@@ -3,8 +3,19 @@ import "./lib/error-capture";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 
+type CloudflareEnv = { RESEND_API_KEY?: string };
+
+declare module "@tanstack/react-router" {
+  interface Register {
+    server: { requestContext: { cloudflareEnv: CloudflareEnv } };
+  }
+}
+
 type ServerEntry = {
-  fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
+  fetch: (
+    request: Request,
+    options: { context: { cloudflareEnv: CloudflareEnv } },
+  ) => Promise<Response> | Response;
 };
 
 let serverEntryPromise: Promise<ServerEntry> | undefined;
@@ -45,10 +56,12 @@ function isH3SwallowedErrorBody(body: string): boolean {
 }
 
 export default {
-  async fetch(request: Request, env: unknown, ctx: unknown) {
+  async fetch(request: Request, env: unknown, _ctx: unknown) {
     try {
       const handler = await getServerEntry();
-      const response = await handler.fetch(request, env, ctx);
+      const response = await handler.fetch(request, {
+        context: { cloudflareEnv: env as CloudflareEnv },
+      });
       return await normalizeCatastrophicSsrResponse(response);
     } catch (error) {
       console.error(error);

@@ -85,7 +85,15 @@ public/
 - Edit theme colors and design tokens in `src/styles.css`. Theme IDs are `night`, `ocean`, and `light`; `ThemePicker.tsx` cycles through them in that order.
 - Replace `public/assets/Aftab.png` to change the profile portrait. Keep the filename or update the image path in `Portfolio.tsx`.
 - Replace `public/Aftab_Uddin_Ahmad_AI_Engineer_CV.docx` to update the downloadable CV. Keep its filename or update the resume path in `Portfolio.tsx`.
-- The contact form currently opens a prefilled email. To submit messages directly to a service, configure `CONTACT_ENDPOINT` in `Portfolio.tsx` and provide a compatible endpoint.
+- The contact form sends to the server-side `/api/contact` route, which forwards messages to `aftabuddinahmad26@gmail.com` through Resend. The `RESEND_API_KEY` must be configured as a Cloudflare Worker secret; never place it in client code or commit it. For local Worker development, store it in the ignored `.dev.vars` file.
+
+### Enable contact form email delivery
+
+1. Create a Resend account and generate an API key.
+2. Add the key to the Cloudflare Worker as a secret named `RESEND_API_KEY` (Worker: `heyaftab-hey-aftab`), then deploy the updated Worker.
+3. Resend's default test sender can be used for initial checks when the recipient address is verified in Resend. For unrestricted delivery, verify a domain you control in Resend and update the `from` address in `src/routes/api/contact.ts`.
+
+The contact API validates and limits form fields, checks same-origin requests, and includes a honeypot field to discard basic bot submissions. Messages are sent with the visitor's address as `Reply-To` so you can respond directly.
 
 ## Lovable
 
