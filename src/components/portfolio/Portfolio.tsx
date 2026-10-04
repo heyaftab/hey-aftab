@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { ArrowDown, ArrowUpRight, Download, Github, Linkedin, Mail, Phone, MapPin, Menu, X, Trophy, Code2, BookOpen, Puzzle, ArrowRight } from "lucide-react";
-import photo from "@/assets/aftab.jpg.asset.json";
 import { Cursor, NetworkField, Reveal, Tilt } from "./effects";
 
 const LINKS = {
@@ -186,7 +185,7 @@ function Hero() {
             <Tilt>
               <div className="glass relative rounded-lg p-2.5">
                 <div className="relative aspect-[4/5] overflow-hidden rounded-md">
-                  <img src={photo.url} alt="Portrait of Aftab Uddin Ahmad" className="h-full w-full object-cover object-top" fetchPriority="high" />
+                  <img src="/assets/Aftab.png" alt="Portrait of Aftab Uddin Ahmad" className="h-full w-full object-cover object-top" fetchPriority="high" />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between font-mono text-[10px] tracking-widest text-foreground/80">
                     <span>CSE · UIU</span><span>CLASS OF 2028</span>
