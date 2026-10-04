@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { ArrowDown, ArrowUpRight, Download, Github, Linkedin, Mail, Phone, MapPin, Menu, X, Trophy, Code2, BookOpen, Puzzle, ArrowRight } from "lucide-react";
 import { Cursor, NetworkField, Reveal, Tilt } from "./effects";
+import { ThemePicker } from "./ThemePicker";
+import { PortfolioAssistant } from "./PortfolioAssistant";
 
 const LINKS = {
   github: "https://github.com/heyaftab",
@@ -69,7 +71,9 @@ function Nav() {
   return (
     <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled || open ? "glass border-x-0 border-t-0" : "border-b border-transparent"}`}>
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
-        <a href="#home" className="font-display text-sm font-semibold tracking-[0.2em]">AUA<span className="text-primary">.</span></a>
+        <a href="#home" aria-label="Aftab Uddin Ahmad — home" className="inline-flex h-11 w-11 items-center justify-center overflow-hidden rounded-full transition-transform hover:scale-105">
+          <img src="/assets/site-logo.png" alt="Aftab Uddin Ahmad logo" className="h-full w-full object-contain" />
+        </a>
         <ul className="hidden items-center gap-7 md:flex">
           {NAV.map((n) => {
             const id = n.toLowerCase();
@@ -89,7 +93,10 @@ function Nav() {
             );
           })}
         </ul>
-        <button className="md:hidden" aria-label="Toggle menu" onClick={() => setOpen(!open)}>{open ? <X size={20} /> : <Menu size={20} />}</button>
+        <div className="flex items-center gap-2">
+          <ThemePicker />
+          <button className="grid h-10 w-10 place-items-center rounded-full border bg-background/70 text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground md:hidden" aria-label="Toggle menu" onClick={() => setOpen(!open)}>{open ? <X size={19} /> : <Menu size={19} />}</button>
+        </div>
       </nav>
       {open && (
         <ul className="flex flex-col gap-1 px-5 pb-6 md:hidden">
@@ -164,8 +171,8 @@ function Hero() {
             I am working toward a career in AI engineering, building a foundation in machine learning and intelligent systems while creating technology that solves real problems.
           </p>
           <div className="rise mt-10 flex flex-wrap gap-3" style={{ animationDelay: "480ms" }}>
-            <MagneticButton href="#projects" className="group bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_0_40px_-8px_var(--glow)] hover:shadow-[0_16px_32px_-14px_var(--glow)]">
-              Explore My Work <ArrowDown size={16} className="transition-transform group-hover:translate-y-0.5" />
+            <MagneticButton href={`${LINKS.github}?tab=repositories`} target="_blank" rel="noreferrer" className="group bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_0_40px_-8px_var(--glow)] hover:shadow-[0_16px_32px_-14px_var(--glow)]">
+              Explore My Work <ArrowUpRight size={16} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </MagneticButton>
             <MagneticButton href={LINKS.resume} download className="glass px-6 py-3.5 text-sm font-semibold hover:border-primary/50">
               Download Resume <Download size={16} />
@@ -185,7 +192,7 @@ function Hero() {
             <Tilt>
               <div className="glass relative rounded-lg p-2.5">
                 <div className="relative aspect-[4/5] overflow-hidden rounded-md">
-                  <img src="/assets/Aftab.png" alt="Portrait of Aftab Uddin Ahmad" className="h-full w-full object-cover object-top" fetchPriority="high" />
+                  <img src="/assets/Aftab.png" alt="Portrait of Aftab Uddin Ahmad" className="h-full w-full object-cover object-center" fetchPriority="high" />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between font-mono text-[10px] tracking-widest text-foreground/80">
                     <span>CSE · UIU</span><span>CLASS OF 2028</span>
@@ -628,6 +635,7 @@ export function Portfolio() {
         <Contact />
       </main>
       <Footer />
+      <PortfolioAssistant />
     </div>
   );
 }
