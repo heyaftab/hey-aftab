@@ -13,18 +13,27 @@ export function ThemePicker() {
   const [theme, setTheme] = useState<ThemeId>("night");
 
   useEffect(() => {
-    const saved = window.localStorage.getItem("portfolio-theme");
+    let saved: string | null = null;
+    try {
+      saved = window.localStorage.getItem("portfolio-theme");
+    } catch {
+      // Themes still work when the browser blocks persistent storage.
+    }
     const initial = THEMES.find((item) => item.id === saved)?.id ?? "night";
-    document.documentElement.dataset.theme = initial;
+    document.documentElement.dataset["theme"] = initial;
     setTheme(initial);
   }, []);
 
   const cycleTheme = () => {
     const currentIndex = THEMES.findIndex((item) => item.id === theme);
     const next = THEMES[(currentIndex + 1) % THEMES.length]!.id;
-    document.documentElement.dataset.theme = next;
-    window.localStorage.setItem("portfolio-theme", next);
+    document.documentElement.dataset["theme"] = next;
     setTheme(next);
+    try {
+      window.localStorage.setItem("portfolio-theme", next);
+    } catch {
+      // Keep the selected theme for this visit without persistence.
+    }
   };
 
   const CurrentIcon = THEMES.find((item) => item.id === theme)?.Icon ?? Moon;
@@ -37,7 +46,9 @@ export function ThemePicker() {
       onClick={cycleTheme}
       className="grid h-10 w-10 place-items-center rounded-full border bg-background/70 text-muted-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:text-primary"
     >
-      <span key={theme} className="theme-icon"><CurrentIcon size={17} /></span>
+      <span key={theme} className="theme-icon">
+        <CurrentIcon size={17} />
+      </span>
     </button>
   );
 }
