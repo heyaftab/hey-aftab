@@ -8,6 +8,7 @@ function jsonError(error: string, status: number) {
 }
 
 export const Route = createFileRoute("/api/contact")({
+  staticData: { sitemap: false },
   server: {
     handlers: {
       POST: async ({ request, context }) => {
@@ -33,7 +34,7 @@ export const Route = createFileRoute("/api/contact")({
         const message = typeof form.message === "string" ? form.message.trim() : "";
 
         // Quietly accept honeypot submissions without forwarding spam.
-        if (typeof form.website === "string" && form.website.trim()) {
+        if (typeof form["website"] === "string" && form["website"].trim()) {
           return Response.json({ ok: true });
         }
 
