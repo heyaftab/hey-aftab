@@ -97,6 +97,76 @@ export function NetworkField() {
   return <canvas ref={ref} aria-hidden className="h-full w-full" />;
 }
 
+/** Rotating typewriter that cycles through phrases. */
+export function Typewriter({ phrases, className = "" }: { phrases: string[]; className?: string }) {
+  const [text, setText] = useState("");
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setText(phrases[0] ?? "");
+      return;
+    }
+    let phrase = 0, char = 0, deleting = false, timer = 0;
+    const tick = () => {
+      const current = phrases[phrase] ?? "";
+      char += deleting ? -1 : 1;
+      setText(current.slice(0, char));
+      let wait = deleting ? 32 : 62;
+      if (!deleting && char === current.length) { wait = 1800; deleting = true; }
+      else if (deleting && char === 0) { deleting = false; phrase = (phrase + 1) % phrases.length; wait = 350; }
+      timer = window.setTimeout(tick, wait);
+    };
+    timer = window.setTimeout(tick, 600);
+    return () => window.clearTimeout(timer);
+  }, [phrases]);
+  return (
+    <span className={className}>
+      {text}
+      <span className="type-caret" aria-hidden />
+    </span>
+  );
+}
+
+/** Counts up to `to` when scrolled into view. */
+export function CountUp({ to, suffix = "", duration = 1400, className = "" }: { to: number; suffix?: string; duration?: number; className?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setValue(to); return; }
+    let raf = 0;
+    const io = new IntersectionObserver(([e]) => {
+      if (!e?.isIntersecting) return;
+      io.disconnect();
+      const start = performance.now();
+      const step = (now: number) => {
+        const p = Math.min(1, (now - start) / duration);
+        setValue(Math.round(to * (1 - Math.pow(1 - p, 3))));
+        if (p < 1) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    }, { threshold: 0.5 });
+    io.observe(el);
+    return () => { io.disconnect(); cancelAnimationFrame(raf); };
+  }, [to, duration]);
+  return <span ref={ref} className={className}>{value}{suffix}</span>;
+}
+
+/** Thin progress bar showing scroll position through the page. */
+export function ScrollProgress() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (ref.current) ref.current.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return <div ref={ref} aria-hidden className="fixed inset-x-0 top-0 z-[60] h-0.5 origin-left scale-x-0 bg-gradient-to-r from-primary via-accent to-primary" />;
+}
+
 export function Cursor() {
   const dot = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<"dot" | "ring" | "view">("dot");
