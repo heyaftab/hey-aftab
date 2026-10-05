@@ -15,14 +15,14 @@ export function ThemePicker() {
   useEffect(() => {
     const saved = window.localStorage.getItem("portfolio-theme");
     const initial = THEMES.find((item) => item.id === saved)?.id ?? "night";
-    document.documentElement.dataset.theme = initial;
+    document.documentElement.dataset["theme"] = initial;
     setTheme(initial);
   }, []);
 
   const cycleTheme = () => {
     const currentIndex = THEMES.findIndex((item) => item.id === theme);
     const next = THEMES[(currentIndex + 1) % THEMES.length]!.id;
-    document.documentElement.dataset.theme = next;
+    document.documentElement.dataset["theme"] = next;
     window.localStorage.setItem("portfolio-theme", next);
     setTheme(next);
   };
