@@ -195,7 +195,7 @@ export function PortfolioAssistant() {
       {open && (
         <section
           aria-label="Aftab portfolio assistant"
-          className="mb-3 flex h-[min(34rem,calc(100svh-7rem))] w-[min(24rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-3xl border bg-popover text-popover-foreground shadow-2xl shadow-black/30 ring-1 ring-primary/15"
+          className="assistant-panel mb-3 flex h-[min(34rem,calc(100svh-7rem))] w-[min(24rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-3xl border bg-popover text-popover-foreground shadow-2xl shadow-black/30 ring-1 ring-primary/15"
         >
           <header className="relative overflow-hidden border-b bg-surface/80 px-5 py-4">
             <div className="glow-orb pointer-events-none absolute -right-16 -top-24 h-48 w-48 opacity-50" />
@@ -224,7 +224,7 @@ export function PortfolioAssistant() {
             {messages.map((message, index) => (
               <div
                 key={`${index}-${message.role}`}
-                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                className={`assistant-message flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <p
                   className={`max-w-[88%] whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${message.role === "user" ? "rounded-br-md bg-primary text-primary-foreground" : "rounded-bl-md border bg-background/80 text-foreground"}`}

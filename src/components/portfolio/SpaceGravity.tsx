@@ -145,11 +145,11 @@ export function SpaceGravity() {
             : { x: 0, y: 0 };
         target.tx += (force.x - target.tx) * smoothing;
         target.ty += (force.y - target.ty) * smoothing;
-        if (moving)
-          target.el.style.setProperty(
-            "--gravity-offset",
-            `${target.tx.toFixed(2)}px ${target.ty.toFixed(2)}px`,
-          );
+        if (moving) {
+          const offset = `${target.tx.toFixed(2)}px ${target.ty.toFixed(2)}px`;
+          if (target.el.style.getPropertyValue("--gravity-offset") !== offset)
+            target.el.style.setProperty("--gravity-offset", offset);
+        }
       }
       if (moving) frame = requestAnimationFrame(draw);
     };

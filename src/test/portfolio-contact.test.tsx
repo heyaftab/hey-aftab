@@ -29,6 +29,67 @@ function fillContactForm() {
 }
 
 describe("Contact form regressions", () => {
+  it("preserves every section, featured project, navigation destination and resume link", () => {
+    const { container } = render(<Portfolio />);
+    for (const id of [
+      "home",
+      "about",
+      "skills",
+      "projects",
+      "achievements",
+      "journey",
+      "contact",
+    ]) {
+      expect(container.querySelector(`main section#${id}`)).toBeInTheDocument();
+      expect(container.querySelector(`nav a[href="#${id}"]`)).toBeInTheDocument();
+    }
+    for (const title of [
+      "National Healthcare Record Exchange",
+      "Goynar Gontobbo",
+      "BozoScope",
+      "UIU CSE Course Planner",
+      "Smart CNC Plotter",
+      "How I approach software.",
+    ])
+      expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: "Download Resume" })).toHaveLength(2);
+    expect(
+      screen.getByRole("button", { name: "Chat with Aftab's portfolio assistant" }),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+    expect(screen.getByRole("button", { name: "Close menu" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+    expect(container.querySelector("#mobile-navigation a[href='#contact']")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Close menu" }));
+    expect(container.querySelector("#mobile-navigation")).not.toBeInTheDocument();
+  });
+
+  it("preserves skill filtering and all three themes", () => {
+    const { container } = render(<Portfolio />);
+    const skills = container.querySelector("#skills")!;
+    const allRows = skills.querySelectorAll(".skill-row").length;
+    const frontend = Array.from(skills.querySelectorAll("button")).find(
+      (button) => button.textContent === "Frontend",
+    )!;
+    fireEvent.click(frontend);
+    expect(skills.querySelectorAll(".skill-row")).toHaveLength(1);
+    expect(skills.querySelector(".skill-row")?.textContent).toContain("React");
+    fireEvent.click(
+      Array.from(skills.querySelectorAll("button")).find((button) => button.textContent === "All")!,
+    );
+    expect(skills.querySelectorAll(".skill-row")).toHaveLength(allRows);
+    const themeButton = screen.getByRole("button", { name: "Change color theme" });
+    const original = document.documentElement.dataset["theme"];
+    const selected = new Set<string | undefined>();
+    for (let i = 0; i < 3; i++) {
+      fireEvent.click(themeButton);
+      selected.add(document.documentElement.dataset["theme"]);
+    }
+    expect(selected.size).toBe(3);
+    expect(document.documentElement.dataset["theme"]).toBe(original);
+  });
   it("clears a previous success when the next submission is invalid", async () => {
     const fetch = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) });
     vi.stubGlobal("fetch", fetch);

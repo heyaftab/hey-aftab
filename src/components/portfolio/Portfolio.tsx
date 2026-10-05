@@ -31,6 +31,7 @@ import {
 import { ThemePicker } from "./ThemePicker";
 import { PortfolioAssistant } from "./PortfolioAssistant";
 import { SpaceGravity } from "./SpaceGravity";
+import { CinematicScroll, HeroLightField, SceneDetails } from "./CinematicEffects";
 
 const LINKS = {
   github: "https://github.com/heyaftab",
@@ -62,8 +63,9 @@ function Section({
     <section
       id={id}
       data-space-sector={id ?? "mindset"}
-      className={`relative mx-auto max-w-6xl px-5 py-24 sm:px-8 md:py-36 ${className}`}
+      className={`cinematic-scene relative mx-auto max-w-6xl px-5 py-24 sm:px-8 md:py-36 ${className}`}
     >
+      <SceneDetails />
       <div className="pointer-events-none absolute inset-x-0 top-0 hidden h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent md:block" />
       <Reveal>
         <div className="flex items-center gap-3">
@@ -252,6 +254,12 @@ function Hero() {
     >
       <div className="grid-bg absolute inset-0" />
       <HeroGeometry />
+      <HeroLightField />
+      <div className="hero-lens" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
       <div className="glow-orb absolute -top-40 right-0 h-[520px] w-[520px] opacity-60" />
       <div className="absolute inset-0 opacity-70 md:left-[30%]">
         <NetworkField />
@@ -527,7 +535,7 @@ function Skills() {
       </Reveal>
       <div className="mt-10 divide-y border-y">
         {shown.map((s) => (
-          <div key={s.cat} className="grid gap-4 py-7 md:grid-cols-[220px_1fr]">
+          <div key={s.cat} className="skill-row grid gap-4 py-7 md:grid-cols-[220px_1fr]">
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
               {s.cat}
             </p>
@@ -557,9 +565,9 @@ function Flow({ steps, vertical = false }: { steps: string[]; vertical?: boolean
       {steps.map((s, i) => (
         <div
           key={s}
-          className={`flex ${vertical ? "flex-col" : "flex-col sm:flex-row"} items-center gap-2`}
+          className={`flow-step flex ${vertical ? "flex-col" : "flex-col sm:flex-row"} items-center gap-2`}
         >
-          <div className="w-full whitespace-nowrap rounded border bg-background/60 px-3 py-2 text-center font-mono text-[11px] tracking-wider">
+          <div className="flow-node w-full whitespace-nowrap rounded border bg-background/60 px-3 py-2 text-center font-mono text-[11px] tracking-wider">
             {s}
           </div>
           {i < steps.length - 1 && (
@@ -781,7 +789,7 @@ function Projects() {
                     )}
                   </div>
                 </div>
-                <div className="relative flex items-center justify-center border-t bg-surface/60 p-8 sm:p-10 lg:border-l lg:border-t-0">
+                <div className="project-visual relative flex items-center justify-center border-t bg-surface/60 p-8 sm:p-10 lg:border-l lg:border-t-0">
                   <div className="grid-bg absolute inset-0 opacity-60" />
                   <div className="relative w-full max-w-md">{p.visual}</div>
                 </div>
@@ -1189,12 +1197,16 @@ function Footer() {
 export function Portfolio() {
   return (
     <div className="portfolio-shell relative">
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
+      <CinematicScroll />
       <Atmosphere />
       <SpaceGravity />
       <CursorGlow />
       <Cursor />
       <Nav />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <Hero />
         <About />
         <Skills />

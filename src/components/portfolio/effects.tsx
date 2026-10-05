@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { stepSpring } from "@/lib/motion-physics";
 
 export function Reveal({
   children,
@@ -13,6 +14,13 @@ export function Reveal({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (
+      !window.IntersectionObserver ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      el.classList.add("in");
+      return;
+    }
     const io = new IntersectionObserver(
       ([e]) => {
         if (e?.isIntersecting) {
@@ -34,22 +42,92 @@ export function Reveal({
 
 export function Tilt({ children, className = "" }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const animation = useRef({
+    frame: 0,
+    last: 0,
+    targetX: 0,
+    targetY: 0,
+    x: { position: 0, velocity: 0 },
+    y: { position: 0, velocity: 0 },
+  });
+  const settle = () => {
+    const state = animation.current;
+    state.targetX = 0;
+    state.targetY = 0;
+    start();
+  };
+  const start = () => {
+    if (
+      document.hidden ||
+      window.matchMedia("(hover: none), (prefers-reduced-motion: reduce)").matches
+    )
+      return;
+    const state = animation.current;
+    if (state.frame) return;
+    state.last = 0;
+    const tick = (now: number) => {
+      const el = ref.current;
+      if (!el) return;
+      const dt = state.last ? (now - state.last) / 1000 : 1 / 60;
+      state.last = now;
+      state.x = stepSpring(state.x, state.targetX, dt);
+      state.y = stepSpring(state.y, state.targetY, dt);
+      el.style.transform = `perspective(1400px) rotateX(${state.x.position.toFixed(3)}deg) rotateY(${state.y.position.toFixed(3)}deg)`;
+      if (
+        Math.abs(state.x.position - state.targetX) +
+          Math.abs(state.y.position - state.targetY) +
+          Math.abs(state.x.velocity) +
+          Math.abs(state.y.velocity) <
+        0.015
+      ) {
+        state.frame = 0;
+        if (!state.targetX && !state.targetY) el.style.transform = "";
+      } else state.frame = requestAnimationFrame(tick);
+    };
+    state.frame = requestAnimationFrame(tick);
+  };
+  useEffect(() => {
+    const state = animation.current;
+    const media = window.matchMedia("(hover: none), (prefers-reduced-motion: reduce)");
+    const reset = () => {
+      cancelAnimationFrame(state.frame);
+      state.frame = 0;
+      state.x = { position: 0, velocity: 0 };
+      state.y = { position: 0, velocity: 0 };
+      state.targetX = 0;
+      state.targetY = 0;
+      if (ref.current) ref.current.style.transform = "";
+    };
+    media.addEventListener("change", reset);
+    window.addEventListener("blur", reset);
+    document.addEventListener("visibilitychange", reset);
+    return () => {
+      reset();
+      media.removeEventListener("change", reset);
+      window.removeEventListener("blur", reset);
+      document.removeEventListener("visibilitychange", reset);
+    };
+  }, []);
   const onMove = (e: React.MouseEvent) => {
     const el = ref.current;
     if (!el || window.matchMedia("(hover: none), (prefers-reduced-motion: reduce)").matches) return;
     const r = el.getBoundingClientRect();
+    if (!r.width || !r.height) return;
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
     el.style.setProperty("--pointer-x", `${(x + 0.5) * 100}%`);
     el.style.setProperty("--pointer-y", `${(y + 0.5) * 100}%`);
-    el.style.transform = `perspective(1200px) rotateX(${-y * 7}deg) rotateY(${x * 9}deg)`;
+    animation.current.targetX = -y * 7;
+    animation.current.targetY = x * 9;
+    start();
   };
   return (
     <div
       ref={ref}
       onMouseMove={onMove}
-      onMouseLeave={() => ref.current && (ref.current.style.transform = "")}
-      className={`tilt-surface transition-transform duration-500 ease-out ${className}`}
+      onMouseLeave={settle}
+      onBlur={settle}
+      className={`tilt-surface spring-tilt transition-transform duration-500 ease-out ${className}`}
     >
       {children}
     </div>
@@ -299,6 +377,7 @@ export function NetworkField() {
     const reduce = motion.matches;
     const mobile = window.innerWidth < 768;
     let lowPower = mobile || reduce;
+    let visible = true;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     let w = 0,
@@ -368,11 +447,12 @@ export function NetworkField() {
         ctx.arc(p.x, p.y, 1.2 + (1 - p.d) * 1.6, 0, Math.PI * 2);
         ctx.fill();
       }
-      raf = lowPower ? 0 : requestAnimationFrame(draw);
+      raf = lowPower || !visible || document.hidden ? 0 : requestAnimationFrame(draw);
     };
     const redraw = () => {
       cancelAnimationFrame(raf);
-      draw();
+      raf = 0;
+      if (visible && !document.hidden) draw();
     };
     const syncMotion = () => {
       lowPower = window.innerWidth < 768 || motion.matches;
@@ -392,6 +472,14 @@ export function NetworkField() {
       attributes: true,
       attributeFilter: ["data-theme"],
     });
+    const visibility = window.IntersectionObserver
+      ? new IntersectionObserver(([entry]) => {
+          visible = entry?.isIntersecting ?? false;
+          redraw();
+        })
+      : null;
+    visibility?.observe(canvas);
+    document.addEventListener("visibilitychange", redraw);
     window.addEventListener("resize", onResize);
     if (!lowPower) window.addEventListener("mousemove", onMove, { passive: true });
     motion.addEventListener("change", syncMotion);
@@ -399,6 +487,8 @@ export function NetworkField() {
     return () => {
       cancelAnimationFrame(raf);
       themeObserver.disconnect();
+      visibility?.disconnect();
+      document.removeEventListener("visibilitychange", redraw);
       motion.removeEventListener("change", syncMotion);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("mousemove", onMove);
