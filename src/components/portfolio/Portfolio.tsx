@@ -409,9 +409,9 @@ function Contact() {
     const email = String(fd.get("email") || "").trim();
     const message = String(fd.get("message") || "").trim();
     const errs: Record<string, string> = {};
-    if (name.length < 2) errs.name = "Please enter your name.";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "Please enter a valid email.";
-    if (message.length < 10) errs.message = "Message should be at least 10 characters.";
+    if (name.length < 2) errs["name"] = "Please enter your name.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs["email"] = "Please enter a valid email.";
+    if (message.length < 10) errs["message"] = "Message should be at least 10 characters.";
     setErrors(errs);
     if (Object.keys(errs).length) return;
     if (!CONTACT_ENDPOINT) {
@@ -463,7 +463,7 @@ function Contact() {
             <div>
               <label htmlFor="message" className="mb-2 block font-mono text-[11px] uppercase tracking-widest text-muted-foreground">Message</label>
               <textarea id="message" name="message" rows={5} maxLength={2000} className={field} placeholder="Tell me about your project or opportunity" />
-              {errors.message && <p className="mt-1.5 text-xs text-destructive">{errors.message}</p>}
+              {errors["message"] && <p className="mt-1.5 text-xs text-destructive">{errors["message"]}</p>}
             </div>
             <button type="submit" disabled={status === "sending"} className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5 disabled:opacity-60">
               {status === "sending" ? "Sending…" : "Send Message"} <ArrowRight size={15} />
