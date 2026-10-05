@@ -104,7 +104,7 @@ function getAnswer(question: string) {
     .replace(/^[.!?,\s]+|[.!?,\s]+$/g, "")
     .trim();
   const greetingReply = greeting
-    ? greeting.reply || `${greetingText[0].toUpperCase()}${greetingText.slice(1)}.`
+    ? greeting.reply || `${greetingText.charAt(0).toUpperCase()}${greetingText.slice(1)}.`
     : "";
 
   if (!remainingQuery) return greetingReply;

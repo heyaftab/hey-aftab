@@ -6,6 +6,7 @@ const description =
   "Portfolio of Aftab Uddin Ahmad, a Computer Science student at United International University aspiring to become an AI engineer and build intelligent, useful technology.";
 
 export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title },
