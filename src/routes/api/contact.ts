@@ -29,9 +29,9 @@ export const Route = createFileRoute("/api/contact")({
 
         if (!payload || typeof payload !== "object") return jsonError("invalid_request", 400);
         const form = payload as Record<string, unknown>;
-        const name = typeof form.name === "string" ? form.name.trim() : "";
-        const email = typeof form.email === "string" ? form.email.trim() : "";
-        const message = typeof form.message === "string" ? form.message.trim() : "";
+        const name = typeof form["name"] === "string" ? form["name"].trim() : "";
+        const email = typeof form["email"] === "string" ? form["email"].trim() : "";
+        const message = typeof form["message"] === "string" ? form["message"].trim() : "";
 
         // Quietly accept honeypot submissions without forwarding spam.
         if (typeof form["website"] === "string" && form["website"].trim()) {
