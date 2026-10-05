@@ -30,6 +30,7 @@ import {
 } from "./effects";
 import { ThemePicker } from "./ThemePicker";
 import { PortfolioAssistant } from "./PortfolioAssistant";
+import { SpaceGravity } from "./SpaceGravity";
 
 const LINKS = {
   github: "https://github.com/heyaftab",
@@ -60,6 +61,7 @@ function Section({
   return (
     <section
       id={id}
+      data-space-sector={id ?? "mindset"}
       className={`relative mx-auto max-w-6xl px-5 py-24 sm:px-8 md:py-36 ${className}`}
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 hidden h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent md:block" />
@@ -245,6 +247,7 @@ function Hero() {
   return (
     <section
       id="home"
+      data-space-sector="home"
       className="relative min-h-[100svh] overflow-hidden pt-20 sm:min-h-screen sm:pt-24"
     >
       <div className="grid-bg absolute inset-0" />
@@ -1187,6 +1190,7 @@ export function Portfolio() {
   return (
     <div className="portfolio-shell relative">
       <Atmosphere />
+      <SpaceGravity />
       <CursorGlow />
       <Cursor />
       <Nav />

@@ -526,20 +526,33 @@ export function Cursor() {
   const [mode, setMode] = useState<"dot" | "ring" | "view">("dot");
   const [enabled, setEnabled] = useState(false);
   useEffect(() => {
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    setEnabled(true);
-    document.body.classList.add("has-cursor");
+    const media = window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+    const hide = () => {
+      if (dot.current) dot.current.style.opacity = "0";
+      document.body.classList.remove("has-cursor");
+    };
+    const sync = () => { setEnabled(media.matches); hide(); };
+    sync();
     const move = (e: MouseEvent) => {
+      if (!media.matches || !dot.current) return;
+      document.body.classList.add("has-cursor");
+      dot.current.style.opacity = "1";
       if (dot.current)
         dot.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-      const el = e.target as HTMLElement;
-      if (el.closest("[data-cursor=view]")) setMode("view");
-      else if (el.closest("a, button, input, textarea")) setMode("ring");
+      const el = e.target instanceof Element ? e.target : null;
+      if (el?.closest("a, button, input, textarea")) setMode("ring");
+      else if (el?.closest("[data-cursor=view]")) setMode("view");
       else setMode("dot");
     };
-    window.addEventListener("mousemove", move);
+    window.addEventListener("mousemove", move, { passive: true });
+    window.addEventListener("blur", hide);
+    document.documentElement.addEventListener("mouseleave", hide);
+    media.addEventListener("change", sync);
     return () => {
       window.removeEventListener("mousemove", move);
+      window.removeEventListener("blur", hide);
+      document.documentElement.removeEventListener("mouseleave", hide);
+      media.removeEventListener("change", sync);
       document.body.classList.remove("has-cursor");
     };
   }, []);
@@ -551,7 +564,9 @@ export function Cursor() {
         ? "h-10 w-10 border border-primary/70"
         : "h-16 w-16 bg-primary text-primary-foreground";
   return (
-    <div ref={dot} className="pointer-events-none fixed left-0 top-0 z-[100]" aria-hidden>
+    <div ref={dot} className={`planet-cursor planet-mode-${mode} pointer-events-none fixed left-0 top-0 z-[100]`} style={{ opacity: 0 }} aria-hidden>
+      <span className="planet-orbit planet-orbit-one"><i /></span>
+      <span className="planet-orbit planet-orbit-two"><i /></span>
       <div
         className={`-translate-x-1/2 -translate-y-1/2 rounded-full grid place-items-center font-mono text-[10px] tracking-widest transition-all duration-300 ${size}`}
       >
