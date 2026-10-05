@@ -37,7 +37,7 @@ export function ThemePicker() {
       onClick={cycleTheme}
       className="grid h-10 w-10 place-items-center rounded-full border bg-background/70 text-muted-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:text-primary"
     >
-      <CurrentIcon size={17} />
+      <span key={theme} className="theme-icon"><CurrentIcon size={17} /></span>
     </button>
   );
 }

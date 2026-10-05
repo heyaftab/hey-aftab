@@ -6,7 +6,7 @@ export function Reveal({ children, className = "", delay = 0 }: { children: Reac
     const el = ref.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { el.classList.add("in"); io.disconnect(); } },
+      ([e]) => { if (e?.isIntersecting) { el.classList.add("in"); io.disconnect(); } },
       { threshold: 0.12 },
     );
     io.observe(el);
@@ -19,18 +19,159 @@ export function Tilt({ children, className = "" }: { children: ReactNode; classN
   const ref = useRef<HTMLDivElement>(null);
   const onMove = (e: React.MouseEvent) => {
     const el = ref.current;
-    if (!el || window.matchMedia("(hover: none)").matches) return;
+    if (!el || window.matchMedia("(hover: none), (prefers-reduced-motion: reduce)").matches) return;
     const r = el.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
-    el.style.transform = `perspective(1200px) rotateX(${-y * 4}deg) rotateY(${x * 5}deg)`;
+    el.style.setProperty("--pointer-x", `${(x + 0.5) * 100}%`);
+    el.style.setProperty("--pointer-y", `${(y + 0.5) * 100}%`);
+    el.style.transform = `perspective(1200px) rotateX(${-y * 7}deg) rotateY(${x * 9}deg)`;
   };
   return (
     <div ref={ref} onMouseMove={onMove} onMouseLeave={() => ref.current && (ref.current.style.transform = "")}
-      className={`transition-transform duration-500 ease-out motion-safe:will-change-transform ${className}`}>
+      className={`tilt-surface transition-transform duration-500 ease-out ${className}`}>
       {children}
     </div>
   );
+}
+
+export function Atmosphere() {
+  const progress = useRef<HTMLDivElement>(null);
+  const mesh = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      const height = document.documentElement.scrollHeight - window.innerHeight;
+      const amount = height > 0 ? Math.min(1, Math.max(0, window.scrollY / height)) : 0;
+      if (progress.current) progress.current.style.transform = `scaleX(${amount})`;
+      if (mesh.current) {
+        mesh.current.style.setProperty("--mesh-hue", `${amount * 110}deg`);
+        mesh.current.style.setProperty("--mesh-shift", `${amount * -18}%`);
+      }
+      frame = 0;
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    const observer = new ResizeObserver(schedule);
+    observer.observe(document.body);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, []);
+  return <>
+    <div ref={mesh} className="atmosphere" aria-hidden="true"><div className="gradient-mesh"><span /><span /><span /><span /></div><div className="noise-veil" /></div>
+    <div ref={progress} className="reading-progress" aria-hidden="true" />
+  </>;
+}
+
+export function HeroGeometry() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const media = window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+    let frame = 0;
+    let x = 0, y = 0;
+    const update = () => {
+      if (ref.current) {
+        ref.current.style.setProperty("--object-x", `${-y * 35}deg`);
+        ref.current.style.setProperty("--object-y", `${x * 50}deg`);
+      }
+      frame = 0;
+    };
+    const move = (event: MouseEvent) => {
+      if (!media.matches) return;
+      x = event.clientX / window.innerWidth - .5;
+      y = event.clientY / window.innerHeight - .5;
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    const reset = () => { x = 0; y = 0; if (!frame) frame = requestAnimationFrame(update); };
+    window.addEventListener("mousemove", move, { passive: true });
+    document.documentElement.addEventListener("mouseleave", reset);
+    media.addEventListener("change", reset);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("mousemove", move);
+      document.documentElement.removeEventListener("mouseleave", reset);
+      media.removeEventListener("change", reset);
+    };
+  }, []);
+  return <div ref={ref} className="hero-geometry" aria-hidden="true">
+    <div className="geometry-orbit"><span /><span /><span /></div>
+    <div className="geometry-reactor"><div className="geometry-cube">{Array.from({ length: 6 }, (_, i) => <span key={i} />)}</div></div>
+    <span className="geometry-label">CREATIVE SYSTEMS / IN MOTION</span>
+  </div>;
+}
+
+const MORPH_WORDS = ["AI Engineer", "Problem Solver", "Creative Builder", "Systems Thinker"];
+export function MorphingText() {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let timer: ReturnType<typeof setInterval> | undefined;
+    const sync = () => {
+      clearInterval(timer);
+      if (!media.matches) timer = setInterval(() => {
+        if (!document.hidden) setIndex((value) => (value + 1) % MORPH_WORDS.length);
+      }, 3400);
+    };
+    sync();
+    media.addEventListener("change", sync);
+    return () => { clearInterval(timer); media.removeEventListener("change", sync); };
+  }, []);
+  return <span className="morph-copy"><span className="sr-only">Aspiring AI engineer, problem solver, creative builder, and systems thinker.</span><span key={index} aria-hidden="true" className="morph-word text-accent-gradient font-display font-semibold">{MORPH_WORDS[index]}</span></span>;
+}
+
+export function CursorGlow() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const media = window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+    let frame = 0;
+    let x = 0, y = 0;
+    const update = () => {
+      if (ref.current) ref.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      frame = 0;
+    };
+    const move = (event: MouseEvent) => {
+      if (!media.matches || !ref.current) return;
+      x = event.clientX; y = event.clientY;
+      ref.current.style.opacity = "1";
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    const hide = () => { if (ref.current) ref.current.style.opacity = "0"; };
+    window.addEventListener("mousemove", move, { passive: true });
+    window.addEventListener("blur", hide);
+    document.documentElement.addEventListener("mouseleave", hide);
+    media.addEventListener("change", hide);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("blur", hide);
+      document.documentElement.removeEventListener("mouseleave", hide);
+      media.removeEventListener("change", hide);
+    };
+  }, []);
+  return <div ref={ref} className="cursor-glow" aria-hidden="true"><span /></div>;
+}
+
+const SIGNALS = ["INPUT", "LEARN", "BUILD", "OUTPUT"];
+export function InteractiveIllustration() {
+  const [active, setActive] = useState(1);
+  return <div className="signal-illustration">
+    <div className={`signal-art signal-stage-${active}`} aria-hidden="true">
+      <svg viewBox="0 0 320 140" fill="none"><path className="signal-path" d="M30 70 C80 0 110 140 160 70 S240 0 290 70" /><path className="signal-path signal-path-secondary" d="M30 70 C80 140 110 0 160 70 S240 140 290 70" />
+        {[30, 115, 205, 290].map((x, i) => <g key={x} className={active === i ? "signal-node active" : "signal-node"}><circle cx={x} cy="70" r="12" /><circle cx={x} cy="70" r="4" /></g>)}
+      </svg>
+      <div className="signal-core"><span /><span /><span /></div>
+    </div>
+    <div className="signal-controls" role="group" aria-label="Explore the creative process">
+      {SIGNALS.map((label, i) => <button key={label} type="button" aria-pressed={active === i} onClick={() => setActive(i)} onMouseEnter={() => setActive(i)} onFocus={() => setActive(i)}>{label}</button>)}
+    </div>
+    <p className="signal-caption">{["Every idea starts with a question.", "Connect ideas. Discover patterns.", "Turn experiments into working systems.", "Create something people can use."][active]}</p>
+  </div>;
 }
 
 /** Lightweight canvas network: nodes + links, reacts to the mouse. */

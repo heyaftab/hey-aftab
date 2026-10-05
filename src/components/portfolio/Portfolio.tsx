@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { ArrowDown, ArrowUpRight, Download, Github, Linkedin, Facebook, Mail, Phone, MapPin, Menu, X, Trophy, Code2, BookOpen, Puzzle, ArrowRight } from "lucide-react";
-import { Cursor, NetworkField, Reveal, Tilt } from "./effects";
+import { ArrowDown, ArrowUpRight, Download, Github, Linkedin, Facebook, Mail, Phone, MapPin, Trophy, Code2, BookOpen, Puzzle, ArrowRight, Check, LoaderCircle } from "lucide-react";
+import { Atmosphere, Cursor, CursorGlow, HeroGeometry, InteractiveIllustration, MorphingText, NetworkField, Reveal, Tilt } from "./effects";
 import { ThemePicker } from "./ThemePicker";
 import { PortfolioAssistant } from "./PortfolioAssistant";
 
@@ -93,11 +93,11 @@ function Nav() {
         </ul>
         <div className="flex items-center gap-2">
           <ThemePicker />
-          <button className="grid h-10 w-10 place-items-center rounded-full border bg-background/70 text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground md:hidden" aria-label="Toggle menu" onClick={() => setOpen(!open)}>{open ? <X size={19} /> : <Menu size={19} />}</button>
+          <button className="menu-toggle grid h-10 w-10 place-items-center rounded-full border bg-background/70 text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground md:hidden" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(!open)}><span className={open ? "menu-lines is-open" : "menu-lines"} aria-hidden="true"><i /><i /><i /></span></button>
         </div>
       </nav>
       {open && (
-        <ul className="flex flex-col gap-1 px-5 pb-6 md:hidden">
+        <ul id="mobile-navigation" className="flex flex-col gap-1 px-5 pb-6 md:hidden">
           {NAV.map((n) => (
             <li key={n}>
               <a onClick={() => setOpen(false)} href={`#${n.toLowerCase()}`} className="block border-b py-3 font-display text-2xl">{n}</a>
@@ -113,7 +113,7 @@ function MagneticButton({ href, className = "", children, download = false, targ
   const ref = useRef<HTMLAnchorElement>(null);
 
   const onMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!ref.current || window.matchMedia("(hover: none)").matches) return;
+    if (!ref.current || window.matchMedia("(hover: none), (prefers-reduced-motion: reduce)").matches) return;
     const rect = ref.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
@@ -129,7 +129,7 @@ function MagneticButton({ href, className = "", children, download = false, targ
       rel={rel}
       onMouseMove={onMove}
       onMouseLeave={() => { if (ref.current) ref.current.style.transform = ""; }}
-      className={`inline-flex items-center gap-2 rounded-md transition-all duration-300 ease-out will-change-transform ${className}`}
+      className={`magnetic-button inline-flex items-center gap-2 rounded-md transition-all duration-300 ease-out ${className}`}
     >
       {children}
     </a>
@@ -148,6 +148,7 @@ function Hero() {
   return (
     <section id="home" className="relative min-h-[100svh] overflow-hidden pt-20 sm:min-h-screen sm:pt-24">
       <div className="grid-bg absolute inset-0" />
+      <HeroGeometry />
       <div className="glow-orb absolute -top-40 right-0 h-[520px] w-[520px] opacity-60" />
       <div className="absolute inset-0 opacity-70 md:left-[30%]"><NetworkField /></div>
       <div className="pointer-events-none absolute inset-x-0 top-32 mx-auto hidden max-w-6xl justify-between px-5 text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground/70 md:flex sm:px-8">
@@ -163,7 +164,7 @@ function Hero() {
             AFTAB<br />UDDIN AHMAD
           </h1>
           <p className="rise mt-6 font-mono text-sm text-muted-foreground sm:text-base" style={{ animationDelay: "240ms" }}>
-            Computer Science Student <span className="text-primary">→</span> <span className="text-accent-gradient font-display font-semibold">AI Engineer</span>
+            Computer Science Student <span className="text-primary">→</span> <MorphingText />
           </p>
           <p className="rise mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg" style={{ animationDelay: "360ms" }}>
             I am working toward a career in AI engineering, building a foundation in machine learning and intelligent systems while creating technology that solves real problems.
@@ -181,6 +182,7 @@ function Hero() {
             <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"><Linkedin size={14} /> LinkedIn</a>
             <a href={LINKS.facebook} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"><Facebook size={14} /> Facebook</a>
           </div>
+          <div className="rise mt-8 max-w-sm" style={{ animationDelay: "720ms" }}><InteractiveIllustration /></div>
         </div>
         <div className="rise order-1 mx-auto w-full max-w-[min(62vw,240px)] sm:max-w-sm lg:order-2" style={{ animationDelay: "200ms" }}>
           <div ref={img} className="portrait-stage relative will-change-transform">
@@ -604,14 +606,14 @@ function Contact() {
             <div>
               <label htmlFor="message" className="mb-2 block font-mono text-[11px] uppercase tracking-widest text-muted-foreground">Message</label>
               <textarea id="message" name="message" rows={5} maxLength={2000} className={field} placeholder="Tell me about your project or opportunity" />
-              {errors.message && <p className="mt-1.5 text-xs text-destructive">{errors.message}</p>}
+              {errors.message && <p className="notification-error mt-1.5 text-xs text-destructive">{errors.message}</p>}
             </div>
-            <button type="submit" disabled={status === "sending"} className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5 disabled:opacity-60">
-              {status === "sending" ? "Sending…" : "Send Message"} <ArrowRight size={15} />
+            <button type="submit" disabled={status === "sending"} className={`send-button inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5 disabled:opacity-60 ${status === "ok" ? "is-complete" : ""}`}>
+              {status === "sending" ? "Sending…" : status === "ok" ? "Message Sent" : "Send Message"} <span key={status} className="send-icon">{status === "sending" ? <LoaderCircle size={15} className="loading-spin" /> : status === "ok" ? <Check size={16} /> : <ArrowRight size={15} />}</span>
             </button>
-            {status === "ok" && <p role="status" className="text-sm text-muted-foreground">Message sent. Aftab will receive it by email.</p>}
+            {status === "ok" && <div role="status" className="success-celebration"><span className="celebration-sparks" aria-hidden="true">{Array.from({ length: 6 }, (_, i) => <i key={i} />)}</span><Check size={18} /><p className="text-sm">Message sent. Aftab will receive it by email.</p></div>}
             {status === "setup" && <p role="status" className="text-sm text-muted-foreground">Email delivery is not configured yet. Please email me directly for now.</p>}
-            {status === "fail" && <p className="text-sm text-destructive">Couldn't send right now. Please email me directly.</p>}
+            {status === "fail" && <p role="alert" className="notification-error text-sm text-destructive">Couldn't send right now. Please email me directly.</p>}
           </form>
         </Reveal>
       </div>
@@ -643,7 +645,9 @@ function Footer() {
 
 export function Portfolio() {
   return (
-    <div className="relative">
+    <div className="portfolio-shell relative">
+      <Atmosphere />
+      <CursorGlow />
       <Cursor />
       <Nav />
       <main>
