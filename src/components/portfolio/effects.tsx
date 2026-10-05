@@ -526,12 +526,17 @@ export function Cursor() {
   const [mode, setMode] = useState<"dot" | "ring" | "view">("dot");
   const [enabled, setEnabled] = useState(false);
   useEffect(() => {
-    const media = window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+    const media = window.matchMedia(
+      "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+    );
     const hide = () => {
       if (dot.current) dot.current.style.opacity = "0";
       document.body.classList.remove("has-cursor");
     };
-    const sync = () => { setEnabled(media.matches); hide(); };
+    const sync = () => {
+      setEnabled(media.matches);
+      hide();
+    };
     sync();
     const move = (e: MouseEvent) => {
       if (!media.matches || !dot.current) return;
@@ -564,9 +569,18 @@ export function Cursor() {
         ? "h-10 w-10 border border-primary/70"
         : "h-16 w-16 bg-primary text-primary-foreground";
   return (
-    <div ref={dot} className={`planet-cursor planet-mode-${mode} pointer-events-none fixed left-0 top-0 z-[100]`} style={{ opacity: 0 }} aria-hidden>
-      <span className="planet-orbit planet-orbit-one"><i /></span>
-      <span className="planet-orbit planet-orbit-two"><i /></span>
+    <div
+      ref={dot}
+      className={`planet-cursor planet-mode-${mode} pointer-events-none fixed left-0 top-0 z-[100]`}
+      style={{ opacity: 0 }}
+      aria-hidden
+    >
+      <span className="planet-orbit planet-orbit-one">
+        <i />
+      </span>
+      <span className="planet-orbit planet-orbit-two">
+        <i />
+      </span>
       <div
         className={`-translate-x-1/2 -translate-y-1/2 rounded-full grid place-items-center font-mono text-[10px] tracking-widest transition-all duration-300 ${size}`}
       >
