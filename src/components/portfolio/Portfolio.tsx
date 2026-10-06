@@ -489,7 +489,7 @@ function About() {
       <Reveal delay={120}>
         <div className="mt-16 grid grid-cols-3 gap-px overflow-hidden rounded-lg border bg-border">
           {[
-            { to: 5, suffix: "+", label: "PROJECTS BUILT" },
+            { to: 10, suffix: "+", label: "PROJECTS BUILT" },
             { to: 40, suffix: "+", label: "TECHNOLOGIES USED" },
             { to: 12, suffix: "h", label: "HACKATHON SPRINT" },
           ].map((stat) => (
