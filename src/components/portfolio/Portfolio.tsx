@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import {
   Atmosphere,
+  CountUp,
   Cursor,
   CursorGlow,
   HeroGeometry,
@@ -485,6 +486,24 @@ function About() {
           </Reveal>
         ))}
       </div>
+      <Reveal delay={120}>
+        <div className="mt-16 grid grid-cols-3 gap-px overflow-hidden rounded-lg border bg-border">
+          {[
+            { to: 5, suffix: "+", label: "PROJECTS BUILT" },
+            { to: 40, suffix: "+", label: "TECHNOLOGIES USED" },
+            { to: 12, suffix: "h", label: "HACKATHON SPRINT" },
+          ].map((stat) => (
+            <div key={stat.label} className="bg-background px-4 py-7 text-center sm:px-8">
+              <p className="text-gradient font-display text-4xl font-semibold sm:text-5xl">
+                <CountUp to={stat.to} suffix={stat.suffix} />
+              </p>
+              <p className="mt-2 font-mono text-[10px] tracking-[0.25em] text-muted-foreground sm:text-xs">
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Reveal>
     </Section>
   );
 }
@@ -1194,6 +1213,32 @@ function Footer() {
   );
 }
 
+const MARQUEE_SKILLS = [
+  "Python", "C++", "JavaScript", "TypeScript", "React", "Next.js", "Tailwind CSS",
+  "FastAPI", "Laravel", "Node.js", "MySQL", "PostgreSQL", "Docker", "Git", "AWS", "Linux",
+];
+
+function SkillMarquee() {
+  const row = (hidden: boolean) => (
+    <ul aria-hidden={hidden || undefined} className="flex shrink-0 items-center">
+      {MARQUEE_SKILLS.map((skill, i) => (
+        <li key={skill + i} className="flex items-center gap-6 px-6 font-mono text-sm tracking-[0.2em] text-muted-foreground sm:text-base">
+          {skill.toUpperCase()}
+          <span className="h-1 w-1 rounded-full bg-primary" />
+        </li>
+      ))}
+    </ul>
+  );
+  return (
+    <div className="skill-marquee border-y bg-surface/40 py-4">
+      <div className="skill-marquee-track">
+        {row(false)}
+        {row(true)}
+      </div>
+    </div>
+  );
+}
+
 export function Portfolio() {
   return (
     <div className="portfolio-shell relative">
@@ -1208,6 +1253,7 @@ export function Portfolio() {
       <Nav />
       <main id="main-content" tabIndex={-1}>
         <Hero />
+        <SkillMarquee />
         <About />
         <Skills />
         <Projects />
