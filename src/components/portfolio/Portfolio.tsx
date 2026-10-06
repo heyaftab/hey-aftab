@@ -1227,6 +1227,7 @@ export function Portfolio() {
       <Nav />
       <main id="main-content" tabIndex={-1}>
         <Hero />
+        <SkillMarquee />
         <About />
         <Skills />
         <Projects />
