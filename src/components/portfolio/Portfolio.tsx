@@ -1213,6 +1213,32 @@ function Footer() {
   );
 }
 
+const MARQUEE_SKILLS = [
+  "Python", "C++", "JavaScript", "TypeScript", "React", "Next.js", "Tailwind CSS",
+  "FastAPI", "Laravel", "Node.js", "MySQL", "PostgreSQL", "Docker", "Git", "AWS", "Linux",
+];
+
+function SkillMarquee() {
+  const row = (hidden: boolean) => (
+    <ul aria-hidden={hidden || undefined} className="flex shrink-0 items-center">
+      {MARQUEE_SKILLS.map((skill, i) => (
+        <li key={skill + i} className="flex items-center gap-6 px-6 font-mono text-sm tracking-[0.2em] text-muted-foreground sm:text-base">
+          {skill.toUpperCase()}
+          <span className="h-1 w-1 rounded-full bg-primary" />
+        </li>
+      ))}
+    </ul>
+  );
+  return (
+    <div className="skill-marquee border-y bg-surface/40 py-4">
+      <div className="skill-marquee-track">
+        {row(false)}
+        {row(true)}
+      </div>
+    </div>
+  );
+}
+
 export function Portfolio() {
   return (
     <div className="portfolio-shell relative">
