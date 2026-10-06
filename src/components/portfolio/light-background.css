@@ -1,0 +1,127 @@
+/* LIGHT BACKGROUND START */
+.bg-light {
+  display: none;
+}
+:root[data-theme="light"] {
+  --bg-1: #e9ede8;
+  --bg-2: #d6ddd7;
+  --mist: rgba(180, 200, 190, 0.35);
+  --vein: rgba(11, 122, 98, 0.07);
+  --sun: rgba(255, 248, 235, 0.7);
+  --light-bg-grain: 0.04;
+  --light-bg-ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+}
+html[data-theme="light"] .bg-light {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+  background: linear-gradient(180deg, var(--bg-1), var(--bg-2));
+}
+html[data-theme="light"] .bg-light > div {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+html[data-theme="light"] .bg-light .light-bg-depth {
+  inset: -160px -5% -160px;
+}
+html[data-theme="light"] .light-bg-base {
+  background: linear-gradient(180deg, var(--bg-1), var(--bg-2));
+}
+html[data-theme="light"] .light-bg-horizon {
+  position: absolute;
+  bottom: 80px;
+  width: 100%;
+  height: 65%;
+  opacity: 0.08;
+}
+html[data-theme="light"] .light-bg-mist {
+  position: absolute;
+  inset: -10%;
+  background:
+    radial-gradient(ellipse at 20% 65%, var(--mist), transparent 60%),
+    radial-gradient(ellipse at 80% 55%, var(--mist), transparent 65%);
+  filter: blur(45px);
+  animation: light-bg-drift 110s var(--light-bg-ease) infinite alternate;
+}
+html[data-theme="light"] .light-bg-mist-1 {
+  opacity: 0.6;
+  animation-duration: 135s;
+  animation-direction: alternate-reverse;
+}
+html[data-theme="light"] .light-bg-mist-2 {
+  opacity: 0.4;
+  animation-duration: 85s;
+}
+html[data-theme="light"] .light-bg-veins {
+  width: 100%;
+  height: 100%;
+  color: var(--vein);
+}
+html[data-theme="light"] .light-bg-sun {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 40% 25% at 65% 20%, var(--sun), transparent 75%);
+}
+html[data-theme="light"] .light-bg-shafts {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background: conic-gradient(
+    from 145deg at 65% 15%,
+    transparent 0deg,
+    #f8efda 6deg,
+    transparent 12deg,
+    transparent 24deg,
+    #f8efda 30deg,
+    transparent 37deg
+  );
+  animation: light-bg-shafts 125s var(--light-bg-ease) infinite alternate;
+}
+html[data-theme="light"] .light-bg-grain {
+  opacity: var(--light-bg-grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath filter='url(%23grain)' d='M0 0h170v170H0z'/%3E%3C/svg%3E");
+}
+html[data-theme="light"] .light-bg-vignette {
+  background: radial-gradient(ellipse at 50% 40%, transparent 45%, #627b6c12);
+}
+/* Replace only prior ambient backgrounds; scanner and reticle are untouched. */
+html[data-theme="light"]
+  .light-survey
+  :is(.light-survey-mist, .light-survey-grain, .light-survey-vignette) {
+  display: none;
+}
+html[data-theme="light"] .light-bg-paused * {
+  animation-play-state: paused !important;
+}
+@keyframes light-bg-drift {
+  from {
+    transform: translate3d(-3%, 1%, 0);
+  }
+  to {
+    transform: translate3d(4%, -2%, 0);
+  }
+}
+@keyframes light-bg-shafts {
+  from {
+    transform: translateX(-1%);
+  }
+  to {
+    transform: translateX(2%);
+  }
+}
+@media (max-width: 640px) {
+  html[data-theme="light"] .light-bg-mist {
+    filter: blur(25px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme="light"] .bg-light * {
+    animation: none !important;
+  }
+}
+/* LIGHT BACKGROUND END */

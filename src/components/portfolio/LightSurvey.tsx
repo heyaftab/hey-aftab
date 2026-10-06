@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { LightBackground } from "./LightBackground";
 
 const LIGHT_SURVEY = { glitchMinMs: 20000, glitchMaxMs: 40000 };
 
@@ -15,7 +16,12 @@ export function LightSurvey() {
     sync();
     return () => observer.disconnect();
   }, []);
-  return light ? <SpecimenScanner /> : null;
+  return light ? (
+    <>
+      <LightBackground />
+      <SpecimenScanner />
+    </>
+  ) : null;
 }
 
 function SpecimenScanner() {

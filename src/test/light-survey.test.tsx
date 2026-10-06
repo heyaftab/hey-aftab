@@ -22,11 +22,13 @@ it("mounts only in light and removes layers and timers on theme exit", async () 
   });
   expect(container.querySelector(".light-survey")).not.toBeNull();
   expect(document.querySelectorAll(".light-survey-reticle")).toHaveLength(1);
-  expect(vi.getTimerCount()).toBe(1);
+  expect(container.querySelector(".bg-light")).not.toBeNull();
+  expect(vi.getTimerCount()).toBe(2); // Glitch timer and one background animation frame.
   await act(async () => {
     document.documentElement.dataset["theme"] = "ocean";
   });
   expect(container.querySelector(".light-survey")).toBeNull();
+  expect(container.querySelector(".bg-light")).toBeNull();
   expect(document.querySelector(".light-survey-reticle")).toBeNull();
   expect(vi.getTimerCount()).toBe(0);
 });

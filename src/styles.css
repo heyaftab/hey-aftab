@@ -772,7 +772,7 @@ article:hover .flow-node { border-color: color-mix(in oklch, var(--primary) 30%,
 html[data-theme="light"] body { background-image: radial-gradient(ellipse at 30% 20%,#dfe5df,transparent 70%); animation:none; }
 html[data-theme="light"] .portfolio-shell { isolation:isolate; --ease-spring:var(--light-ease); }
 html[data-theme="light"] .portfolio-shell > :is(main,header,footer) { position:relative; z-index:2; }
-html[data-theme="light"] .portfolio-shell > header { position:fixed; }
+html[data-theme="light"] .portfolio-shell > header { position:fixed; z-index:50; }
 html[data-theme="light"] .glass { background:repeating-linear-gradient(105deg,#0c1a1603 0 1px,transparent 1px 9px),linear-gradient(130deg,#e3e9e2ed,#dfe5dfd9); box-shadow:inset 0 1px #f1f4ef80,inset 0 -8px 24px #0c1a1605; }
 html[data-theme="light"] :is(.cursor-glow,.planet-cursor) { display:none !important; }
 html[data-theme="light"] :is(.hero-geometry,.theme-orb-orbit) { animation:none; }
