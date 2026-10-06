@@ -49,8 +49,8 @@ export const Route = createFileRoute("/api/contact")({
         }
         if (message.length < 10 || message.length > 2_000) return jsonError("invalid_message", 400);
 
-        const environment = context.cloudflareEnv as { RESEND_API_KEY?: string } | undefined;
-        const apiKey = environment?.RESEND_API_KEY;
+        const environment = context?.cloudflareEnv as { RESEND_API_KEY?: string } | undefined;
+        const apiKey = environment?.RESEND_API_KEY || process.env["RESEND_API_KEY"];
         if (!apiKey) return jsonError("email_not_configured", 503);
 
         try {
