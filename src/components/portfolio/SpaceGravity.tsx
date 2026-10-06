@@ -87,6 +87,7 @@ export function SpaceGravity() {
       if (ctx) {
         ctx.clearRect(0, 0, width, height);
         const light = document.documentElement.dataset["theme"] === "light";
+        const spider = ["ocean", "alien"].includes(document.documentElement.dataset["theme"] ?? "");
         for (const star of stars) {
           const x = star.x * width;
           const y = wrapSpace(
@@ -94,7 +95,7 @@ export function SpaceGravity() {
             height,
           );
           const force =
-            pointer.active && moving
+            pointer.active && moving && !spider
               ? gravityOffset(pointer.x - x, pointer.y - y, star.depth, sector.gravity)
               : { x: 0, y: 0, influence: 0 };
           const swirl = force.influence * star.depth * 8;
@@ -111,7 +112,7 @@ export function SpaceGravity() {
           ctx.arc(x + star.ox, y + star.oy, 0.5 + star.depth, 0, Math.PI * 2);
           ctx.fill();
         }
-        if (pointer.active && moving) {
+        if (pointer.active && moving && !spider) {
           for (let i = 0; i < 7; i++) {
             const depth = 0.35 + i / 11;
             const angle = time * sector.gravity * (1.8 - depth) + i * 2.4;

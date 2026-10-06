@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import "./alien-cinema.css";
+import { SymbioteBackground } from "./SymbioteBackground";
 
 const SURVEY = { particleCount: 24, glitchMinMs: 15000, glitchMaxMs: 30000 };
 
@@ -15,7 +16,12 @@ export function AlienCinema() {
     sync();
     return () => observer.disconnect();
   }, []);
-  return active ? <SurveyAtmosphere /> : null;
+  return active ? (
+    <>
+      <SymbioteBackground />
+      <SurveyAtmosphere />
+    </>
+  ) : null;
 }
 
 function SurveyAtmosphere() {

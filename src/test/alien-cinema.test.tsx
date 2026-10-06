@@ -29,16 +29,19 @@ it("mounts cinematic scenery only in Alien and clears animation and glitch timer
     </div>,
   );
   expect(container.querySelector(".survey-cinema")).toBeNull();
+  expect(container.querySelector(".symbiote-background")).toBeNull();
   await act(async () => {
     document.documentElement.dataset["theme"] = "alien";
   });
   expect(container.querySelectorAll(".survey-cinema")).toHaveLength(1);
+  expect(container.querySelectorAll(".symbiote-background")).toHaveLength(1);
   expect(container.querySelectorAll(".survey-spore")).toHaveLength(24);
   expect(vi.getTimerCount()).toBe(2);
   await act(async () => {
     document.documentElement.dataset["theme"] = "ocean";
   });
   expect(container.querySelector(".survey-cinema")).toBeNull();
+  expect(container.querySelector(".symbiote-background")).toBeNull();
   expect(vi.getTimerCount()).toBe(0);
 });
 

@@ -7,16 +7,17 @@ afterEach(() => {
   vi.useRealTimers();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
+  delete document.documentElement.dataset["theme"];
 });
 
-function setup(reduced = false) {
+function setup(reduced = false, context: CanvasRenderingContext2D | null = null) {
   vi.useFakeTimers();
   class Observer {
     observe() {}
     disconnect() {}
   }
   vi.stubGlobal("ResizeObserver", Observer);
-  vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(null);
+  vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(context);
   vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
     matches: query === "(prefers-reduced-motion: reduce)" ? reduced : true,
     media: query,
@@ -44,6 +45,38 @@ function setup(reduced = false) {
 }
 
 describe("Space travel interactions", () => {
+  it.each(["ocean", "alien"])(
+    "omits canvas cursor satellites in %s and restores them in Galuxy",
+    async (theme) => {
+      const arc = vi.fn();
+      const ctx = {
+        arc,
+        clearRect: vi.fn(),
+        setTransform: vi.fn(),
+        beginPath: vi.fn(),
+        fill: vi.fn(),
+      } as unknown as CanvasRenderingContext2D;
+      document.documentElement.dataset["theme"] = theme;
+      setup(false, ctx);
+      fireEvent.mouseMove(window, { clientX: 200, clientY: 160 });
+      arc.mockClear();
+      act(() => vi.advanceTimersByTime(16));
+      const starCount = window.innerWidth < 768 ? 42 : 110;
+      expect(arc).toHaveBeenCalledTimes(starCount);
+      await act(async () => {
+        document.documentElement.dataset["theme"] = "night";
+      });
+      arc.mockClear();
+      act(() => vi.advanceTimersByTime(16));
+      expect(arc).toHaveBeenCalledTimes(starCount + 7);
+      await act(async () => {
+        document.documentElement.dataset["theme"] = theme;
+      });
+      arc.mockClear();
+      act(() => vi.advanceTimersByTime(16));
+      expect(arc).toHaveBeenCalledTimes(starCount);
+    },
+  );
   it("attracts UI within a small range and releases it on unmount", () => {
     const { container, unmount } = setup();
     const button = container.querySelector("button")!;

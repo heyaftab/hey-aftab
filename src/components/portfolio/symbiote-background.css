@@ -1,0 +1,169 @@
+/* ALIEN BACKGROUND ONLY — UI variables and cursor styles are untouched. */
+html[data-theme="alien"] .symbiote-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+  --symbiote-ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+}
+html[data-theme="alien"] .symbiote-base {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 45% 35%, #0a1318, transparent 75%), #030609;
+}
+html[data-theme="alien"] .symbiote-form {
+  position: absolute;
+  width: 90%;
+  height: 100%;
+  border-radius: 40% 60% 58% 42%;
+  background: radial-gradient(ellipse, #29373c20, transparent 68%);
+  animation: symbiote-flow 95s var(--symbiote-ease) infinite alternate;
+}
+html[data-theme="alien"] .symbiote-form-one {
+  left: -35%;
+  top: -20%;
+}
+html[data-theme="alien"] .symbiote-form-two {
+  right: -40%;
+  bottom: -25%;
+  animation-duration: 125s;
+  animation-delay: -45s;
+  animation-direction: alternate-reverse;
+}
+html[data-theme="alien"] .symbiote-nerves {
+  position: absolute;
+  inset: -4%;
+  width: 108%;
+  height: 108%;
+  opacity: 0.5;
+}
+html[data-theme="alien"] .symbiote-branch {
+  transform-origin: center;
+  animation: symbiote-breathe 37s var(--symbiote-ease) infinite alternate;
+}
+html[data-theme="alien"] .symbiote-branch-1 {
+  animation-duration: 49s;
+  animation-delay: -19s;
+}
+html[data-theme="alien"] .symbiote-branch-2 {
+  animation-duration: 61s;
+  animation-delay: -32s;
+}
+html[data-theme="alien"] .symbiote-smoke {
+  position: absolute;
+  inset: -15%;
+  background:
+    radial-gradient(ellipse at 20% 75%, #687b8220, transparent 48%),
+    radial-gradient(ellipse at 90% 30%, #44515818, transparent 40%);
+  opacity: 0.5;
+  animation: symbiote-flow 110s var(--symbiote-ease) infinite alternate-reverse;
+}
+html[data-theme="alien"] .symbiote-dust {
+  position: absolute;
+  inset: 0;
+}
+html[data-theme="alien"] .symbiote-dust i {
+  position: absolute;
+  width: 2px;
+  height: 3px;
+  border-radius: 50%;
+  background: #687a7d;
+  opacity: 0.13;
+  animation: symbiote-dust 70s var(--symbiote-ease) infinite alternate;
+}
+html[data-theme="alien"] .symbiote-sense {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 340px;
+  height: 340px;
+  margin: -170px;
+  opacity: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    transparent 38%,
+    #80969935 48%,
+    #02060920 53%,
+    transparent 66%
+  );
+}
+html[data-theme="alien"] .symbiote-texture {
+  position: absolute;
+  inset: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.04 .18' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%2389989b' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E");
+}
+html[data-theme="alien"] .symbiote-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse, transparent 38%, #01030580);
+}
+/* Blend the existing background layers into the organism without changing UI effects. */
+html[data-theme="alien"] .atmosphere {
+  background-image: none;
+}
+html[data-theme="alien"] .atmosphere .gradient-mesh {
+  opacity: 0.25;
+}
+html[data-theme="alien"] .space-starfield {
+  opacity: 0.15;
+}
+html[data-theme="alien"] .survey-derelict {
+  opacity: 0.025;
+}
+html[data-theme="alien"] .survey-fog {
+  opacity: 0.045;
+}
+html[data-theme="alien"] .symbiote-paused * {
+  animation-play-state: paused !important;
+}
+@keyframes symbiote-flow {
+  from {
+    transform: translate3d(-3%, 2%, 0) scale(0.96);
+    opacity: 0.45;
+  }
+  to {
+    transform: translate3d(4%, -3%, 0) scale(1.06);
+    opacity: 0.7;
+  }
+}
+@keyframes symbiote-breathe {
+  from {
+    transform: scale(0.99, 1.01) translateY(-3px);
+    opacity: 0.65;
+  }
+  to {
+    transform: scale(1.01, 0.99) translateY(4px);
+    opacity: 0.95;
+  }
+}
+@keyframes symbiote-dust {
+  from {
+    transform: translate3d(-8px, 12px, 0);
+    opacity: 0.08;
+  }
+  to {
+    transform: translate3d(12px, -25px, 0);
+    opacity: 0.16;
+  }
+}
+@media (max-width: 1023px) {
+  html[data-theme="alien"] .symbiote-dust i:nth-child(n + 7) {
+    display: none;
+  }
+}
+@media (max-width: 767px), (prefers-reduced-motion: reduce) {
+  html[data-theme="alien"] .symbiote-background * {
+    animation: none !important;
+  }
+  html[data-theme="alien"] .symbiote-dust,
+  html[data-theme="alien"] .symbiote-sense {
+    display: none;
+  }
+  html[data-theme="alien"] .symbiote-nerves {
+    opacity: 0.3;
+  }
+}

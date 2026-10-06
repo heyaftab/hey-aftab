@@ -101,3 +101,30 @@ html[data-theme="alien"] .planet-cursor > :not(.alien-cursor) {
 .theme-control[data-color-theme="alien"] {
   --orb-color: #a0cfbb;
 }
+/* ALIEN ONLY: dimensional symbiote in the existing cursor slot. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html[data-theme="alien"] .planet-cursor > .venom-cursor {
+    left: -44px;
+    top: -44px;
+    width: 88px;
+    height: 88px;
+  }
+}
+/* ALIEN ONLY: compact living symbiote, centered on the actual pointer. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html[data-theme="alien"] .planet-cursor > .venom-cursor {
+    left: -32px;
+    top: -32px;
+    width: 64px;
+    height: 64px;
+  }
+}
+/* ALIEN ONLY: clearance for the symbiote's longer reaching steps. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html[data-theme="alien"] .planet-cursor > .venom-cursor {
+    left: -48px;
+    top: -48px;
+    width: 96px;
+    height: 96px;
+  }
+}

@@ -34,6 +34,7 @@ import { AlienCinema } from "./AlienCinema";
 import { LightSurvey } from "./LightSurvey";
 import { PortfolioAssistant } from "./PortfolioAssistant";
 import { SpaceGravity } from "./SpaceGravity";
+import { SpiderBackground } from "./SpiderBackground";
 import { CinematicScroll, HeroLightField, SceneDetails } from "./CinematicEffects";
 
 const LINKS = {
@@ -1267,6 +1268,7 @@ export function Portfolio() {
       <CinematicScroll />
       <AlienCinema />
       <LightSurvey />
+      <SpiderBackground />
       <Atmosphere />
       <SpaceGravity />
       <CursorGlow />

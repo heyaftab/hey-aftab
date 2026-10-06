@@ -614,6 +614,18 @@ export function ScrollProgress() {
 }
 
 export function Cursor() {
+  const [spiderTheme, setSpiderTheme] = useState(false);
+  useEffect(() => {
+    const sync = () =>
+      setSpiderTheme(["ocean", "alien"].includes(document.documentElement.dataset["theme"] ?? ""));
+    const observer = new MutationObserver(sync);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    sync();
+    return () => observer.disconnect();
+  }, []);
   const dot = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<"dot" | "ring" | "view">("dot");
   const [enabled, setEnabled] = useState(false);
@@ -669,17 +681,21 @@ export function Cursor() {
     >
       <LightSpiderCursor />
       <AlienCursor />
-      <span className="planet-orbit planet-orbit-one">
-        <i />
-      </span>
-      <span className="planet-orbit planet-orbit-two">
-        <i />
-      </span>
-      <div
-        className={`-translate-x-1/2 -translate-y-1/2 rounded-full grid place-items-center font-mono text-[10px] tracking-widest transition-all duration-300 ${size}`}
-      >
-        {mode === "view" && "VIEW"}
-      </div>
+      {!spiderTheme && (
+        <>
+          <span className="planet-orbit planet-orbit-one">
+            <i />
+          </span>
+          <span className="planet-orbit planet-orbit-two">
+            <i />
+          </span>
+          <div
+            className={`-translate-x-1/2 -translate-y-1/2 rounded-full grid place-items-center font-mono text-[10px] tracking-widest transition-all duration-300 ${size}`}
+          >
+            {mode === "view" && "VIEW"}
+          </div>
+        </>
+      )}
     </div>
   );
 }
