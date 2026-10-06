@@ -709,3 +709,30 @@ article:hover .flow-node { border-color: color-mix(in oklch, var(--primary) 30%,
 @media (max-width: 767px) { .theme-preview-panel { right: -48px; } }
 @media (pointer: coarse) { .theme-preview-trigger { width: 24px; height: 24px; right: -7px; bottom: -5px; } }
 @media (prefers-reduced-motion: reduce) { .theme-orb-orbit, .theme-orb .theme-icon, .theme-preview-panel, .theme-mini-check svg, .theme-preview-detail { animation: none; } .theme-control .theme-orb:hover, .theme-preview-option:hover .theme-miniature { transform: none; scale: 1; } }
+
+/* Skill ticker + typing caret */
+.skill-marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+}
+.skill-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: skill-marquee 36s linear infinite;
+}
+.skill-marquee:hover .skill-marquee-track { animation-play-state: paused; }
+@keyframes skill-marquee { to { transform: translateX(-50%); } }
+.type-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.12em;
+  background: var(--primary);
+  animation: caret-blink 1s steps(1) infinite;
+}
+@keyframes caret-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .skill-marquee-track, .type-caret { animation: none; }
+}
