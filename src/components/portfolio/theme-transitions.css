@@ -1,0 +1,165 @@
+﻿/* Independent arrivals; no input interception or retained animation loops. */
+.theme-arrival {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  overflow: hidden;
+  animation: theme-arrival-fade 2.2s cubic-bezier(0.2, 0.7, 0.1, 1) forwards;
+}
+.theme-arrival-night {
+  background: #080c18e8;
+}
+.galuxy-eclipse {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(60vw, 420px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #080c18;
+  box-shadow:
+    -12px 0 60px #cdb18330,
+    2px 0 1px #cfb58b70;
+  animation: galuxy-eclipse 2.2s cubic-bezier(0.2, 0.7, 0.1, 1) both;
+}
+.galuxy-dust {
+  position: absolute;
+  inset: 0;
+  animation: galuxy-dust 2.2s cubic-bezier(0.2, 0.7, 0.1, 1) both;
+}
+.galuxy-dust i {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #d9d8ca;
+  opacity: 0.5;
+  border-radius: 50%;
+}
+.theme-arrival-ocean {
+  background: #0b1d25e8;
+  color: #9bcbd0;
+}
+.spider-arrival-web {
+  width: 100%;
+  height: 100%;
+  opacity: 0.45;
+  animation: spider-web-reveal 2.2s cubic-bezier(0.2, 0.7, 0.1, 1) both;
+}
+.spider-arrival-creature {
+  animation: spider-descend 1.6s cubic-bezier(0.2, 0.7, 0.1, 1) both;
+}
+.theme-arrival-light {
+  background: transparent;
+}
+.specimen-shutter {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: #dfe5df;
+}
+.specimen-shutter-left {
+  left: 0;
+  animation: specimen-left 1.7s cubic-bezier(0.2, 0.7, 0.1, 1) both;
+}
+.specimen-shutter-right {
+  right: 0;
+  animation: specimen-right 1.7s cubic-bezier(0.2, 0.7, 0.1, 1) both;
+}
+.specimen-arrival-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #0b7a6255;
+  box-shadow: 0 0 25px #0b7a6215;
+  animation: specimen-scan 1.8s cubic-bezier(0.2, 0.7, 0.1, 1) both;
+}
+@keyframes theme-arrival-fade {
+  0%,
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes galuxy-eclipse {
+  from {
+    transform: translate(-65%, -50%) scale(0.8);
+  }
+  to {
+    transform: translate(-35%, -50%) scale(1.2);
+  }
+}
+@keyframes galuxy-dust {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+}
+@keyframes spider-web-reveal {
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.45;
+  }
+  to {
+    transform: scale(1.06);
+    opacity: 0;
+  }
+}
+@keyframes spider-descend {
+  from {
+    transform: translateY(-100px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes specimen-left {
+  0%,
+  15% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+@keyframes specimen-right {
+  0%,
+  15% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+@keyframes specimen-scan {
+  from {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100svh);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-arrival {
+    display: none;
+  }
+}

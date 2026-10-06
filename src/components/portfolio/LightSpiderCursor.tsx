@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
 // The parent cursor owns pointer position, visibility, and native-cursor hiding.
-// Only the light theme activates this SVG's articulated leg animation.
+// Light and Ocean glow share the articulated spider; other cursors stay independent.
 export function LightSpiderCursor() {
   const svg = useRef<SVGSVGElement>(null);
   const web = useRef<SVGPathElement>(null);
@@ -88,7 +88,9 @@ export function LightSpiderCursor() {
       if (active && visible && !document.hidden && !frame) frame = requestAnimationFrame(animate);
     };
     const sync = () => {
-      active = document.documentElement.dataset["theme"] === "light" && media.matches;
+      active =
+        ["light", "ocean"].includes(document.documentElement.dataset["theme"] ?? "") &&
+        media.matches;
       if (active) start();
       else {
         stop();

@@ -49,7 +49,7 @@ function tick(now: number) {
   });
 }
 
-describe("Light-theme spider cursor isolation", () => {
+describe("Spider and Alien cursor isolation", () => {
   it("runs a single Alien loop, responds to clicks, and restores other cursor states", async () => {
     await theme("alien");
     const { container, unmount } = render(<Cursor />);
@@ -62,7 +62,7 @@ describe("Light-theme spider cursor isolation", () => {
     ).toBeGreaterThan(0);
     for (let i = 0; i < 5; i++) {
       await theme("ocean");
-      expect(frames.size).toBe(0);
+      expect(frames.size).toBe(1);
       await theme("light");
       expect(frames.size).toBe(1);
       await theme("alien");
@@ -89,11 +89,11 @@ describe("Light-theme spider cursor isolation", () => {
     expect(silk.getAttribute("d")).toContain("L");
     tick(performance.now() + 1000);
     expect(silk.getAttribute("d")).toBe("");
-    await theme("ocean");
+    await theme("night");
     expect(silk.getAttribute("d")).toBe("");
     expect(frames.size).toBe(0);
   });
-  it("animates only in light, retains pointer coordinates, and cleans up across repeated switches", async () => {
+  it("shares one spider across light and ocean and cleans up across repeated switches", async () => {
     await theme("night");
     const { container, unmount } = render(<Cursor />);
     fireEvent.mouseMove(window, { clientX: 210, clientY: 170 });
@@ -111,7 +111,7 @@ describe("Light-theme spider cursor isolation", () => {
       expect(frames.size).toBe(1);
       for (const other of ["night", "ocean"]) {
         await theme(other);
-        expect(frames.size).toBe(0);
+        expect(frames.size).toBe(other === "ocean" ? 1 : 0);
         expect(container.querySelector(".planet-orbit")).toBe(originalOrbit);
         expect(planet.style.transform).toBe("translate3d(210px, 170px, 0)");
       }
@@ -134,7 +134,7 @@ describe("Light-theme spider cursor isolation", () => {
       await theme(value);
       render(<Cursor />);
       fireEvent.mouseMove(window, { clientX: 100, clientY: 100 });
-      expect(frames.size).toBe(value === "light" ? 1 : 0);
+      expect(frames.size).toBe(value === "night" ? 0 : 1);
     },
   );
 

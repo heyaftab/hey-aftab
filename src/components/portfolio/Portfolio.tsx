@@ -31,6 +31,7 @@ import {
 } from "./effects";
 import { ThemePicker } from "./ThemePicker";
 import { AlienCinema } from "./AlienCinema";
+import { LightSurvey } from "./LightSurvey";
 import { PortfolioAssistant } from "./PortfolioAssistant";
 import { SpaceGravity } from "./SpaceGravity";
 import { CinematicScroll, HeroLightField, SceneDetails } from "./CinematicEffects";
@@ -1265,6 +1266,7 @@ export function Portfolio() {
       </a>
       <CinematicScroll />
       <AlienCinema />
+      <LightSurvey />
       <Atmosphere />
       <SpaceGravity />
       <CursorGlow />

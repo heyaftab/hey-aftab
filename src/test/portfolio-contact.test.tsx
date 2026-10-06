@@ -66,7 +66,7 @@ describe("Contact form regressions", () => {
     expect(container.querySelector("#mobile-navigation")).not.toBeInTheDocument();
   });
 
-  it("preserves skill filtering and all three themes", () => {
+  it("preserves skill filtering and cycles all four themes", async () => {
     const { container } = render(<Portfolio />);
     const skills = container.querySelector("#skills")!;
     const allRows = skills.querySelectorAll(".skill-row").length;
@@ -83,11 +83,13 @@ describe("Contact form regressions", () => {
     const themeButton = screen.getByRole("button", { name: "Change color theme" });
     const original = document.documentElement.dataset["theme"];
     const selected = new Set<string | undefined>();
-    for (let i = 0; i < 3; i++) {
-      fireEvent.click(themeButton);
+    for (let i = 0; i < 4; i++) {
+      await act(async () => {
+        fireEvent.click(themeButton);
+      });
       selected.add(document.documentElement.dataset["theme"]);
     }
-    expect(selected.size).toBe(3);
+    expect(selected.size).toBe(4);
     expect(document.documentElement.dataset["theme"]).toBe(original);
   });
   it("clears a previous success when the next submission is invalid", async () => {
