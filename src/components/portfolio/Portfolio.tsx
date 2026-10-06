@@ -486,6 +486,24 @@ function About() {
           </Reveal>
         ))}
       </div>
+      <Reveal delay={120}>
+        <div className="mt-16 grid grid-cols-3 gap-px overflow-hidden rounded-lg border bg-border">
+          {[
+            { to: 5, suffix: "+", label: "PROJECTS BUILT" },
+            { to: 40, suffix: "+", label: "TECHNOLOGIES USED" },
+            { to: 12, suffix: "h", label: "HACKATHON SPRINT" },
+          ].map((stat) => (
+            <div key={stat.label} className="bg-background px-4 py-7 text-center sm:px-8">
+              <p className="text-gradient font-display text-4xl font-semibold sm:text-5xl">
+                <CountUp to={stat.to} suffix={stat.suffix} />
+              </p>
+              <p className="mt-2 font-mono text-[10px] tracking-[0.25em] text-muted-foreground sm:text-xs">
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Reveal>
     </Section>
   );
 }
