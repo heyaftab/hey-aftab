@@ -50,15 +50,17 @@ function SurveyAtmosphere() {
     const spores = Array.from(el.querySelectorAll<HTMLElement>(".survey-spore"));
     const scenes = Array.from(shell.querySelectorAll<HTMLElement>("main > section"));
     // SCROLL REVEALS: add decorative state without altering content or focus order.
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add("survey-visible");
-        });
-      },
-      { threshold: 0.08 },
-    );
-    scenes.forEach((scene) => io.observe(scene));
+    const io = window.IntersectionObserver
+      ? new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) entry.target.classList.add("survey-visible");
+            });
+          },
+          { threshold: 0.08 },
+        )
+      : undefined;
+    scenes.forEach((scene) => (io ? io.observe(scene) : scene.classList.add("survey-visible")));
     // ATMOSPHERE / PARTICLES: a single loop for all depth layers, capped particle count.
     const tick = (now: number) => {
       if (media.matches || document.hidden) {
@@ -105,7 +107,7 @@ function SurveyAtmosphere() {
     media.addEventListener("change", sync);
     return () => {
       cancelAnimationFrame(frame);
-      io.disconnect();
+      io?.disconnect();
       window.removeEventListener("mousemove", move);
       window.removeEventListener("scroll", onScroll);
       document.removeEventListener("visibilitychange", sync);

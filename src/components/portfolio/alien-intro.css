@@ -1,4 +1,31 @@
 /* Optional Alien opening only. All decorative layers pass through input. */
+
+html[data-theme="alien"] .alien-intro-mobile-venom {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  visibility: hidden;
+  background: #000 url("/assets/Venom.png") center / contain no-repeat;
+}
+html[data-theme="alien"][data-alien-intro="glitch"] .alien-intro,
+html[data-theme="alien"][data-alien-flash="echo"] .alien-intro {
+  z-index: 2147483647;
+}
+html[data-theme="alien"][data-alien-intro="glitch"] .alien-intro-mobile-venom,
+html[data-theme="alien"][data-alien-flash="echo"] .alien-intro-mobile-venom {
+  animation: alien-mobile-venom 400ms linear both;
+}
+@keyframes alien-mobile-venom {
+  0%,
+  99.9% {
+    visibility: visible;
+  }
+  100% {
+    visibility: hidden;
+  }
+}
 html[data-theme="alien"][data-alien-shake="active"] .portfolio-shell main {
   animation: alien-intro-shake 400ms ease-out both;
 }
@@ -154,6 +181,9 @@ html[data-theme="alien"][data-alien-intro="glitch"] .alien-cursor .alien-core {
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  html[data-theme="alien"] .alien-intro-mobile-venom {
+    display: none;
+  }
   html[data-theme="alien"][data-alien-shake] .portfolio-shell main {
     animation: none !important;
   }

@@ -261,13 +261,16 @@ export function HeroLightField() {
       canvas.style.opacity = "0";
       sync();
     };
-    const io = new IntersectionObserver(([entry]) => {
-      visible = entry?.isIntersecting ?? false;
-      sync();
-    });
-    io.observe(canvas);
-    const observer = new ResizeObserver(resize);
-    observer.observe(canvas);
+    const io = window.IntersectionObserver
+      ? new IntersectionObserver(([entry]) => {
+          visible = entry?.isIntersecting ?? false;
+          sync();
+        })
+      : undefined;
+    if (io) io.observe(canvas);
+    else visible = true;
+    const observer = window.ResizeObserver ? new ResizeObserver(resize) : undefined;
+    observer?.observe(canvas);
     const themes = new MutationObserver(theme);
     themes.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
     resize();
@@ -281,8 +284,8 @@ export function HeroLightField() {
     canvas.addEventListener("webglcontextlost", contextLost);
     return () => {
       cancelAnimationFrame(frame);
-      io.disconnect();
-      observer.disconnect();
+      io?.disconnect();
+      observer?.disconnect();
       themes.disconnect();
       window.removeEventListener("mousemove", move);
       window.removeEventListener("blur", leave);

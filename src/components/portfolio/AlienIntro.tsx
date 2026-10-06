@@ -179,6 +179,7 @@ export function AlienIntro({ repeatVisit = false }: { repeatVisit?: boolean }) {
             : "NOW LET ME SHOW YOU WHAT I CAN BUILD.";
   return (
     <div className="alien-intro" data-phase={phase}>
+      <div className="alien-intro-mobile-venom" aria-hidden="true" />
       <div className="alien-intro-distortion" aria-hidden="true" />
       <div className="alien-intro-message" role="status" aria-live="polite" aria-atomic="true">
         <span className="alien-intro-caption">PORTFOLIO / INTERACTIVE INTRO</span>

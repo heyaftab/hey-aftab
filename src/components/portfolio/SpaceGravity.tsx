@@ -198,12 +198,14 @@ export function SpaceGravity() {
         draw(performance.now());
       }
     };
-    const observer = new ResizeObserver(() => {
-      measure();
-      updateSector();
-      requestDraw();
-    });
-    if (shell) observer.observe(shell);
+    const observer = window.ResizeObserver
+      ? new ResizeObserver(() => {
+          measure();
+          updateSector();
+          requestDraw();
+        })
+      : undefined;
+    if (shell) observer?.observe(shell);
     const themeObserver = new MutationObserver(requestDraw);
     themeObserver.observe(document.documentElement, {
       attributes: true,
@@ -221,7 +223,7 @@ export function SpaceGravity() {
     return () => {
       cancelAnimationFrame(frame);
       clearTargets();
-      observer.disconnect();
+      observer?.disconnect();
       themeObserver.disconnect();
       shell?.style.removeProperty("--space-color");
       shell?.style.removeProperty("--space-gravity");

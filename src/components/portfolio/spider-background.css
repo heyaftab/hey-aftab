@@ -28,8 +28,12 @@ html[data-theme="ocean"] .spider-bg-bed::before {
   animation: spider-artwork-pan 90s var(--spider-atmosphere-ease) infinite alternate;
 }
 @keyframes spider-artwork-pan {
-  from { transform: translateY(0); }
-  to { transform: translateY(min(0px, calc(100lvh - 100%))); }
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(min(0px, calc(100lvh - 100%)));
+  }
 }
 html[data-theme="ocean"] .spider-bg-paused .spider-bg-bed::before {
   animation-play-state: paused;
@@ -178,3 +182,39 @@ html[data-theme="ocean"] .spider-bg-paused * {
   }
 }
 /* SPIDER BACKGROUND END */
+
+/* Keep text out of animated filter surfaces over the moving Spider artwork. */
+html[data-theme="ocean"] .portfolio-shell .rise {
+  animation: none;
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+html[data-theme="ocean"] .portfolio-shell .morph-word {
+  animation: none;
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+html[data-theme="ocean"] .portfolio-shell :is(.text-gradient, .text-accent-gradient) {
+  background: none;
+  background-clip: border-box;
+  -webkit-background-clip: border-box;
+  color: var(--primary);
+  -webkit-text-fill-color: currentColor;
+}
+html[data-theme="ocean"] .portfolio-shell .text-gradient {
+  color: var(--foreground);
+}
+@media (max-width: 767px), (hover: none) and (pointer: coarse) {
+  html[data-theme="ocean"] .portfolio-shell :is(.reveal, .reveal.in) {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+  html[data-theme="ocean"] .portfolio-shell .glass {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}

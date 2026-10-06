@@ -97,26 +97,28 @@ function Nav() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) {
-          setActive(visible.target.id);
-        }
-      },
-      { threshold: [0.25, 0.5, 0.75] },
-    );
+    const observer = window.IntersectionObserver
+      ? new IntersectionObserver(
+          (entries) => {
+            const visible = entries
+              .filter((entry) => entry.isIntersecting)
+              .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+            if (visible) {
+              setActive(visible.target.id);
+            }
+          },
+          { threshold: [0.25, 0.5, 0.75] },
+        )
+      : undefined;
 
     ACTIVE_SECTION_IDS.forEach((id) => {
       const el = document.getElementById(id);
-      if (el) observer.observe(el);
+      if (el) observer?.observe(el);
     });
 
     return () => {
       window.removeEventListener("scroll", onScroll);
-      observer.disconnect();
+      observer?.disconnect();
     };
   }, []);
 
