@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import "./spider-portrait.css";
 
 export function SpiderPortrait() {
   const [spider, setSpider] = useState(false);
   const [revealed, setRevealed] = useState(false);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const sync = () => {
       setSpider(document.documentElement.dataset["theme"] === "ocean");
       setRevealed(false);

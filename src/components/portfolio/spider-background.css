@@ -2,6 +2,8 @@
 html[data-theme="ocean"] .spider-background {
   position: fixed;
   inset: 0;
+  /* A stable height prevents toolbar show/hide from jumping the artwork on phones. */
+  height: 100lvh;
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
@@ -27,7 +29,7 @@ html[data-theme="ocean"] .spider-bg-bed::before {
 }
 @keyframes spider-artwork-pan {
   from { transform: translateY(0); }
-  to { transform: translateY(min(0px, calc(100dvh - 100%))); }
+  to { transform: translateY(min(0px, calc(100lvh - 100%))); }
 }
 html[data-theme="ocean"] .spider-bg-paused .spider-bg-bed::before {
   animation-play-state: paused;

@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./spider-background.css";
 
 // Keep the atmosphere and its listeners mounted exclusively in Spider.
 export function SpiderBackground() {
   const [active, setActive] = useState(false);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const sync = () => setActive(document.documentElement.dataset["theme"] === "ocean");
     const observer = new MutationObserver(sync);
     observer.observe(document.documentElement, {
