@@ -360,3 +360,7 @@ html[data-theme="alien"] :is(a, button):focus-visible {
     display: none;
   }
 }
+/* Pause the existing Alien scenery when its tab is hidden. */
+html[data-theme="alien"] .survey-paused * {
+  animation-play-state: paused !important;
+}

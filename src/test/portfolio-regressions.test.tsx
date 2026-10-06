@@ -70,4 +70,14 @@ describe("Portfolio runtime regressions", () => {
     render(<Typewriter phrases={[]} />);
     expect(vi.getTimerCount()).toBe(0);
   });
+  it("skips blank typewriter phrases instead of leaving an endless empty animation", () => {
+    vi.useFakeTimers();
+    const { rerender } = render(<Typewriter phrases={["", "   "]} />);
+    expect(vi.getTimerCount()).toBe(0);
+    rerender(<Typewriter phrases={["", "Working"]} />);
+    act(() => {
+      vi.advanceTimersByTime(1200);
+    });
+    expect(screen.getByText("Working")).toBeInTheDocument();
+  });
 });

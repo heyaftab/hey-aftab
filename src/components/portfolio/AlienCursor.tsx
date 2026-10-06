@@ -79,7 +79,7 @@ export function AlienCursor() {
         stop();
         return;
       }
-      const dt = last ? Math.min((now - last) / 1000, 0.05) : 1 / 60;
+      const dt = last ? Math.max(1 / 1000, Math.min((now - last) / 1000, 0.05)) : 1 / 60;
       last = now;
       const smoothing = 1 - Math.exp(-dt * (dx || dy ? 32 : 12));
       vx += (Math.max(-1800, Math.min(1800, dx / dt)) - vx) * smoothing;

@@ -27,7 +27,26 @@ export const Route = createFileRoute("/api/contact")({
 
         let payload: unknown;
         try {
-          payload = await request.json();
+          const reader = request.body?.getReader();
+          if (!reader) return jsonError("invalid_request", 400);
+          const decoder = new TextDecoder();
+          let bytes = 0,
+            text = "";
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              bytes += value.byteLength;
+              if (bytes > 8_192) {
+                await reader.cancel();
+                return jsonError("request_too_large", 413);
+              }
+              text += decoder.decode(value, { stream: true });
+            }
+            payload = JSON.parse(text + decoder.decode());
+          } finally {
+            reader.releaseLock();
+          }
         } catch {
           return jsonError("invalid_request", 400);
         }

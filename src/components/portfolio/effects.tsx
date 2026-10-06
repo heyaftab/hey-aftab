@@ -503,12 +503,13 @@ export function NetworkField() {
 export function Typewriter({ phrases, className = "" }: { phrases: string[]; className?: string }) {
   const [text, setText] = useState("");
   useEffect(() => {
-    if (!phrases.length) {
+    const usablePhrases = phrases.filter((phrase) => phrase.trim().length > 0);
+    if (!usablePhrases.length) {
       setText("");
       return;
     }
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setText(phrases[0] ?? "");
+      setText(usablePhrases[0] ?? "");
       return;
     }
     let phrase = 0,
@@ -516,7 +517,7 @@ export function Typewriter({ phrases, className = "" }: { phrases: string[]; cla
       deleting = false,
       timer = 0;
     const tick = () => {
-      const current = phrases[phrase] ?? "";
+      const current = usablePhrases[phrase] ?? "";
       char += deleting ? -1 : 1;
       setText(current.slice(0, char));
       let wait = deleting ? 32 : 62;
@@ -525,7 +526,7 @@ export function Typewriter({ phrases, className = "" }: { phrases: string[]; cla
         deleting = true;
       } else if (deleting && char === 0) {
         deleting = false;
-        phrase = (phrase + 1) % phrases.length;
+        phrase = (phrase + 1) % usablePhrases.length;
         wait = 350;
       }
       timer = window.setTimeout(tick, wait);
@@ -641,6 +642,9 @@ export function Cursor() {
       setEnabled(media.matches);
       hide();
     };
+    const visibility = () => {
+      if (document.hidden) hide();
+    };
     sync();
     const move = (e: MouseEvent) => {
       if (!media.matches || !dot.current) return;
@@ -656,11 +660,13 @@ export function Cursor() {
     window.addEventListener("mousemove", move, { passive: true });
     window.addEventListener("blur", hide);
     document.documentElement.addEventListener("mouseleave", hide);
+    document.addEventListener("visibilitychange", visibility);
     media.addEventListener("change", sync);
     return () => {
       window.removeEventListener("mousemove", move);
       window.removeEventListener("blur", hide);
       document.documentElement.removeEventListener("mouseleave", hide);
+      document.removeEventListener("visibilitychange", visibility);
       media.removeEventListener("change", sync);
       document.body.classList.remove("has-cursor");
     };

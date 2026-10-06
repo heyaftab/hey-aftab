@@ -11,12 +11,12 @@ const PROFILE_LINKS = {
 
 const ANSWERS: { terms: string[]; answer: string }[] = [
   {
-    terms: ["about", "who", "aftab", "yourself", "intro", "background", "bio", "profile"],
+    terms: ["who", "yourself", "intro", "background", "bio", "profile", "about aftab"],
     answer:
       "Aftab Uddin Ahmad is a CSE student at United International University in Dhaka, preparing for a career in AI engineering.",
   },
   {
-    terms: ["education", "university", "degree", "study", "graduation"],
+    terms: ["education", "university", "degree", "study", "studying", "graduation"],
     answer:
       "Aftab is pursuing a B.Sc. in Computer Science & Engineering at UIU and expects to graduate in 2028.",
   },
@@ -56,7 +56,7 @@ const ANSWERS: { terms: string[]; answer: string }[] = [
       "The UIU CSE Course Planner organizes courses by trimester and tracks credits, using FastAPI and SQLite.",
   },
   {
-    terms: ["project", "work", "built", "portfolio", "repositories", "repo"],
+    terms: ["project", "projects", "work", "built", "portfolio", "repositories", "repo"],
     answer:
       "Featured projects include NHRE, Goynar Gontobbo, BozoScope, the UIU Course Planner, and a Smart CNC Plotter.",
   },
@@ -135,21 +135,23 @@ function getAnswer(question: string) {
     return `${greetingReply ? `${greetingReply} ` : ""}I'm doing well, thanks.`;
   }
 
-  const ranked = ANSWERS.map((entry) => ({
+  const ranked = ANSWERS.map((entry, index) => ({
     answer: entry.answer,
-    score: entry.terms.reduce((score, term) => {
-      const normalizedTerm = term.replace(/-/g, " ");
-      if (remainingQuery === normalizedTerm) return score + 4;
-      if (remainingQuery.includes(normalizedTerm))
-        return score + Math.max(1, normalizedTerm.split(" ").length) * 2;
-      const termWords = normalizedTerm.split(" ");
-      return (
-        score +
-        (termWords.length > 1 && termWords.every((word) => remainingQuery.includes(word))
-          ? termWords.length
-          : 0)
-      );
-    }, 0),
+    score:
+      entry.terms.reduce((score, term) => {
+        const normalizedTerm = term.replace(/-/g, " ");
+        if (remainingQuery === normalizedTerm) return score + 4;
+        const words = remainingQuery.split(" ");
+        const termWords = normalizedTerm.split(" ");
+        if (` ${remainingQuery} `.includes(` ${normalizedTerm} `))
+          return score + Math.max(1, normalizedTerm.split(" ").length) * 2;
+        return (
+          score +
+          (termWords.length > 1 && termWords.every((word) => words.includes(word))
+            ? termWords.length
+            : 0)
+        );
+      }, 0) * (index === 0 ? 0.25 : 1),
   })).sort((a, b) => b.score - a.score);
 
   const answer = ranked[0]?.score
@@ -171,7 +173,10 @@ export function PortfolioAssistant() {
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    endRef.current?.scrollIntoView?.({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      block: "end",
+    });
   }, [messages, open]);
 
   const sendMessage = (question: string) => {

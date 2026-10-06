@@ -37,6 +37,18 @@ it("mounts cinematic scenery only in Alien and clears animation and glitch timer
   expect(container.querySelectorAll(".symbiote-background")).toHaveLength(1);
   expect(container.querySelectorAll(".survey-spore")).toHaveLength(24);
   expect(vi.getTimerCount()).toBe(2);
+  const hidden = vi.spyOn(document, "hidden", "get").mockReturnValue(true);
+  act(() => {
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  expect(container.querySelector(".survey-cinema")).toHaveClass("survey-paused");
+  expect(vi.getTimerCount()).toBe(0);
+  hidden.mockReturnValue(false);
+  act(() => {
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  expect(container.querySelector(".survey-cinema")).not.toHaveClass("survey-paused");
+  expect(vi.getTimerCount()).toBe(2);
   await act(async () => {
     document.documentElement.dataset["theme"] = "ocean";
   });

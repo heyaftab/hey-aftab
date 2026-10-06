@@ -89,6 +89,7 @@ function SurveyAtmosphere() {
       cancelAnimationFrame(frame);
       frame = 0;
       clearTimeout(timer);
+      el.classList.toggle("survey-paused", document.hidden);
       el.classList.remove("survey-interference");
       if (!media.matches && !document.hidden) {
         frame = requestAnimationFrame(tick);

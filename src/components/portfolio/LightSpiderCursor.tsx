@@ -92,7 +92,7 @@ export function LightSpiderCursor() {
         stop();
         return;
       }
-      const dt = last ? Math.min((now - last) / 1000, 0.05) : 1 / 60;
+      const dt = last ? Math.max(1 / 1000, Math.min((now - last) / 1000, 0.05)) : 1 / 60;
       last = now;
       const ease = 1 - Math.exp(-dt * 12);
       spread += ((hover ? 1 : 0) - spread) * ease;

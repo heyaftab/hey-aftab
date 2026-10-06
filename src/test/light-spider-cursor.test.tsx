@@ -50,6 +50,39 @@ function tick(now: number) {
 }
 
 describe("Spider and Alien cursor isolation", () => {
+  it.each(["ocean", "alien"])(
+    "keeps %s coordinates finite for repeated frame timestamps",
+    async (value) => {
+      await theme(value);
+      const { container } = render(<Cursor />);
+      fireEvent.mouseMove(window, { clientX: 100, clientY: 100 });
+      tick(100);
+      tick(100);
+      fireEvent.mouseMove(window, { clientX: 160, clientY: 120 });
+      tick(100);
+      for (const node of container.querySelectorAll("path, g")) {
+        expect(node.getAttribute("d") ?? "").not.toMatch(/NaN|Infinity/);
+        expect(node.getAttribute("transform") ?? "").not.toMatch(/NaN|Infinity/);
+      }
+      expect(frames.size).toBe(1);
+    },
+  );
+  it("restores the native pointer and stops Alien animation when the tab is hidden", async () => {
+    await theme("alien");
+    const { container } = render(<Cursor />);
+    fireEvent.mouseMove(window, { clientX: 100, clientY: 100 });
+    expect(document.body).toHaveClass("has-cursor");
+    const hidden = vi.spyOn(document, "hidden", "get").mockReturnValue(true);
+    fireEvent(document, new Event("visibilitychange"));
+    expect(frames.size).toBe(0);
+    expect(document.body).not.toHaveClass("has-cursor");
+    expect(container.querySelector<HTMLElement>(".planet-cursor")!.style.opacity).toBe("0");
+    hidden.mockReturnValue(false);
+    fireEvent(document, new Event("visibilitychange"));
+    fireEvent.mouseMove(window, { clientX: 140, clientY: 120 });
+    expect(frames.size).toBe(1);
+    expect(document.body).toHaveClass("has-cursor");
+  });
   it("keeps the living symbiote aligned through fast turns, hover, click and idle", async () => {
     await theme("alien");
     const { container } = render(
