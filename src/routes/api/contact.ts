@@ -13,8 +13,13 @@ export const Route = createFileRoute("/api/contact")({
     handlers: {
       POST: async ({ request, context }) => {
         const origin = request.headers.get("origin");
-        if (origin && new URL(origin).origin !== new URL(request.url).origin) {
-          return jsonError("invalid_origin", 403);
+        if (origin) {
+          try {
+            if (new URL(origin).origin !== new URL(request.url).origin)
+              return jsonError("invalid_origin", 403);
+          } catch {
+            return jsonError("invalid_origin", 403);
+          }
         }
 
         const contentLength = Number(request.headers.get("content-length") ?? 0);
