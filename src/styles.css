@@ -824,3 +824,27 @@ html[data-theme="light"] .light-survey-pointer-lock span { transform:scale(1.3);
   html[data-theme="light"] .light-survey-reticle span { transition:none; }
 }
 /* LIGHT THEME OVERRIDES END */
+
+/* SPIDER THEME — silk, cursor isolation, and peripheral derelict webs. */
+html[data-theme="ocean"] .planet-cursor > .planet-orbit,
+html[data-theme="ocean"] .planet-cursor > div,
+html[data-theme="ocean"] .planet-cursor > .alien-cursor { display:none !important; animation:none !important; }
+html[data-theme="ocean"] .light-spider-web > g { display:none; }
+html[data-theme="ocean"] .light-spider-web > path { stroke-width:1; }
+html[data-theme="ocean"] .portfolio-shell { isolation:isolate; }
+html[data-theme="ocean"] .portfolio-shell::before,
+html[data-theme="ocean"] .portfolio-shell::after {
+  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background-repeat:no-repeat; opacity:.18;
+}
+html[data-theme="ocean"] .portfolio-shell::before {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 900'%3E%3Cg fill='none' stroke='%2379b9c0' stroke-width='.7'%3E%3Cpath d='M0 0L330 100M0 0L240 330M0 0L95 620M0 0L0 900M35 10Q10 35 8 70M90 28Q65 95 20 160M165 50Q125 175 38 270M245 75Q200 260 60 410M315 100Q280 340 95 620M0 900Q30 650 18 490T60 220M18 490Q95 540 130 710M60 220Q120 250 145 390'/%3E%3C/g%3E%3C/svg%3E"),radial-gradient(ellipse at 0% 50%,#061019b0,transparent 32%);
+  background-position:left top; background-size:min(32vw,360px) 100vh,100% 100%;
+}
+html[data-theme="ocean"] .portfolio-shell::after {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 900'%3E%3Cg fill='none' stroke='%2379b9c0' stroke-width='.7'%3E%3Cpath d='M360 900L15 740M360 900L130 510M360 900L285 260M360 900L360 0M325 884Q345 850 352 820M270 860Q315 795 342 705M195 825Q260 720 325 585M110 785Q210 640 300 460M30 745Q145 580 280 260M360 0Q315 170 340 350T300 660M340 350Q270 390 245 520'/%3E%3C/g%3E%3C/svg%3E"),radial-gradient(ellipse at 100% 60%,#061019b0,transparent 32%);
+  background-position:right bottom; background-size:min(32vw,360px) 100vh,100% 100%;
+  animation:spider-edge-breath 18s cubic-bezier(.2,.7,.1,1) infinite alternate;
+}
+@keyframes spider-edge-breath { from { opacity:.12; transform:translateY(-3px); } to { opacity:.21; transform:translateY(3px); } }
+@media (prefers-reduced-motion:reduce) { html[data-theme="ocean"] .portfolio-shell::after { animation:none; } }

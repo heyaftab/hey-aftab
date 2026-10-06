@@ -50,6 +50,46 @@ function tick(now: number) {
 }
 
 describe("Spider and Alien cursor isolation", () => {
+  it("cycles three idle activities without moving the pointer or adding loops", async () => {
+    await theme("ocean");
+    const { container } = render(<Cursor />);
+    fireEvent.mouseMove(window, { clientX: 200, clientY: 160 });
+    const start = performance.now();
+    const spider = container.querySelector<SVGElement>(".light-spider-cursor")!;
+    for (const [delay, activity] of [
+      [3000, "groom"],
+      [9000, "silk"],
+      [15000, "alert"],
+    ] as const) {
+      tick(start + delay);
+      expect(spider.dataset["idleActivity"]).toBe(activity);
+      expect(frames.size).toBe(1);
+      expect(container.querySelector<HTMLElement>(".planet-cursor")?.style.transform).toBe(
+        "translate3d(200px, 160px, 0)",
+      );
+    }
+    vi.spyOn(performance, "now").mockReturnValue(start + 15001);
+    fireEvent.mouseMove(window, { clientX: 220, clientY: 180 });
+    for (let i = 1; i <= 20; i++) tick(start + 15001 + i * 16);
+    expect(spider.dataset["idleActivity"]).toBe("walking");
+  });
+  it("walks with small pointer movements and draws curved silk in Spider", async () => {
+    await theme("ocean");
+    const { container } = render(<Cursor />);
+    fireEvent.mouseMove(window, { clientX: 100, clientY: 100 });
+    tick(performance.now());
+    const leg = container.querySelector(".spider-leg")!;
+    const resting = leg.getAttribute("d");
+    for (let i = 1; i <= 12; i++) {
+      fireEvent.mouseMove(window, { clientX: 100 + i, clientY: 100 + i });
+    }
+    tick(performance.now() + 16);
+    expect(leg.getAttribute("d")).not.toBe(resting);
+    const thread = container.querySelector(".light-spider-web > path")!.getAttribute("d")!;
+    expect(thread).toContain(" Q ");
+    expect(thread).not.toContain(" L ");
+    expect(frames.size).toBe(1);
+  });
   it("runs a single Alien loop, responds to clicks, and restores other cursor states", async () => {
     await theme("alien");
     const { container, unmount } = render(<Cursor />);
