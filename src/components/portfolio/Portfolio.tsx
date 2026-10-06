@@ -279,6 +279,23 @@ function About() {
           </Reveal>
         ))}
       </div>
+      <Reveal delay={200}>
+        <div className="mt-16 grid grid-cols-2 gap-px overflow-hidden rounded-lg border bg-border md:grid-cols-4">
+          {[
+            { to: 5, suffix: "+", label: "Projects built" },
+            { to: 10, suffix: "+", label: "Core technologies" },
+            { to: 3, suffix: "rd", label: "Hackathon placement" },
+            { to: 2028, suffix: "", label: "Expected graduation" },
+          ].map((s) => (
+            <div key={s.label} className="group bg-background p-7 text-center transition-colors hover:bg-surface">
+              <p className="text-gradient font-display text-4xl font-semibold sm:text-5xl">
+                <CountUp to={s.to} suffix={s.suffix} />
+              </p>
+              <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </Reveal>
     </Section>
   );
 }
@@ -323,6 +340,19 @@ function Skills() {
         ))}
       </div>
       <p className="mt-6 flex items-center gap-2 font-mono text-xs text-muted-foreground"><span className="h-2 w-2 rounded-sm bg-primary" /> Highlighted — current core strengths</p>
+      <div className="marquee mt-10 overflow-hidden border-y py-4" aria-hidden>
+        <div className="marquee-track flex w-max gap-8">
+          {[...Array(2)].map((_, copy) => (
+            <div key={copy} className="flex shrink-0 items-center gap-8">
+              {SKILLS.flatMap((s) => s.items).map((it) => (
+                <span key={`${copy}-${it}`} className="flex items-center gap-8 whitespace-nowrap font-mono text-sm text-muted-foreground">
+                  {it} <span className="h-1 w-1 rounded-full bg-primary/70" />
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
     </Section>
   );
 }
@@ -649,6 +679,7 @@ export function Portfolio() {
   return (
     <div className="relative">
       <Cursor />
+      <ScrollProgress />
       <Nav />
       <main>
         <Hero />
