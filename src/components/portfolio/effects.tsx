@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { stepSpring } from "@/lib/motion-physics";
+import { LightSpiderCursor } from "./LightSpiderCursor";
 
 export function Reveal({
   children,
@@ -665,6 +666,7 @@ export function Cursor() {
       style={{ opacity: 0 }}
       aria-hidden
     >
+      <LightSpiderCursor />
       <span className="planet-orbit planet-orbit-one">
         <i />
       </span>

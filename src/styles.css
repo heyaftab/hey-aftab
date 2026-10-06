@@ -557,6 +557,23 @@ a.bg-primary:hover, button.bg-primary:hover { filter: saturate(1.14) brightness(
 .space-navigation-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--space-color, var(--primary)); box-shadow: 0 0 10px var(--space-color, var(--primary)); transition: background 800ms ease; }
 .space-navigation-line { width: 16px; height: 1px; background: var(--space-color, var(--primary)); opacity: .5; }
 .planet-cursor { transition: opacity 200ms ease; }
+/* Keep the original planet untouched outside Soft daylight. */
+.light-spider-cursor { display: none; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html[data-theme="light"] .planet-cursor > :not(.light-spider-cursor) { display: none; }
+  html[data-theme="light"] .planet-cursor > .light-spider-cursor {
+    display: block;
+    position: absolute;
+    left: -24px;
+    top: -24px;
+    width: 48px;
+    height: 48px;
+    color: #222326;
+    pointer-events: none;
+    overflow: hidden;
+    contain: layout paint;
+  }
+}
 .portfolio-shell :is(.magnetic-button, .signal-controls button, #skills button, #contact button[type=submit]) { translate: var(--gravity-offset, 0 0); }
 .portfolio-shell :is(.magnetic-button, .signal-controls button, #skills button, #contact button[type=submit]):focus-visible { translate: none; }
 .planet-cursor > div { box-shadow: 0 0 16px color-mix(in oklch, var(--space-color, var(--primary)) 40%, transparent); }
