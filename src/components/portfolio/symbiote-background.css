@@ -11,14 +11,25 @@ html[data-theme="alien"] .symbiote-background {
 html[data-theme="alien"] .symbiote-base {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 45% 35%, #0a1318, transparent 75%), #030609;
+  background:
+    radial-gradient(ellipse at 52% 24%, #12201b55, transparent 48%),
+    radial-gradient(ellipse at 12% 75%, #25202b28, transparent 50%), #010305;
 }
 html[data-theme="alien"] .symbiote-form {
   position: absolute;
   width: 90%;
   height: 100%;
   border-radius: 40% 60% 58% 42%;
-  background: radial-gradient(ellipse, #29373c20, transparent 68%);
+  background:
+    repeating-radial-gradient(
+      ellipse at 28% 42%,
+      transparent 0 27px,
+      #63746a18 29px,
+      #000204b0 33px,
+      transparent 44px
+    ),
+    radial-gradient(ellipse at 30% 40%, #293d3248, #010306c0 48%, transparent 70%);
+  box-shadow: inset 28px -18px 80px #00020390;
   animation: symbiote-flow 95s var(--symbiote-ease) infinite alternate;
 }
 html[data-theme="alien"] .symbiote-form-one {
@@ -32,12 +43,32 @@ html[data-theme="alien"] .symbiote-form-two {
   animation-delay: -45s;
   animation-direction: alternate-reverse;
 }
+/* Peripheral cavities suggest a breathing shell, leaving the content clear. */
+html[data-theme="alien"] .symbiote-form::after {
+  content: "";
+  position: absolute;
+  inset: 18% 24%;
+  border-radius: 48% 52% 37% 63%;
+  background: radial-gradient(
+    ellipse at 45% 50%,
+    #000204 15%,
+    #020504d0 38%,
+    #64726313 41%,
+    transparent 53%
+  );
+  box-shadow: inset 12px 0 40px #00000070;
+  animation: symbiote-cavity 29s ease-in-out infinite alternate;
+}
+html[data-theme="alien"] .symbiote-form-two::after {
+  animation-duration: 43s;
+  animation-delay: -17s;
+}
 html[data-theme="alien"] .symbiote-nerves {
   position: absolute;
   inset: -4%;
   width: 108%;
   height: 108%;
-  opacity: 0.5;
+  opacity: 0.72;
 }
 html[data-theme="alien"] .symbiote-branch {
   transform-origin: center;
@@ -55,8 +86,8 @@ html[data-theme="alien"] .symbiote-smoke {
   position: absolute;
   inset: -15%;
   background:
-    radial-gradient(ellipse at 20% 75%, #687b8220, transparent 48%),
-    radial-gradient(ellipse at 90% 30%, #44515818, transparent 40%);
+    radial-gradient(ellipse at 20% 75%, #687b6324, transparent 48%),
+    radial-gradient(ellipse at 90% 30%, #55516a1c, transparent 40%);
   opacity: 0.5;
   animation: symbiote-flow 110s var(--symbiote-ease) infinite alternate-reverse;
 }
@@ -71,7 +102,7 @@ html[data-theme="alien"] .symbiote-dust i {
   border-radius: 50%;
   background: #687a7d;
   opacity: 0.13;
-  animation: symbiote-dust 70s var(--symbiote-ease) infinite alternate;
+  box-shadow: 0 0 3px #687a7d20;
 }
 html[data-theme="alien"] .symbiote-sense {
   position: absolute;
@@ -90,6 +121,24 @@ html[data-theme="alien"] .symbiote-sense {
     transparent 66%
   );
 }
+html[data-theme="alien"] .symbiote-ripple {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 260px;
+  height: 260px;
+  margin: -130px;
+  border-radius: 47% 53% 51% 49%;
+  opacity: 0;
+  background: radial-gradient(
+    ellipse,
+    transparent 50%,
+    #9cbbb821 56%,
+    #02070980 59%,
+    transparent 64%
+  );
+  will-change: transform, opacity;
+}
 html[data-theme="alien"] .symbiote-texture {
   position: absolute;
   inset: 0;
@@ -99,9 +148,35 @@ html[data-theme="alien"] .symbiote-texture {
 html[data-theme="alien"] .symbiote-vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse, transparent 38%, #01030580);
+  background: radial-gradient(ellipse at 50% 42%, transparent 32%, #000203b0 85%);
 }
 /* Blend the existing background layers into the organism without changing UI effects. */
+html[data-theme="alien"] .symbiote-venom-flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: #010305 url("/assets/Venom.png") center / contain no-repeat;
+}
+html[data-theme="alien"][data-alien-intro="glitch"] .symbiote-venom-flash,
+html[data-theme="alien"][data-alien-flash="echo"] .symbiote-venom-flash {
+  animation: symbiote-venom-flash 400ms linear both;
+}
+/* Each dark reveal is separated by a quiet interval; no white flash. */
+@keyframes symbiote-venom-flash {
+  0%,
+  80% {
+    opacity: 0.88;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme="alien"] .symbiote-venom-flash {
+    display: none;
+  }
+}
 html[data-theme="alien"] .atmosphere {
   background-image: none;
 }
@@ -109,7 +184,7 @@ html[data-theme="alien"] .atmosphere .gradient-mesh {
   opacity: 0.25;
 }
 html[data-theme="alien"] .space-starfield {
-  opacity: 0.15;
+  opacity: 0;
 }
 html[data-theme="alien"] .survey-derelict {
   opacity: 0.025;
@@ -117,7 +192,8 @@ html[data-theme="alien"] .survey-derelict {
 html[data-theme="alien"] .survey-fog {
   opacity: 0.045;
 }
-html[data-theme="alien"] .symbiote-paused * {
+html[data-theme="alien"] .symbiote-paused *,
+html[data-theme="alien"] .symbiote-paused .symbiote-form::after {
   animation-play-state: paused !important;
 }
 @keyframes symbiote-flow {
@@ -128,6 +204,16 @@ html[data-theme="alien"] .symbiote-paused * {
   to {
     transform: translate3d(4%, -3%, 0) scale(1.06);
     opacity: 0.7;
+  }
+}
+@keyframes symbiote-cavity {
+  from {
+    transform: scale(0.94, 1.02) rotate(-3deg);
+    opacity: 0.55;
+  }
+  to {
+    transform: scale(1.04, 0.93) rotate(2deg);
+    opacity: 0.85;
   }
 }
 @keyframes symbiote-breathe {
@@ -156,10 +242,14 @@ html[data-theme="alien"] .symbiote-paused * {
   }
 }
 @media (max-width: 767px), (prefers-reduced-motion: reduce) {
-  html[data-theme="alien"] .symbiote-background * {
+  html[data-theme="alien"] .symbiote-background :not(.symbiote-venom-flash) {
     animation: none !important;
   }
+  html[data-theme="alien"] .symbiote-form::after {
+    animation: none;
+  }
   html[data-theme="alien"] .symbiote-dust,
+  html[data-theme="alien"] .symbiote-ripple,
   html[data-theme="alien"] .symbiote-sense {
     display: none;
   }

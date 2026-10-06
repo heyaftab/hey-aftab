@@ -1,6 +1,8 @@
 ﻿import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { AlienCinema } from "@/components/portfolio/AlienCinema";
+// Intro timing and session behavior are verified independently.
+vi.mock("@/components/portfolio/AlienIntro", () => ({ AlienIntro: () => null }));
 
 afterEach(() => {
   cleanup();
@@ -36,7 +38,7 @@ it("mounts cinematic scenery only in Alien and clears animation frames on exit",
   expect(container.querySelectorAll(".survey-cinema")).toHaveLength(1);
   expect(container.querySelectorAll(".symbiote-background")).toHaveLength(1);
   expect(container.querySelectorAll(".survey-spore")).toHaveLength(24);
-  expect(vi.getTimerCount()).toBe(1);
+  expect(vi.getTimerCount()).toBe(2);
   const hidden = vi.spyOn(document, "hidden", "get").mockReturnValue(true);
   act(() => {
     document.dispatchEvent(new Event("visibilitychange"));
@@ -48,7 +50,7 @@ it("mounts cinematic scenery only in Alien and clears animation frames on exit",
     document.dispatchEvent(new Event("visibilitychange"));
   });
   expect(container.querySelector(".survey-cinema")).not.toHaveClass("survey-paused");
-  expect(vi.getTimerCount()).toBe(1);
+  expect(vi.getTimerCount()).toBe(2);
   await act(async () => {
     document.documentElement.dataset["theme"] = "ocean";
   });

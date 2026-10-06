@@ -1,0 +1,180 @@
+/* Optional Alien opening only. All decorative layers pass through input. */
+html[data-theme="alien"][data-alien-shake="active"] .portfolio-shell main {
+  animation: alien-intro-shake 400ms ease-out both;
+}
+@keyframes alien-intro-shake {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  15% {
+    transform: translate(-4px, 1px);
+  }
+  32% {
+    transform: translate(3px, -2px);
+  }
+  50% {
+    transform: translate(-2px, 1px);
+  }
+  70% {
+    transform: translate(1px, -1px);
+  }
+  85% {
+    transform: translate(-0.5px, 0);
+  }
+}
+html[data-theme="alien"] .alien-intro[data-phase="fading"] {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+html[data-theme="alien"] .survey-boot[hidden] {
+  display: none;
+}
+html[data-theme="alien"] .alien-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+html[data-theme="alien"] .alien-intro-message {
+  position: absolute;
+  left: 50%;
+  bottom: 16%;
+  translate: -50% 0;
+  display: grid;
+  gap: 12px;
+  width: min(90vw, 640px);
+  text-align: center;
+  font: 12px/1.7 var(--font-mono);
+  letter-spacing: 0.14em;
+  color: #c6d8ce;
+  text-shadow: 0 2px 14px #000;
+}
+html[data-theme="alien"] .alien-intro-caption {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  opacity: 0.5;
+}
+html[data-theme="alien"] .alien-intro[data-phase="normal"] .alien-intro-message {
+  visibility: hidden;
+}
+html[data-theme="alien"]
+  .alien-intro:is([data-phase="hello"], [data-phase="build"])
+  .alien-intro-message
+  > span:last-child {
+  animation: alien-intro-arrive 0.5s ease-out both;
+  font-size: clamp(12px, 1.8vw, 19px);
+}
+html[data-theme="alien"] .alien-intro-skip {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  pointer-events: auto;
+  padding: 8px 12px;
+  border: 1px solid #92b7a333;
+  border-radius: 6px;
+  background: #050a08dd;
+  color: #bbc9c2;
+  font: 11px/1.5 var(--font-mono);
+}
+html[data-theme="alien"] .alien-intro-skip:focus-visible {
+  outline: 2px solid #94d5c3;
+  outline-offset: 4px;
+}
+html[data-theme="alien"] .alien-intro-secret {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: 280px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  background: #040807d9;
+  color: #9bacaa;
+  font: 10px/1.6 var(--font-mono);
+  transition: opacity 0.4s;
+}
+html[data-theme="alien"] .alien-intro-distortion {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: repeating-linear-gradient(0deg, transparent 0 8px, #829b8c06 9px 10px);
+}
+html[data-theme="alien"][data-alien-intro="detection"] .alien-intro-distortion {
+  opacity: 0.4;
+}
+html[data-theme="alien"][data-alien-intro="detection"] .planet-cursor {
+  transform: var(--alien-intro-cursor-origin) !important;
+}
+html[data-theme="alien"][data-alien-intro="identified"] .alien-cursor .alien-structure {
+  filter: drop-shadow(0 0 3px #aacfc77a);
+}
+html[data-theme="alien"][data-alien-intro="glitch"] .alien-intro-distortion {
+  animation: alien-intro-static 0.24s ease-out both;
+  background:
+    repeating-linear-gradient(0deg, #a5bbb20a 0 1px, transparent 2px 11px),
+    radial-gradient(ellipse at 34% 55%, #a6c8b515, transparent 55%);
+}
+html[data-theme="alien"][data-alien-intro="glitch"] .portfolio-shell main {
+  animation: alien-intro-shift 0.24s ease-out both;
+}
+html[data-theme="alien"][data-alien-intro="glitch"] .portfolio-shell main :is(h1, h2, h3) {
+  text-shadow:
+    -1px 0 #b7808870,
+    1px 0 #75b6c170;
+}
+html[data-theme="alien"][data-alien-intro="glitch"] .alien-cursor .alien-core {
+  transform: scale(0.7, 1.1);
+}
+@keyframes alien-intro-arrive {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes alien-intro-shift {
+  0%,
+  100% {
+    transform: none;
+  }
+  35% {
+    transform: translate(1px, -1px) skewX(0.08deg);
+  }
+}
+@keyframes alien-intro-static {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 0.65;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme="alien"][data-alien-shake] .portfolio-shell main {
+    animation: none !important;
+  }
+  html[data-theme="alien"] .alien-intro {
+    transition: none !important;
+  }
+  html[data-theme="alien"] .alien-intro *,
+  html[data-theme="alien"][data-alien-intro] .portfolio-shell main {
+    animation: none !important;
+    transition: none !important;
+  }
+  html[data-theme="alien"] .alien-intro-distortion,
+  html[data-theme="alien"] .alien-intro-secret {
+    display: none;
+  }
+  html[data-theme="alien"][data-alien-intro] .portfolio-shell main :is(h1, h2, h3) {
+    text-shadow: none;
+  }
+}
+@media (hover: none), (pointer: coarse) {
+  html[data-theme="alien"] .alien-intro-secret {
+    display: none;
+  }
+}

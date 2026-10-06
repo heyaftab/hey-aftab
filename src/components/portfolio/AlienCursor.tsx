@@ -196,8 +196,11 @@ export function AlienCursor() {
         shadows[i]?.setAttribute("opacity", "0.35");
       });
       membranes.forEach((membrane, i) => {
-        const a = anchors[i]!;
-        const b = anchors[(i + 1) % TENDRIL_COUNT]!;
+        // Compact the visible skin without shortening the tendrils' stepping reach.
+        const anchorA = anchors[i]!;
+        const anchorB = anchors[(i + 1) % TENDRIL_COUNT]!;
+        const a = { x: anchorA.x * 0.75, y: anchorA.y * 0.75 };
+        const b = { x: anchorB.x * 0.75, y: anchorB.y * 0.75 };
         // A shallower concave edge adds skin while keeping the outer tips free.
         membrane.setAttribute(
           "d",

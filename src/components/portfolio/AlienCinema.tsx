@@ -1,13 +1,21 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import "./alien-cinema.css";
 import { SymbioteBackground } from "./SymbioteBackground";
+import { AlienIntro } from "./AlienIntro";
 
 const SURVEY = { particleCount: 24 };
 
 export function AlienCinema() {
   const [active, setActive] = useState(false);
+  const visits = useRef(0);
+  const wasActive = useRef(false);
   useEffect(() => {
-    const sync = () => setActive(document.documentElement.dataset["theme"] === "alien");
+    const sync = () => {
+      const next = document.documentElement.dataset["theme"] === "alien";
+      if (next && !wasActive.current) visits.current += 1;
+      wasActive.current = next;
+      setActive(next);
+    };
     const observer = new MutationObserver(sync);
     observer.observe(document.documentElement, {
       attributes: true,
@@ -20,6 +28,7 @@ export function AlienCinema() {
     <>
       <SymbioteBackground />
       <SurveyAtmosphere />
+      <AlienIntro repeatVisit={visits.current > 1} />
     </>
   ) : null;
 }
@@ -108,7 +117,7 @@ function SurveyAtmosphere() {
   return (
     <div ref={root} className="survey-cinema" aria-hidden="true">
       {/* BOOT SEQUENCE: decorative, never intercepts input. */}
-      <div className="survey-boot">
+      <div className="survey-boot" hidden>
         <span className="survey-heartbeat" />
         <span className="survey-classification">DEEP SPACE SURVEY // TRANSMISSION 07</span>
         <div className="survey-title">

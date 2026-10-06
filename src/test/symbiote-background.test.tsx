@@ -40,6 +40,31 @@ it("bends background branches with a single scheduled frame and cleans up on unm
     "translate",
   );
   expect(container.querySelector(".symbiote-background")).toHaveAttribute("aria-hidden", "true");
+  const advance = (now: number) =>
+    act(() => {
+      const callbacks = [...pending.values()];
+      pending.clear();
+      callbacks.forEach((callback) => callback(now));
+    });
+  const limb = container.querySelector(".symbiote-branch > path")!;
+  const initialShape = limb.getAttribute("d");
+  advance(1000);
+  expect(limb.getAttribute("d")).not.toBe(initialShape);
+  expect(pending.size).toBe(1);
+  fireEvent.pointerDown(window, { clientX: 230, clientY: 240 });
+  advance(1016);
+  expect(
+    Number((container.querySelector(".symbiote-ripple") as HTMLElement).style.opacity),
+  ).toBeGreaterThan(0);
+  expect((container.querySelector(".symbiote-dust i") as HTMLElement).style.transform).toContain(
+    "translate3d",
+  );
+  const hidden = vi.spyOn(document, "hidden", "get").mockReturnValue(true);
+  fireEvent(document, new Event("visibilitychange"));
+  expect(pending.size).toBe(0);
+  hidden.mockReturnValue(false);
+  fireEvent(document, new Event("visibilitychange"));
+  expect(pending.size).toBe(1);
   unmount();
   expect(pending.size).toBe(0);
 });
