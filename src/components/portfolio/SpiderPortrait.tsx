@@ -6,7 +6,7 @@ export function SpiderPortrait() {
   const [revealed, setRevealed] = useState(false);
   useLayoutEffect(() => {
     const sync = () => {
-      setSpider(document.documentElement.dataset["theme"] === "ocean");
+      setSpider(["ocean", "spider"].includes(document.documentElement.dataset["theme"] ?? ""));
       setRevealed(false);
     };
     const observer = new MutationObserver(sync);

@@ -87,7 +87,7 @@ export function SpaceGravity() {
       if (ctx) {
         ctx.clearRect(0, 0, width, height);
         const light = document.documentElement.dataset["theme"] === "light";
-        const spider = ["ocean", "alien"].includes(document.documentElement.dataset["theme"] ?? "");
+        const spider = ["ocean", "spider", "alien"].includes(document.documentElement.dataset["theme"] ?? "");
         for (const star of stars) {
           const x = star.x * width;
           const y = wrapSpace(

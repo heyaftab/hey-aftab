@@ -1,5 +1,6 @@
 /* Portrait reveal belongs exclusively to the Spider theme. */
-html[data-theme="ocean"] .spider-portrait {
+html[data-theme="ocean"] .spider-portrait,
+html[data-theme="spider"] .spider-portrait {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -8,7 +9,8 @@ html[data-theme="ocean"] .spider-portrait {
   border: 0;
   background: transparent;
 }
-html[data-theme="ocean"] .spider-portrait-cover {
+html[data-theme="ocean"] .spider-portrait-cover,
+html[data-theme="spider"] .spider-portrait-cover {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -18,24 +20,29 @@ html[data-theme="ocean"] .spider-portrait-cover {
   pointer-events: none;
   transition: opacity 0.45s cubic-bezier(0.2, 0.7, 0.1, 1);
 }
-html[data-theme="ocean"] .spider-portrait-cover[data-revealed="true"] {
+html[data-theme="ocean"] .spider-portrait-cover[data-revealed="true"],
+html[data-theme="spider"] .spider-portrait-cover[data-revealed="true"] {
   opacity: 0;
 }
-html[data-theme="ocean"] .spider-portrait:focus-visible {
+html[data-theme="ocean"] .spider-portrait:focus-visible,
+html[data-theme="spider"] .spider-portrait:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: -4px;
 }
 /* Existing caption/gradient overlays must let taps reach the image button. */
-html[data-theme="ocean"] .hero-photo-card .spider-portrait ~ div {
+html[data-theme="ocean"] .hero-photo-card .spider-portrait ~ div,
+html[data-theme="spider"] .hero-photo-card .spider-portrait ~ div {
   pointer-events: none;
 }
 @media (hover: hover) and (pointer: fine) {
-  html[data-theme="ocean"] .spider-portrait:hover .spider-portrait-cover {
+  html[data-theme="ocean"] .spider-portrait:hover .spider-portrait-cover,
+  html[data-theme="spider"] .spider-portrait:hover .spider-portrait-cover {
     opacity: 0;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  html[data-theme="ocean"] .spider-portrait-cover {
+  html[data-theme="ocean"] .spider-portrait-cover,
+  html[data-theme="spider"] .spider-portrait-cover {
     transition: none;
   }
 }

@@ -96,7 +96,7 @@ export function LightSpiderCursor() {
       last = now;
       const ease = 1 - Math.exp(-dt * 12);
       spread += ((hover ? 1 : 0) - spread) * ease;
-      const spiderTheme = document.documentElement.dataset["theme"] === "ocean";
+      const spiderTheme = ["ocean", "spider"].includes(document.documentElement.dataset["theme"] ?? "");
       if (spiderTheme) {
         const blend = 1 - Math.exp(-dt * (travel > 0 ? 40 : 14));
         velocityX += (Math.max(-2200, Math.min(2200, pendingX / dt)) - velocityX) * blend;
@@ -345,10 +345,10 @@ export function LightSpiderCursor() {
       }
       element.setAttribute(
         "viewBox",
-        document.documentElement.dataset["theme"] === "ocean" ? "-60 -60 120 120" : "-24 -24 48 48",
+        ["ocean", "spider"].includes(document.documentElement.dataset["theme"] ?? "") ? "-60 -60 120 120" : "-24 -24 48 48",
       );
       active =
-        ["light", "ocean"].includes(document.documentElement.dataset["theme"] ?? "") &&
+        ["light", "ocean", "spider"].includes(document.documentElement.dataset["theme"] ?? "") &&
         media.matches;
       if (active) start();
       else {
@@ -359,7 +359,7 @@ export function LightSpiderCursor() {
     };
     const move = (event: MouseEvent) => {
       if (previous) {
-        if (active && document.documentElement.dataset["theme"] === "ocean") {
+        if (active && ["ocean", "spider"].includes(document.documentElement.dataset["theme"] ?? "")) {
           pendingX += event.clientX - previous.x;
           pendingY += event.clientY - previous.y;
         }

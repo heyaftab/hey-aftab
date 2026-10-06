@@ -54,6 +54,13 @@ const THEMES = [
   { id: "alien", label: "Alien signal", Icon: Orbit },
 ] as const;
 type ThemeId = (typeof THEMES)[number]["id"];
+const legacyThemeName = (value: string | null): ThemeId | null => {
+  if (value === "spider") return "ocean";
+  if ((THEMES as readonly { id: ThemeId }[]).some((theme) => theme.id === value)) {
+    return value as ThemeId;
+  }
+  return null;
+};
 
 export function ThemePicker() {
   const [theme, setTheme] = useState<ThemeId>("night");
@@ -68,7 +75,7 @@ export function ThemePicker() {
     } catch {
       /* Storage may be blocked. */
     }
-    const initial = THEMES.find((item) => item.id === saved)?.id ?? "night";
+    const initial = legacyThemeName(saved) ?? "night";
     selected.current = initial;
     document.documentElement.dataset["theme"] = initial;
     setTheme(initial);
@@ -81,7 +88,7 @@ export function ThemePicker() {
     document.documentElement.dataset["theme"] = next;
     setTheme(next);
     try {
-      localStorage.setItem("portfolio-theme", next);
+      localStorage.setItem("portfolio-theme", next === "ocean" ? "ocean" : next);
     } catch {
       /* Persist for this visit. */
     }

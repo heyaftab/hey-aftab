@@ -636,7 +636,7 @@ export function Cursor() {
   const [spiderTheme, setSpiderTheme] = useState(false);
   useEffect(() => {
     const sync = () =>
-      setSpiderTheme(["ocean", "alien"].includes(document.documentElement.dataset["theme"] ?? ""));
+      setSpiderTheme(["ocean", "spider", "alien"].includes(document.documentElement.dataset["theme"] ?? ""));
     const observer = new MutationObserver(sync);
     observer.observe(document.documentElement, {
       attributes: true,

@@ -241,7 +241,7 @@ export function HeroLightField() {
       const light = document.documentElement.dataset["theme"];
       gl.uniform3f(
         uniforms.tint,
-        ...((light === "ocean"
+        ...((light === "ocean" || light === "spider"
           ? [0.2, 0.75, 0.78]
           : light === "light"
             ? [0.55, 0.32, 0.48]

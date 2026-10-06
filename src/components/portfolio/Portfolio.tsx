@@ -288,7 +288,7 @@ function Hero() {
             Dhaka, Bangladesh · Open to AI opportunities
           </p>
           <h1
-            className="text-gradient rise mt-5 text-[clamp(2.6rem,11vw,4.5rem)] font-semibold leading-[0.94] sm:mt-6 sm:text-7xl xl:text-8xl"
+            className="hero-name text-gradient rise mt-5 text-[clamp(2.6rem,11vw,4.5rem)] font-semibold leading-[0.94] sm:mt-6 sm:text-7xl xl:text-8xl"
             style={{ animationDelay: "120ms" }}
           >
             AFTAB

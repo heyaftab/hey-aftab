@@ -5,7 +5,8 @@ import "./spider-background.css";
 export function SpiderBackground() {
   const [active, setActive] = useState(false);
   useLayoutEffect(() => {
-    const sync = () => setActive(document.documentElement.dataset["theme"] === "ocean");
+    const sync = () =>
+      setActive(["ocean", "spider"].includes(document.documentElement.dataset["theme"] ?? ""));
     const observer = new MutationObserver(sync);
     observer.observe(document.documentElement, {
       attributes: true,
