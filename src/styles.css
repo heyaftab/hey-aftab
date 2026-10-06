@@ -812,6 +812,49 @@ html[data-theme="light"] .light-survey-glitch .light-survey-grain { transform:tr
   html[data-theme="light"] :is(.light-survey-arrived .reveal.in,article::after) { animation:none; }
   html[data-theme="light"] .light-survey-grain { display:none; }
 }
+/* Mobile in-app browsers can drop transparent text during filter compositing. */
+@media (max-width: 767px), (hover: none) and (pointer: coarse) {
+  html[data-theme="light"] .portfolio-shell :is(.text-gradient, .text-accent-gradient),
+  html[data-theme="light"] #home h1 {
+    color: #0c1a16;
+    -webkit-text-fill-color: #0c1a16;
+    background: none;
+    text-shadow: none;
+    animation: none;
+    filter: none;
+  }
+  html[data-theme="light"] .portfolio-shell :is(.rise, .reveal, .reveal.in),
+  html[data-theme="light"] .light-survey-arrived .reveal.in {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    animation: none;
+  }
+  html[data-theme="light"] .portfolio-shell .morph-word {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  html[data-theme="light"] .portfolio-shell > header {
+    transition: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  html[data-theme="light"] .theme-orb .theme-icon {
+    animation: none;
+    transform: none;
+    filter: none;
+    opacity: 1;
+  }
+  html[data-theme="light"] .portfolio-shell :is(.glass, .theme-orb) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  html[data-theme="light"] .light-survey-grain {
+    display: none;
+  }
+}
 /* LIGHT THEME OVERRIDES END */
 /* LIGHT THEME OVERRIDES START — precise reticle above content; lens stays behind it. */
 html[data-theme="light"] .light-survey-reticle { z-index:100; }
@@ -870,3 +913,170 @@ html[data-theme="ocean"] .light-spider-cursor .spider-anatomy { translate:0 var(
 @media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
   html[data-theme="ocean"] .planet-cursor > .light-spider-cursor { transform:scale(1.35); transform-origin:center; }
 }
+
+/* LIGHT THEME OVERRIDES START - editorial palette and playful ink cursor */
+:root[data-theme="light"] {
+  --background: #f4f2ed; --foreground: #182923; --surface: #ebe9e2;
+  --card: #f9f7f2; --muted: #ebe9e2; --muted-foreground: #52645c;
+  --border: #18292324; --input: #18292333; --popover: #f9f7f2;
+  --light-lens-opacity: .07;
+}
+html[data-theme="light"] body { background: #f4f2ed; }
+html[data-theme="light"] :is(.bg-light,.atmosphere,.space-starfield,.hero-geometry,.hero-light-field,.hero-lens,.grid-bg,.panel-grid,.glow-orb,.scene-details,.portrait-depth-ring,.portrait-stage > .float-slow,.hero-system-labels,.space-navigation) { display: none; }
+html[data-theme="light"] .light-survey > :not(.light-survey-lens) { display: none; }
+html[data-theme="light"] #home h1 {
+  background: none; color: #182923; -webkit-text-fill-color: #182923;
+  animation: none; filter: none; text-shadow: none; letter-spacing: -.055em;
+}
+html[data-theme="light"] .portfolio-shell :is(.text-gradient,.text-accent-gradient) {
+  background: none; color: #0b7a62; -webkit-text-fill-color: currentColor;
+  animation: none; filter: none;
+}
+html[data-theme="light"] #home h1 { color: #182923; -webkit-text-fill-color: #182923; }
+html[data-theme="light"] .glass {
+  background: #f9f7f2; border-color: #18292324;
+  box-shadow: 0 12px 36px -24px #18292330;
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+}
+html[data-theme="light"] .portfolio-shell > header {
+  background: #f4f2edf5; border-bottom: 1px solid #18292318;
+}
+html[data-theme="light"] .hero-photo-card {
+  transform: none; padding: 7px; border-radius: 18px;
+  box-shadow: 0 22px 50px -30px #18292360;
+}
+html[data-theme="light"] .portrait-stage { perspective: none; transform-style: flat; }
+html[data-theme="light"] :is(.hero-photo-card::before,article::after,h3[data-light-decode]::after) { display: none; }
+html[data-theme="light"] .portfolio-shell article.glass:hover {
+  border-color: #0b7a6260; box-shadow: 0 18px 42px -28px #18292345;
+}
+html[data-theme="light"] .light-survey-arrived .reveal.in { animation: none; }
+html[data-theme="light"] .theme-orb .theme-icon { filter: none; transform: none; animation: none; }
+html[data-theme="light"] .theme-control .theme-orb { background: #f9f7f2; box-shadow: 0 3px 12px #18292312; backdrop-filter: none; }
+html[data-theme="light"] .light-survey-reticle::after {
+  content: ""; position: absolute; inset: -13px; width: 26px; height: 26px;
+  border: 1px dashed #0b7a62; border-radius: 50%; opacity: 0;
+  transition: opacity .25s var(--light-ease), transform .45s var(--light-ease);
+}
+html[data-theme="light"] .light-survey-pointer-lock::after { opacity: .65; transform: scale(1.4) rotate(35deg); }
+html[data-theme="light"] .light-survey-click::after { animation: light-ink-ripple .6s var(--light-ease) both; }
+@keyframes light-ink-ripple {
+  from { opacity: .7; transform: scale(.6); }
+  to { opacity: 0; transform: scale(2.8); }
+}
+@media (max-width: 767px) {
+  html[data-theme="light"] #home > .relative.mx-auto.grid { gap: 24px; padding-top: 24px; align-content: start; }
+  html[data-theme="light"] #home h1 { margin-top: 16px; font-size: clamp(2.4rem, 10vw, 4rem); }
+  html[data-theme="light"] #home .eyebrow { font-size: 9px; letter-spacing: .14em; }
+  html[data-theme="light"] #home .morph-copy { min-width: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme="light"] .light-survey-reticle::after { animation: none; transition: none; }
+}
+/* LIGHT THEME OVERRIDES END */
+
+/* LIGHT THEME OVERRIDES START - sunrise switch detail */
+html[data-theme="light"] .theme-control .theme-orb {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  color: #0b7a62;
+  border-color: #0b7a6230;
+  background: linear-gradient(145deg, #faf8f3, #eae8df);
+  box-shadow: inset 0 1px 0 #fff9, 0 4px 12px #1829230d;
+}
+html[data-theme="light"] .theme-orb .theme-icon svg { width: 21px; height: 21px; }
+html[data-theme="light"] .theme-orb :is(.theme-orb-aura, .theme-orb-orbit, .theme-orb-glint) { display: none; }
+html[data-theme="light"] .theme-control .theme-orb:hover { border-color: #0b7a6266; background: #e9eee6; }
+html[data-theme="light"] .theme-control .theme-orb:focus-visible { outline: 2px solid #0b7a62; outline-offset: 4px; }
+/* LIGHT THEME OVERRIDES END */
+
+/* LIGHT THEME OVERRIDES START - dimensional pearl cursor */
+@media (hover: hover) and (pointer: fine) {
+  html[data-theme="light"] .light-survey-reticle { perspective: 180px; }
+  html[data-theme="light"] .light-survey-reticle > span {
+    left: -11px; top: -11px; width: 22px; height: 22px;
+    border: none; border-radius: 50%; transform-style: preserve-3d;
+    box-shadow: 3px 7px 8px -4px #18292350;
+  }
+  html[data-theme="light"] .light-cursor-pearl {
+    display: block; width: 100%; height: 100%; border-radius: 50%;
+    background: radial-gradient(circle at 30% 24%, #fffdf6 0%, #e4ede0 28%, #80aaa0 58%, #1b574a 90%);
+    box-shadow: inset 1px 1px 2px #fff9, inset -2px -3px 4px #123e3b60;
+    transform: rotateX(var(--pearl-tilt-x, 0deg)) rotateY(var(--pearl-tilt-y, 0deg));
+  }
+  html[data-theme="light"] .light-cursor-pearl::before {
+    content: ""; position: absolute; width: 7px; height: 4px;
+    left: 4px; top: 4px; border-radius: 50%; background: #fffdf5;
+    opacity: .7; animation: light-pearl-breathe 5s var(--light-ease) infinite alternate;
+  }
+  html[data-theme="light"] .light-survey-reticle > i {
+    width: 3px; height: 3px; left: -1.5px; top: -1.5px;
+    background: #123c31; box-shadow: 0 0 0 1px #fff8;
+  }
+  html[data-theme="light"] .light-survey-pointer-lock > span { transform: scale(1.18); }
+  html[data-theme="light"] .light-survey-click > span { animation: light-pearl-press .6s var(--light-ease); }
+}
+@keyframes light-pearl-breathe { from { opacity: .5; } to { opacity: .85; } }
+@keyframes light-pearl-press { 0%, 100% { transform: scale(1); } 25% { transform: scale(.82); } 55% { transform: scale(1.12); } }
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme="light"] :is(.light-cursor-pearl::before, .light-survey-click > span) { animation: none; }
+  html[data-theme="light"] .light-cursor-pearl { transform: none; }
+}
+/* LIGHT THEME OVERRIDES END */
+
+/* LIGHT THEME OVERRIDES START - cursor-revealed fine mesh */
+:root[data-theme="light"] {
+  --light-mesh-spacing: 18px;
+  --light-mesh-radius: 230px;
+  --light-mesh-ink: #0b7a6238;
+}
+@media (hover: hover) and (pointer: fine) {
+  html[data-theme="light"] .light-survey > .light-survey-hidden {
+    display: block;
+    color: #0b7a62;
+    background-color: #0b7a6205;
+    background-image:
+      linear-gradient(60deg, transparent 48%, var(--light-mesh-ink) 49%, var(--light-mesh-ink) 51%, transparent 52%),
+      linear-gradient(-60deg, transparent 48%, var(--light-mesh-ink) 49%, var(--light-mesh-ink) 51%, transparent 52%),
+      radial-gradient(circle, #0b7a6270 1px, transparent 1.5px);
+    background-size: var(--light-mesh-spacing) calc(var(--light-mesh-spacing) * 1.73);
+    mask-image: radial-gradient(circle var(--light-mesh-radius) at var(--mx, -1000px) var(--my, -1000px), #000 15%, #0009 55%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle var(--light-mesh-radius) at var(--mx, -1000px) var(--my, -1000px), #000 15%, #0009 55%, transparent 100%);
+  }
+  html[data-theme="light"] .light-survey-hidden svg { display: none; }
+}
+/* LIGHT THEME OVERRIDES END */
+
+/* LIGHT THEME OVERRIDES START - bounded mesh repaint area */
+@media (hover: hover) and (pointer: fine) {
+  html[data-theme="light"] .light-survey > .light-survey-hidden {
+    inset: auto;
+    left: calc(var(--light-mesh-radius) * -1);
+    top: calc(var(--light-mesh-radius) * -1);
+    width: calc(var(--light-mesh-radius) * 2);
+    height: calc(var(--light-mesh-radius) * 2);
+    contain: strict;
+    will-change: transform;
+    mask-image: radial-gradient(circle closest-side at center, #000 15%, #0009 55%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle closest-side at center, #000 15%, #0009 55%, transparent 100%);
+  }
+}
+/* LIGHT THEME OVERRIDES END */
+
+/* LIGHT THEME OVERRIDES START - stable readable text */
+html[data-theme="light"] .portfolio-shell :is(.rise, .reveal, .reveal.in),
+html[data-theme="light"] .light-survey-arrived .reveal.in {
+  opacity: 1;
+  filter: none;
+  animation: none;
+  transform: none;
+  transition: none;
+}
+html[data-theme="light"] .portfolio-shell .morph-word {
+  opacity: 1;
+  filter: none;
+  animation: none;
+  transform: none;
+}
+/* LIGHT THEME OVERRIDES END */

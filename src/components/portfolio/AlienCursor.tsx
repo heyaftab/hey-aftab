@@ -2,6 +2,7 @@
 import "./alien.css";
 
 type Axis = { position: number; velocity: number };
+const TENDRIL_COUNT = 10;
 function spring(axis: Axis, target: number, elapsed: number, stiffness: number, damping: number) {
   let remaining = elapsed;
   while (remaining > 0) {
@@ -24,12 +25,14 @@ export function AlienCursor() {
     const ripple = svg.querySelector<SVGCircleElement>(".alien-pulse")!;
     const trail = svg.querySelector<SVGPathElement>(".alien-trail")!;
     const limbs = Array.from(svg.querySelectorAll<SVGPathElement>(".venom-limb"));
+    const membranes = Array.from(svg.querySelectorAll<SVGPathElement>(".venom-membrane"));
+    const anchors = Array.from({ length: TENDRIL_COUNT }, () => ({ x: 0, y: 0 }));
     const highlights = Array.from(svg.querySelectorAll<SVGPathElement>(".venom-highlight"));
     const shadows = Array.from(svg.querySelectorAll<SVGPathElement>(".venom-contact-shadow"));
     const media = window.matchMedia(
       "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
     );
-    const joints = Array.from({ length: 8 }, () => ({
+    const joints = Array.from({ length: TENDRIL_COUNT }, () => ({
       x: { position: 0, velocity: 0 },
       y: { position: 0, velocity: 0 },
       ready: false,
@@ -37,7 +40,6 @@ export function AlienCursor() {
     const rotation = { position: 0, velocity: 0 };
     const deformation = { position: 0, velocity: 0 };
     const alert = { position: 0, velocity: 0 };
-    let gait = 0;
     let frame = 0,
       last = 0,
       active = false,
@@ -86,18 +88,24 @@ export function AlienCursor() {
       vy += (Math.max(-1800, Math.min(1800, dy / dt)) - vy) * smoothing;
       dx = dy = 0;
       const speed = Math.min(Math.hypot(vx, vy) / 850, 1);
-      gait += dt * (0.35 + speed * 7);
+      const idleAmount = 1 - Math.min(speed / 0.15, 1);
+      const idleWiggle = 1 + 19 * idleAmount;
       const turn = ((((heading - rotation.position) % 360) + 540) % 360) - 180;
       spring(rotation, rotation.position + turn, dt, 900, 52);
-      spring(deformation, speed * 0.2, dt, 640, 42);
+      spring(deformation, speed * 0.32, dt, 240, 25);
       spring(alert, hover ? 1 : 0, dt, 520, 34);
       const angle = (rotation.position * Math.PI) / 180,
         cos = Math.cos(angle),
         sin = Math.sin(angle);
       const localX = vx * cos + vy * sin,
         localY = -vx * sin + vy * cos;
-      const age = (now - pulse) / 480;
-      const burst = age >= 0 && age < 1 ? Math.sin(age * Math.PI) * (1 - age) : 0;
+      const age = (now - pulse) / 600;
+      const burst =
+        age >= 0 && age < 1
+          ? age < 0.16
+            ? -Math.sin((age / 0.16) * Math.PI) * 0.4
+            : Math.sin(((age - 0.16) / 0.84) * Math.PI) * (1 - age) * 1.8
+          : 0;
       const breath = Math.sin(now * 0.0019) * 0.012;
       // Pointer origin remains exact; only the small internal organism leans and deforms.
       structure.setAttribute(
@@ -108,7 +116,7 @@ export function AlienCursor() {
         const a = (i * Math.PI) / 6;
         const r =
           5.2 +
-          Math.sin(now * 0.0014 + i * 2.3) * 0.48 +
+          Math.sin(now * 0.0014 + i * 2.3) * 0.9 * Math.min(idleWiggle, 2) +
           Math.cos(i * 1.7) * 0.45 +
           alert.position * 0.3 +
           burst * 0.5;
@@ -126,43 +134,75 @@ export function AlienCursor() {
       const localReachX = reachX * cos + reachY * sin,
         localReachY = -reachX * sin + reachY * cos;
       limbs.forEach((limb, i) => {
-        const a = (i * Math.PI) / 4 + Math.sin(i * 1.8) * 0.13;
-        // Long support phase, lifted forward reach, then a controlled plant.
-        const phase = (gait / (Math.PI * 2) + (i % 4) * 0.5 + (i >= 4 ? 0.5 : 0) + i * 0.025) % 1;
-        const planted = phase < 0.72;
-        const u = planted ? phase / 0.72 : (phase - 0.72) / 0.28;
-        const smooth = u * u * (3 - 2 * u);
-        const step = (planted ? 1 - 2 * smooth : -1 + 2 * smooth) * speed * 9;
-        const lift = planted ? 0 : Math.sin(Math.PI * u) ** 2 * speed * 5;
-        const state = speed > 0.1 ? (planted ? "plant" : "swing") : "idle";
-        if (limb.dataset["step"] !== state) limb.dataset["step"] = state;
-        const length = 18 + (i % 3) * 3 + burst * 7 + alert.position * 2;
-        const organic = Math.sin(now * (0.0014 + i * 0.00009) + i * 2.7) * 0.65;
+        const wave = Math.sin(now * (0.0018 + idleAmount * 0.0012) - i * 0.85);
+        const twitch = Math.max(0, Math.sin(now * 0.00075 + i * 2.1)) ** 18;
+        const a = (i * Math.PI * 2) / TENDRIL_COUNT + Math.sin(i * 1.8) * 0.17 + wave * 0.12;
+        // Double the radial reach gives roughly four times the movement area.
+        const length =
+          70 + (i % 4) * 8 + burst * 30 + alert.position * 8 + speed * 10 + wave * 10 - twitch * 9;
+        const organic =
+          Math.sin(now * (0.0011 + i * 0.00008) + i * 2.7) * (1.2 + speed * 2) * idleWiggle;
         const targetX =
-          Math.cos(a) * length - localX * (0.002 + i * 0.00015) + localReachX * alert.position * 2;
+          Math.cos(a) * length -
+          localX * (0.008 + i * 0.0004) +
+          localReachX * alert.position * 5 +
+          organic;
         const targetY =
           Math.sin(a) * length -
-          localY * (0.0025 + i * 0.00018) +
-          localReachY * alert.position * 2 +
-          organic +
-          step;
+          localY * (0.009 + i * 0.0004) +
+          localReachY * alert.position * 5 +
+          organic;
         const joint = joints[i]!;
         if (!joint.ready) {
           joint.x.position = targetX;
           joint.y.position = targetY;
           joint.ready = true;
         }
-        spring(joint.x, targetX, dt, 700 + i * 85, 38 + i * 1.5);
-        spring(joint.y, targetY, dt, 780 + i * 65, 40 + i * 1.3);
-        const px = Math.max(-35, Math.min(35, joint.x.position)),
-          py = Math.max(-35, Math.min(35, joint.y.position));
-        const curl = Math.sin(now * 0.002 + i) * 1.2;
-        const path = `M ${Math.cos(a) * 3.8} ${Math.sin(a) * 3.8} C ${px * 0.45 - Math.sin(a) * curl} ${py * 0.35 + Math.cos(a) * curl - lift} ${px * 0.85 + Math.sin(a) * 1.6} ${py * 0.7 - Math.cos(a) * 1.6 - lift * 0.6} ${px} ${py}`;
+        spring(joint.x, targetX, dt, 85 + i * 9, 11 + i * 0.4);
+        spring(joint.y, targetY, dt, 100 + i * 8, 12 + i * 0.35);
+        const px = Math.max(-120, Math.min(120, joint.x.position)),
+          py = Math.max(-120, Math.min(120, joint.y.position));
+        const curl =
+          Math.sin(now * (0.0016 + i * 0.00006) + i) * (18 + speed * 30) +
+          wave * 6 +
+          Math.max(
+            -12,
+            Math.min(
+              12,
+              (joint.x.velocity * -Math.sin(a) + joint.y.velocity * Math.cos(a)) * 0.035,
+            ),
+          );
+        // Sample farther along the animated cubic so the fuller membrane attaches
+        // directly to the tendril instead of floating beside it.
+        const t =
+          0.77 +
+          Math.sin(now * (0.0013 + idleAmount * 0.001) - i * 0.7) * (0.07 + idleAmount * 0.04);
+        const u = 1 - t;
+        anchors[i]!.x =
+          u ** 3 * Math.cos(a) * 3.8 +
+          3 * u * u * t * (px * 0.25 - Math.sin(a) * curl) +
+          3 * u * t * t * (px * 0.65 + Math.sin(a) * curl - localX * 0.003) +
+          t ** 3 * px;
+        anchors[i]!.y =
+          u ** 3 * Math.sin(a) * 3.8 +
+          3 * u * u * t * (py * 0.25 + Math.cos(a) * curl) +
+          3 * u * t * t * (py * 0.65 - Math.cos(a) * curl - localY * 0.003) +
+          t ** 3 * py;
+        const path = `M ${Math.cos(a) * 3.8} ${Math.sin(a) * 3.8} C ${px * 0.25 - Math.sin(a) * curl} ${py * 0.25 + Math.cos(a) * curl} ${px * 0.65 + Math.sin(a) * curl - localX * 0.003} ${py * 0.65 - Math.cos(a) * curl - localY * 0.003} ${px} ${py}`;
         limb.setAttribute("d", path);
         highlights[i]?.setAttribute("d", path);
         shadows[i]?.setAttribute("d", path);
-        shadows[i]?.setAttribute("transform", `translate(1 ${(2 + lift * 0.4).toFixed(3)})`);
-        shadows[i]?.setAttribute("opacity", (0.45 - lift * 0.04).toFixed(3));
+        shadows[i]?.setAttribute("transform", "translate(1 2)");
+        shadows[i]?.setAttribute("opacity", "0.35");
+      });
+      membranes.forEach((membrane, i) => {
+        const a = anchors[i]!;
+        const b = anchors[(i + 1) % TENDRIL_COUNT]!;
+        // A shallower concave edge adds skin while keeping the outer tips free.
+        membrane.setAttribute(
+          "d",
+          `M0 0 L${a.x} ${a.y} Q${(a.x + b.x) * 0.38} ${(a.y + b.y) * 0.38} ${b.x} ${b.y} Z`,
+        );
       });
       const tailX = Math.max(-12, Math.min(12, -vx * 0.009)),
         tailY = Math.max(-12, Math.min(12, -vy * 0.009));
@@ -249,7 +289,12 @@ export function AlienCursor() {
     };
   }, []);
   return (
-    <svg ref={ref} className="alien-cursor venom-cursor" viewBox="-48 -48 96 96" aria-hidden="true">
+    <svg
+      ref={ref}
+      className="alien-cursor venom-cursor"
+      viewBox="-160 -160 320 320"
+      aria-hidden="true"
+    >
       <defs>
         <radialGradient id={`${id}-skin`} cx="28%" cy="20%" r="80%">
           <stop stopColor="#68777c" />
@@ -285,18 +330,23 @@ export function AlienCursor() {
       />
       <g className="alien-structure" fill="none" strokeLinecap="round">
         <ellipse cx="1" cy="3" rx="9" ry="7" fill={`url(#${id}-contact)`} />
+        <g fill={`url(#${id}-skin)`} stroke="#71868a" strokeWidth=".22" strokeOpacity=".4">
+          {Array.from({ length: TENDRIL_COUNT }, (_, i) => (
+            <path key={i} className="venom-membrane" />
+          ))}
+        </g>
         <g stroke="#010306" strokeWidth="2.6">
-          {Array.from({ length: 8 }, (_, i) => (
+          {Array.from({ length: TENDRIL_COUNT }, (_, i) => (
             <path key={i} className="venom-contact-shadow" />
           ))}
         </g>
         <g stroke={`url(#${id}-limb)`} strokeWidth="1.8">
-          {Array.from({ length: 8 }, (_, i) => (
+          {Array.from({ length: TENDRIL_COUNT }, (_, i) => (
             <path key={i} className="venom-limb" />
           ))}
         </g>
         <g stroke="#94a9ac" strokeWidth=".25" opacity=".55" transform="translate(-.25 -.35)">
-          {Array.from({ length: 8 }, (_, i) => (
+          {Array.from({ length: TENDRIL_COUNT }, (_, i) => (
             <path key={i} className="venom-highlight" />
           ))}
         </g>

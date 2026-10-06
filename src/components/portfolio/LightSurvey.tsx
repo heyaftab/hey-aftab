@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { LightBackground } from "./LightBackground";
 
-const LIGHT_SURVEY = { glitchMinMs: 20000, glitchMaxMs: 40000 };
-
 export function LightSurvey() {
   const [light, setLight] = useState(false);
   useEffect(() => {
@@ -31,6 +29,7 @@ function SpecimenScanner() {
     const el = root.current!;
     const shell = el.closest<HTMLElement>(".portfolio-shell")!;
     const lens = el.querySelector<HTMLElement>(".light-survey-lens")!;
+    const mesh = el.querySelector<HTMLElement>(".light-survey-hidden")!;
     const reticle = pointer.current!;
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -42,8 +41,6 @@ function SpecimenScanner() {
       ly = 0,
       visible = false;
     let io: IntersectionObserver | undefined;
-    let heading: HTMLElement | null = null;
-    let decodeTimer: ReturnType<typeof setTimeout> | undefined;
     const scenes = Array.from(shell.querySelectorAll<HTMLElement>("main > section"));
     const hide = () => {
       visible = false;
@@ -51,6 +48,7 @@ function SpecimenScanner() {
       frame = 0;
       el.classList.remove("light-survey-tracking");
       reticle.style.opacity = "0";
+      reticle.classList.remove("light-survey-click");
     };
     const tick = () => {
       frame = 0;
@@ -58,7 +56,18 @@ function SpecimenScanner() {
       lx += (x - lx) * (reduced.matches ? 1 : 0.12);
       ly += (y - ly) * (reduced.matches ? 1 : 0.12);
       lens.style.transform = `translate3d(${lx}px,${ly}px,0)`;
+      // Move a bounded reveal instead of repainting a viewport-sized moving mask.
+      mesh.style.transform = `translate3d(${lx}px,${ly}px,0)`;
+      mesh.style.backgroundPosition = `${-lx}px ${-ly}px`;
       reticle.style.transform = `translate3d(${x}px,${y}px,0)`;
+      reticle.style.setProperty(
+        "--pearl-tilt-x",
+        `${reduced.matches ? 0 : Math.max(-18, Math.min(18, (y - ly) * -0.5))}deg`,
+      );
+      reticle.style.setProperty(
+        "--pearl-tilt-y",
+        `${reduced.matches ? 0 : Math.max(-18, Math.min(18, (x - lx) * 0.5))}deg`,
+      );
       el.style.setProperty("--mx", `${lx}px`);
       el.style.setProperty("--my", `${ly}px`);
       if (!reduced.matches && Math.hypot(x - lx, y - ly) > 0.1) frame = requestAnimationFrame(tick);
@@ -82,41 +91,24 @@ function SpecimenScanner() {
       );
       if (!frame) frame = requestAnimationFrame(tick);
     };
-    // Brief decorative decoding: preserve the actual heading and accessible name.
-    const decode = (event: MouseEvent) => {
-      if (reduced.matches || !(event.target instanceof Element)) return;
-      const next = event.target.closest("article")?.querySelector<HTMLElement>("h3") ?? null;
-      if (next === heading) return;
-      heading?.removeAttribute("data-light-decode");
-      clearTimeout(decodeTimer);
-      heading = next;
-      if (heading) {
-        heading.dataset["lightDecode"] = "⌁ ⋮ ⊹ / 07 / ⌁";
-        decodeTimer = setTimeout(() => heading?.removeAttribute("data-light-decode"), 450);
-      }
-    };
-    const schedule = () => {
-      timer = setTimeout(
-        () => {
-          if (!document.hidden) el.classList.add("light-survey-glitch");
-          timer = setTimeout(() => {
-            el.classList.remove("light-survey-glitch");
-            schedule();
-          }, 140);
-        },
-        LIGHT_SURVEY.glitchMinMs +
-          Math.random() * (LIGHT_SURVEY.glitchMaxMs - LIGHT_SURVEY.glitchMinMs),
-      );
+    // A short tactile pulse uses the same pointer layer and cleans up on exit.
+    const click = (event: MouseEvent) => {
+      if (!fine.matches || reduced.matches || !visible || document.hidden) return;
+      x = event.clientX;
+      y = event.clientY;
+      reticle.style.transform = `translate3d(${x}px,${y}px,0)`;
+      reticle.classList.remove("light-survey-click");
+      void reticle.offsetWidth;
+      reticle.classList.add("light-survey-click");
+      clearTimeout(timer);
+      timer = setTimeout(() => reticle.classList.remove("light-survey-click"), 600);
     };
     const sync = () => {
       hide();
       clearTimeout(timer);
-      clearTimeout(decodeTimer);
       el.classList.remove("light-survey-glitch");
-      heading?.removeAttribute("data-light-decode");
       io?.disconnect();
       if (!reduced.matches && !document.hidden) {
-        schedule();
         if (window.IntersectionObserver) {
           io = new IntersectionObserver(
             (entries) =>
@@ -131,7 +123,7 @@ function SpecimenScanner() {
     };
     sync();
     window.addEventListener("mousemove", move, { passive: true });
-    shell.addEventListener("mouseover", decode);
+    shell.addEventListener("click", click);
     window.addEventListener("blur", hide);
     document.documentElement.addEventListener("mouseleave", hide);
     document.addEventListener("visibilitychange", sync);
@@ -140,12 +132,10 @@ function SpecimenScanner() {
     return () => {
       hide();
       clearTimeout(timer);
-      clearTimeout(decodeTimer);
       io?.disconnect();
-      heading?.removeAttribute("data-light-decode");
       scenes.forEach((scene) => scene.classList.remove("light-survey-arrived"));
       window.removeEventListener("mousemove", move);
-      shell.removeEventListener("mouseover", decode);
+      shell.removeEventListener("click", click);
       window.removeEventListener("blur", hide);
       document.documentElement.removeEventListener("mouseleave", hide);
       document.removeEventListener("visibilitychange", sync);
@@ -174,7 +164,9 @@ function SpecimenScanner() {
       <div className="light-survey-lens" />
       {createPortal(
         <div ref={pointer} className="light-survey-reticle" aria-hidden="true">
-          <span />
+          <span>
+            <b className="light-cursor-pearl" />
+          </span>
           <i />
         </div>,
         document.body,

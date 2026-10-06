@@ -233,6 +233,12 @@ export function HeroGeometry() {
           ))}
         </div>
       </div>
+      <div className="galuxy-eclipse-sculpture" aria-hidden="true">
+        <span className="galuxy-eclipse-planet" />
+        <span className="galuxy-eclipse-orbit">
+          <i />
+        </span>
+      </div>
       <span className="geometry-label">CREATIVE SYSTEMS / IN MOTION</span>
     </div>
   );
@@ -246,15 +252,24 @@ export function MorphingText() {
     let timer: ReturnType<typeof setInterval> | undefined;
     const sync = () => {
       clearInterval(timer);
-      if (!media.matches)
+      // Keep the editorial light theme's role stable instead of remounting its text.
+      if (document.documentElement.dataset["theme"] === "light") {
+        setIndex(0);
+      } else if (!media.matches)
         timer = setInterval(() => {
           if (!document.hidden) setIndex((value) => (value + 1) % MORPH_WORDS.length);
         }, 3400);
     };
+    const observer = new MutationObserver(sync);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
     sync();
     media.addEventListener("change", sync);
     return () => {
       clearInterval(timer);
+      observer.disconnect();
       media.removeEventListener("change", sync);
     };
   }, []);
@@ -496,7 +511,7 @@ export function NetworkField() {
       window.removeEventListener("mousemove", onMove);
     };
   }, []);
-  return <canvas ref={ref} aria-hidden className="h-full w-full" />;
+  return <canvas ref={ref} aria-hidden className="network-field h-full w-full" />;
 }
 
 /** Rotating typewriter that cycles through phrases. */

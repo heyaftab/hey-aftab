@@ -128,3 +128,18 @@ html[data-theme="alien"] .planet-cursor > :not(.alien-cursor) {
     height: 96px;
   }
 }
+
+/* Alien-only long symbiote tendrils; retain the exact parent pointer origin. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html[data-theme="alien"] .planet-cursor > .venom-cursor {
+    left: -80px; top: -80px; width: 160px; height: 160px;
+    pointer-events: none;
+  }
+}
+
+/* Alien-only expanded liquid reach: four times the approximate movement area. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html[data-theme="alien"] .planet-cursor > .venom-cursor {
+    left: -160px; top: -160px; width: 320px; height: 320px;
+  }
+}

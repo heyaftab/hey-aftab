@@ -364,3 +364,45 @@ html[data-theme="alien"] :is(a, button):focus-visible {
 html[data-theme="alien"] .survey-paused * {
   animation-play-state: paused !important;
 }
+
+/* ALIEN DISCOVERY OVERRIDES START - restrained living interface */
+html[data-theme="alien"] :is(.grid-bg,.panel-grid,.network-field,.space-starfield,.hero-geometry,.hero-system-labels,.portrait-depth-ring,.portrait-stage > .float-slow) { display: none; }
+html[data-theme="alien"] .atmosphere { opacity: .12; }
+html[data-theme="alien"] .hero-light-field { opacity: .08; }
+html[data-theme="alien"] .hero-lens { opacity: .1; }
+html[data-theme="alien"] #home h1 {
+  background: none; color: #cfd8d2; -webkit-text-fill-color: #cfd8d2;
+  animation: none; filter: none; text-shadow: none;
+}
+html[data-theme="alien"] .portfolio-shell :is(.text-gradient,.text-accent-gradient) {
+  background: none; color: #94d5c3; -webkit-text-fill-color: currentColor;
+  animation: none; filter: none;
+}
+html[data-theme="alien"] #home h1 { color: #cfd8d2; -webkit-text-fill-color: #cfd8d2; }
+html[data-theme="alien"] :is(.rise,.morph-word,.survey-visible .reveal.in) { animation: none; opacity: 1; filter: none; transform: none; }
+html[data-theme="alien"] .hero-photo-card { position: relative; overflow: hidden; background: #080e10; box-shadow: 0 20px 45px -25px #0009; }
+html[data-theme="alien"] .hero-photo-card::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, transparent 44%, #94d5c30a 48%, #94d5c340 50%, transparent 56%);
+  transform: translateY(-110%);
+}
+html[data-theme="alien"] .portrait-stage:hover .hero-photo-card::after { animation: alien-portrait-scan 2.4s var(--survey-ease); }
+html[data-theme="alien"] .hero-photo-card img { opacity: .84; transition: opacity 1s var(--survey-ease); }
+html[data-theme="alien"] .portrait-stage:hover .hero-photo-card img { opacity: 1; }
+html[data-theme="alien"] .survey-boot { animation: alien-signal-entry 1.8s var(--survey-ease) forwards; gap: 16px; }
+html[data-theme="alien"] .survey-title span { animation: none; opacity: 1; }
+html[data-theme="alien"] .survey-status { color: #94d5c3; opacity: .8; }
+html[data-theme="alien"] :is(.survey-heartbeat,.survey-letterbox) { display: none; }
+html[data-theme="alien"] .survey-grain { animation: none; opacity: .012; }
+@keyframes alien-signal-entry { 0%, 35% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
+@keyframes alien-portrait-scan { to { transform: translateY(110%); } }
+@media (hover: none) {
+  html[data-theme="alien"] .hero-photo-card img { opacity: 1; }
+  html[data-theme="alien"] .glass { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme="alien"] .survey-boot { display: none; }
+  html[data-theme="alien"] .hero-photo-card::after { animation: none; display: none; }
+  html[data-theme="alien"] .hero-photo-card img { transition: none; }
+}
+/* ALIEN DISCOVERY OVERRIDES END */

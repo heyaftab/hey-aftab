@@ -106,14 +106,12 @@ describe("Spider and Alien cursor isolation", () => {
       expect(frames.size).toBe(1);
     }
     expect(limb.getAttribute("d")).not.toBe(initial);
-    const phases = new Set(
-      Array.from(
-        container.querySelectorAll<SVGElement>(".venom-limb"),
-        (leg) => leg.dataset["step"],
+    const shapes = new Set(
+      Array.from(container.querySelectorAll<SVGElement>(".venom-limb"), (leg) =>
+        leg.getAttribute("d"),
       ),
     );
-    expect(phases).toContain("plant");
-    expect(phases).toContain("swing");
+    expect(shapes.size).toBe(10); // Independent fluid tendrils rather than synchronized stepping legs.
     expect(container.querySelector(".venom-contact-shadow")?.getAttribute("d")).toBe(
       limb.getAttribute("d"),
     );
@@ -240,7 +238,7 @@ describe("Spider and Alien cursor isolation", () => {
     expect(frames.size).toBe(1);
     fireEvent.pointerDown(window);
     tick(performance.now() + 16);
-    expect(container.querySelectorAll(".venom-limb")).toHaveLength(8);
+    expect(container.querySelectorAll(".venom-limb")).toHaveLength(10);
     const tendril = container.querySelector(".venom-limb")!;
     const firstStep = tendril.getAttribute("d");
     fireEvent.mouseMove(window, { clientX: 180, clientY: 140 });

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import "./alien-cinema.css";
 import { SymbioteBackground } from "./SymbioteBackground";
 
-const SURVEY = { particleCount: 24, glitchMinMs: 15000, glitchMaxMs: 30000 };
+const SURVEY = { particleCount: 24 };
 
 export function AlienCinema() {
   const [active, setActive] = useState(false);
@@ -31,8 +31,7 @@ function SurveyAtmosphere() {
     const shell = el.closest<HTMLElement>(".portfolio-shell")!;
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
-    let frame = 0,
-      timer: ReturnType<typeof setTimeout> | undefined;
+    let frame = 0;
     let x = 0,
       y = 0,
       sx = 0,
@@ -68,32 +67,13 @@ function SurveyAtmosphere() {
       });
       frame = requestAnimationFrame(tick);
     };
-    // GLITCH: brief exposure interference, scheduled at restrained random intervals.
-    const glitch = () => {
-      el.classList.remove("survey-interference");
-      if (!media.matches && !document.hidden) {
-        el.classList.add("survey-interference");
-        timer = setTimeout(() => {
-          el.classList.remove("survey-interference");
-          schedule();
-        }, 160);
-      } else schedule();
-    };
-    const schedule = () => {
-      timer = setTimeout(
-        glitch,
-        SURVEY.glitchMinMs + Math.random() * (SURVEY.glitchMaxMs - SURVEY.glitchMinMs),
-      );
-    };
     const sync = () => {
       cancelAnimationFrame(frame);
       frame = 0;
-      clearTimeout(timer);
       el.classList.toggle("survey-paused", document.hidden);
       el.classList.remove("survey-interference");
       if (!media.matches && !document.hidden) {
         frame = requestAnimationFrame(tick);
-        schedule();
       } else {
         fog.forEach((layer) => layer.style.removeProperty("transform"));
         scenes.forEach((scene) => scene.classList.add("survey-visible"));
@@ -116,7 +96,6 @@ function SurveyAtmosphere() {
     media.addEventListener("change", sync);
     return () => {
       cancelAnimationFrame(frame);
-      clearTimeout(timer);
       io.disconnect();
       window.removeEventListener("mousemove", move);
       window.removeEventListener("scroll", onScroll);
@@ -139,7 +118,7 @@ function SurveyAtmosphere() {
             </span>
           ))}
         </div>
-        <span className="survey-status">SIGNAL RECOVERED // ARCHIVE OPEN</span>
+        <span className="survey-status">SIGNAL ACQUIRED // ARCHIVE OPEN</span>
       </div>
       <div className="survey-letterbox survey-letterbox-top" />
       <div className="survey-letterbox survey-letterbox-bottom" />

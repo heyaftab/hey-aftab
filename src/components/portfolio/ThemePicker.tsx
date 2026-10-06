@@ -1,5 +1,5 @@
 ﻿import { useEffect, useRef, useState } from "react";
-import { Moon, Sun, Orbit } from "lucide-react";
+import { Moon, Orbit } from "lucide-react";
 import { createPortal } from "react-dom";
 import "./theme-transitions.css";
 
@@ -26,10 +26,31 @@ function SpiderEmblem({ size = 17 }: { size?: number }) {
   );
 }
 
+function DaylightEmblem({ size = 17 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M6.5 14a5.5 5.5 0 0 1 11 0" />
+      <path d="M8.5 14a3.5 3.5 0 0 1 7 0" opacity=".3" />
+      <path d="M12 3v2M4.5 6.5 6 8M19.5 6.5 18 8M2 12h2M20 12h2" />
+      <path d="M3 15h18M6 18h12M9 21h6" />
+    </svg>
+  );
+}
+
 const THEMES = [
   { id: "night", label: "Galuxy", Icon: Moon },
   { id: "ocean", label: "Spider", Icon: SpiderEmblem },
-  { id: "light", label: "Soft daylight", Icon: Sun },
+  { id: "light", label: "Soft daylight", Icon: DaylightEmblem },
   { id: "alien", label: "Alien signal", Icon: Orbit },
 ] as const;
 type ThemeId = (typeof THEMES)[number]["id"];

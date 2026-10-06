@@ -35,6 +35,7 @@ import { LightSurvey } from "./LightSurvey";
 import { PortfolioAssistant } from "./PortfolioAssistant";
 import { SpaceGravity } from "./SpaceGravity";
 import { SpiderBackground } from "./SpiderBackground";
+import { GaluxyBackground } from "./GaluxyBackground";
 import { SpiderPortrait } from "./SpiderPortrait";
 import { CinematicScroll, HeroLightField, SceneDetails } from "./CinematicEffects";
 
@@ -1265,6 +1266,7 @@ export function Portfolio() {
       <AlienCinema />
       <LightSurvey />
       <SpiderBackground />
+      <GaluxyBackground />
       <Atmosphere />
       <SpaceGravity />
       <CursorGlow />

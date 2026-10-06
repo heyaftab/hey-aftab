@@ -1,0 +1,112 @@
+/* GALUXY BACKGROUND START - isolated to the existing night theme. */
+.galuxy-background {
+  display: none;
+}
+html[data-theme="night"] .galuxy-background {
+  display: block;
+  position: fixed;
+  inset: 0;
+  height: 100lvh;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: #080c16;
+  --galuxy-image-height: calc(100vw * 824 / 394);
+  --galuxy-scroll-duration: 100s;
+}
+html[data-theme="night"] .galuxy-background::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  height: calc(100% + var(--galuxy-image-height));
+  background: url("../../assets/GaluxyBG.png") center top / 100% var(--galuxy-image-height) repeat-y;
+  animation: galuxy-background-scroll var(--galuxy-scroll-duration) linear infinite;
+}
+html[data-theme="night"] .galuxy-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#080c1640, #080c1660);
+}
+html[data-theme="night"] .galuxy-background-paused::before {
+  animation-play-state: paused;
+}
+@keyframes galuxy-background-scroll {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(var(--galuxy-image-height) * -1));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme="night"] .galuxy-background::before {
+    animation: none;
+  }
+}
+/* GALUXY BACKGROUND END */
+
+/* Keep Galuxy's artwork clear of grid and connected-particle overlays. */
+html[data-theme="night"] :is(.grid-bg, .panel-grid, .network-field, .space-starfield, .hero-system-labels) {
+  display: none;
+}
+
+/* Galuxy-only hero sculpture; all other themes retain their original geometry. */
+.galuxy-eclipse-sculpture {
+  display: none;
+}
+html[data-theme="night"] .hero-geometry > :is(.geometry-reactor, .geometry-orbit) {
+  display: none;
+}
+html[data-theme="night"] .galuxy-eclipse-sculpture {
+  display: block;
+  position: absolute;
+  inset: 8px;
+  pointer-events: none;
+}
+html[data-theme="night"] .galuxy-eclipse-planet {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 28% 22%, #bdb0d6, #615377 25%, #211d34 55%, #090d19 78%);
+  box-shadow:
+    inset -7px -4px 12px #030711,
+    0 0 22px -10px #bcb0ed;
+}
+html[data-theme="night"] .galuxy-eclipse-orbit {
+  position: absolute;
+  inset: 4px 0;
+  border: 1px solid #bcb0ed40;
+  border-radius: 50%;
+  transform: rotate(-28deg) scaleY(0.55);
+}
+html[data-theme="night"] .galuxy-eclipse-orbit i {
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  animation: galuxy-moon-travel 26s linear infinite;
+}
+html[data-theme="night"] .galuxy-eclipse-orbit i::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: calc(50% - 4px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 25%, #e3d8bd, #8a7b69 60%, #302d37);
+}
+@keyframes galuxy-moon-travel {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme="night"] .galuxy-eclipse-orbit i {
+    animation: none;
+  }
+}

@@ -1,4 +1,4 @@
-import { act, cleanup, render } from "@testing-library/react";
+﻿import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { AlienCinema } from "@/components/portfolio/AlienCinema";
 
@@ -10,7 +10,7 @@ afterEach(() => {
   delete document.documentElement.dataset["theme"];
 });
 
-it("mounts cinematic scenery only in Alien and clears animation and glitch timers on exit", async () => {
+it("mounts cinematic scenery only in Alien and clears animation frames on exit", async () => {
   vi.useFakeTimers();
   vi.stubGlobal(
     "IntersectionObserver",
@@ -36,7 +36,7 @@ it("mounts cinematic scenery only in Alien and clears animation and glitch timer
   expect(container.querySelectorAll(".survey-cinema")).toHaveLength(1);
   expect(container.querySelectorAll(".symbiote-background")).toHaveLength(1);
   expect(container.querySelectorAll(".survey-spore")).toHaveLength(24);
-  expect(vi.getTimerCount()).toBe(2);
+  expect(vi.getTimerCount()).toBe(1);
   const hidden = vi.spyOn(document, "hidden", "get").mockReturnValue(true);
   act(() => {
     document.dispatchEvent(new Event("visibilitychange"));
@@ -48,7 +48,7 @@ it("mounts cinematic scenery only in Alien and clears animation and glitch timer
     document.dispatchEvent(new Event("visibilitychange"));
   });
   expect(container.querySelector(".survey-cinema")).not.toHaveClass("survey-paused");
-  expect(vi.getTimerCount()).toBe(2);
+  expect(vi.getTimerCount()).toBe(1);
   await act(async () => {
     document.documentElement.dataset["theme"] = "ocean";
   });
