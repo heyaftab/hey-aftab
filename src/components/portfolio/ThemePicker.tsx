@@ -1,11 +1,34 @@
 ﻿import { useEffect, useRef, useState } from "react";
-import { Moon, Palette, Sun, Orbit } from "lucide-react";
+import { Moon, Sun, Orbit } from "lucide-react";
 import { createPortal } from "react-dom";
 import "./theme-transitions.css";
 
+function SpiderEmblem({ size = 17 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M12 5.1 10.4 7.4 10.8 10.5 9.8 13.3 10.4 17.7 12 20.5 13.6 17.7 14.2 13.3 13.2 10.5 13.6 7.4Z" />
+      <path
+        d="M10.8 8.5 7 6 6 1.8 M10.5 10 5.8 8.5 3.3 3.3 M10.3 12 5.5 12.8 2 9.5 M10.5 14 7 17 5.5 22.2 M13.2 8.5 17 6 18 1.8 M13.5 10 18.2 8.5 20.7 3.3 M13.7 12 18.5 12.8 22 9.5 M13.5 14 17 17 18.5 22.2"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.35"
+        strokeLinejoin="miter"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 const THEMES = [
   { id: "night", label: "Galuxy", Icon: Moon },
-  { id: "ocean", label: "Spider", Icon: Palette },
+  { id: "ocean", label: "Spider", Icon: SpiderEmblem },
   { id: "light", label: "Soft daylight", Icon: Sun },
   { id: "alien", label: "Alien signal", Icon: Orbit },
 ] as const;

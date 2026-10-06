@@ -35,6 +35,7 @@ import { LightSurvey } from "./LightSurvey";
 import { PortfolioAssistant } from "./PortfolioAssistant";
 import { SpaceGravity } from "./SpaceGravity";
 import { SpiderBackground } from "./SpiderBackground";
+import { SpiderPortrait } from "./SpiderPortrait";
 import { CinematicScroll, HeroLightField, SceneDetails } from "./CinematicEffects";
 
 const LINKS = {
@@ -268,7 +269,7 @@ function Hero() {
       <div className="absolute inset-0 opacity-70 md:left-[30%]">
         <NetworkField />
       </div>
-      <div className="pointer-events-none absolute inset-x-0 top-32 mx-auto hidden max-w-6xl justify-between px-5 text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground/70 md:flex sm:px-8">
+      <div className="hero-system-labels pointer-events-none absolute inset-x-0 top-32 mx-auto hidden max-w-6xl justify-between px-5 text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground/70 md:flex sm:px-8">
         <span>CODE</span>
         <span>API</span>
         <span>DATABASE</span>
@@ -380,12 +381,7 @@ function Hero() {
             <Tilt className="relative z-10">
               <div className="hero-photo-card glass relative rounded-lg p-2.5">
                 <div className="relative aspect-[4/5] overflow-hidden rounded-md">
-                  <img
-                    src="/assets/Aftab.png"
-                    alt="Portrait of Aftab Uddin Ahmad"
-                    className="h-full w-full object-cover object-center"
-                    fetchPriority="high"
-                  />
+                  <SpiderPortrait />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between font-mono text-[10px] tracking-widest text-foreground/80">
                     <span>CSE · UIU</span>

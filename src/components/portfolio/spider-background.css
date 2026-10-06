@@ -9,12 +9,60 @@ html[data-theme="ocean"] .spider-background {
   --spider-web-opacity: 0.28;
   --spider-atmosphere-ease: cubic-bezier(0.2, 0.7, 0.1, 1);
 }
+/* Slowly pan through the tall artwork while the page scrolls independently. */
 html[data-theme="ocean"] .spider-bg-bed {
   position: absolute;
   inset: 0;
+  background: #071116;
+}
+html[data-theme="ocean"] .spider-bg-bed::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  height: max(100%, calc(100vw * 2021 / 778));
   background:
-    radial-gradient(ellipse at 50% 30%, #17323970, transparent 68%),
-    linear-gradient(160deg, #071116, #101723 65%, #071012);
+    linear-gradient(180deg, #07111640, #07111659 60%, #07101280),
+    url("../../assets/Spiderman-Background.png") center / cover no-repeat;
+  animation: spider-artwork-pan 90s var(--spider-atmosphere-ease) infinite alternate;
+}
+@keyframes spider-artwork-pan {
+  from { transform: translateY(0); }
+  to { transform: translateY(min(0px, calc(100dvh - 100%))); }
+}
+html[data-theme="ocean"] .spider-bg-paused .spider-bg-bed::before {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme="ocean"] .spider-bg-bed::before {
+    animation: none;
+  }
+}
+/* Let the artwork show through the pre-existing hero scenery. */
+/* Remove decorative grids and background silk only in Spider. */
+html[data-theme="ocean"] #home .hero-system-labels {
+  display: none;
+}
+html[data-theme="ocean"] :is(.grid-bg, .panel-grid, .spider-bg-web, .spider-bg-filament) {
+  display: none;
+}
+html[data-theme="ocean"] .portfolio-shell::before,
+html[data-theme="ocean"] .portfolio-shell::after {
+  content: none;
+}
+html[data-theme="ocean"] #home .hero-light-field {
+  opacity: 0.08;
+}
+html[data-theme="ocean"] #home .hero-lens {
+  opacity: 0.2;
+}
+html[data-theme="ocean"] #home canvas:not(.hero-light-field) {
+  opacity: 0.2;
+}
+html[data-theme="ocean"] #home > .glow-orb {
+  opacity: 0.12;
+}
+html[data-theme="ocean"] .atmosphere {
+  opacity: 0.2;
 }
 html[data-theme="ocean"] .spider-bg-layer {
   position: absolute;
