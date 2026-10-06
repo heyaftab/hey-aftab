@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { Check, ChevronDown, Moon, Palette, Sun } from "lucide-react";
+import { Check, ChevronDown, Moon, Palette, Sun, Orbit } from "lucide-react";
 
 const THEMES = [
   { id: "night", label: "Amber night", detail: "Warm gold on deep slate", Icon: Moon },
   { id: "ocean", label: "Ocean glow", detail: "Aqua and blue accents", Icon: Palette },
   { id: "light", label: "Soft daylight", detail: "Warm light with amber", Icon: Sun },
+  { id: "alien", label: "Alien signal", detail: "An interface from beyond", Icon: Orbit },
 ] as const;
 
 type ThemeId = (typeof THEMES)[number]["id"];
@@ -72,7 +73,8 @@ export function ThemePicker() {
 
   const cycleTheme = () => {
     const currentIndex = THEMES.findIndex((item) => item.id === selected.current);
-    chooseTheme(THEMES[(currentIndex + 1) % THEMES.length]!.id);
+    // Preserve the original three-theme cycle; Alien is available in the gallery.
+    chooseTheme(THEMES[currentIndex === 3 ? 0 : (currentIndex + 1) % 3]!.id);
   };
 
   const CurrentIcon = THEMES.find((item) => item.id === theme)?.Icon ?? Moon;
@@ -151,6 +153,7 @@ export function ThemePicker() {
           </div>
           <div
             className="theme-preview-options"
+            data-alien-gallery="true"
             style={{ "--selected-theme": activeIndex } as CSSProperties}
           >
             <span className="theme-selection-slide" aria-hidden="true" />

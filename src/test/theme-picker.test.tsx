@@ -14,6 +14,22 @@ afterEach(() => {
 });
 
 describe("Premium theme control", () => {
+  it("restores Alien and offers it in the gallery without replacing Ocean", () => {
+    localStorage.setItem("portfolio-theme", "alien");
+    render(<ThemePicker />);
+    expect(document.documentElement.dataset["theme"]).toBe("alien");
+    fireEvent.click(screen.getByRole("button", { name: "Show theme previews" }));
+    expect(screen.getByRole("button", { name: "Use Alien signal theme" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Use Ocean glow theme" }));
+    expect(document.documentElement.dataset["theme"]).toBe("ocean");
+    fireEvent.click(screen.getByRole("button", { name: "Use Alien signal theme" }));
+    expect(localStorage.getItem("portfolio-theme")).toBe("alien");
+    fireEvent.click(screen.getByRole("button", { name: "Change color theme" }));
+    expect(document.documentElement.dataset["theme"]).toBe("night");
+  });
   it("restores the saved setting and keeps the original cycle order", () => {
     localStorage.setItem("portfolio-theme", "ocean");
     render(<ThemePicker />);

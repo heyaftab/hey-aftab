@@ -1,0 +1,362 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap");
+
+/* ATMOSPHERE — all overrides belong exclusively to Alien. */
+html:root[data-theme="alien"] {
+  --background: #05080a;
+  --foreground: #cfd8d2;
+  --surface: #0a1412;
+  --card: #0a1412e8;
+  --popover: #0a1412;
+  --primary: #94d5c3;
+  --primary-foreground: #05080a;
+  --accent: #5cffd0;
+  --accent-foreground: #05080a;
+  --muted-foreground: #9aaea6;
+  --border: #5cffd01c;
+  --glow: #5cffd018;
+  --gradient-text: linear-gradient(180deg, #e0e8e2, #9aaea6);
+  --gradient-accent: linear-gradient(110deg, #cfd8d2, #94d5c3);
+  --survey-accent: #5cffd0;
+  --survey-warning: #ff9f43;
+  --survey-fog: 0.16;
+  --survey-grain: 0.025;
+  --survey-ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+}
+html[data-theme="alien"] :is(h1, h2, h3, h4) {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.045em;
+}
+html[data-theme="alien"] #home h1 {
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+html[data-theme="alien"] .glass {
+  background: linear-gradient(120deg, #0a1412ed, #080e10f2);
+  box-shadow:
+    inset 0 1px #cfd8d208,
+    0 20px 50px #0005;
+}
+html[data-theme="alien"] .planet-orbit {
+  animation: none;
+}
+html[data-theme="alien"] :is(.hero-geometry, .starfield, .space-stars, .theme-orb-orbit) {
+  opacity: 0.15;
+  animation: none;
+}
+html[data-theme="alien"] .portfolio-shell {
+  --ease-spring: var(--survey-ease);
+}
+html[data-theme="alien"] .cinematic-scene {
+  transition:
+    opacity 1.8s var(--survey-ease),
+    transform 1.8s var(--survey-ease);
+}
+/* SCROLL REVEALS: progressively enhanced; existing content is always available. */
+html[data-theme="alien"] .survey-visible .reveal.in {
+  animation: survey-emerge 1.8s var(--survey-ease) both;
+}
+html[data-theme="alien"] article {
+  position: relative;
+  overflow: hidden;
+}
+html[data-theme="alien"] article::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 45%,
+    #5cffd008 49%,
+    #cfd8d212 50%,
+    transparent 54%
+  );
+  transform: translateY(-110%);
+  pointer-events: none;
+}
+html[data-theme="alien"] article:is(:hover, :focus-within)::after {
+  animation: survey-scan 2s var(--survey-ease);
+}
+html[data-theme="alien"] :is(a, button):focus-visible {
+  outline: 2px solid #94d5c3;
+  outline-offset: 4px;
+}
+.survey-cinema {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 44;
+  color: var(--survey-accent);
+  contain: strict;
+}
+.survey-depth {
+  position: absolute;
+  inset: -7%;
+}
+.survey-fog {
+  position: absolute;
+  inset: 0;
+  opacity: var(--survey-fog);
+  background:
+    radial-gradient(ellipse at 20% 60%, #719d8c44, transparent 55%),
+    radial-gradient(ellipse at 80% 20%, #48767433, transparent 60%);
+  filter: blur(55px);
+  animation: survey-fog 90s ease-in-out infinite alternate;
+}
+.survey-fog-two {
+  animation-duration: 115s;
+  animation-direction: alternate-reverse;
+  opacity: calc(var(--survey-fog) * 0.7);
+}
+.survey-grain {
+  position: absolute;
+  inset: -10%;
+  opacity: var(--survey-grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23g)' d='M0 0h180v180H0z'/%3E%3C/svg%3E");
+  animation: survey-grain 1s steps(4) infinite;
+}
+.survey-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, transparent 40%, #0008 100%),
+    repeating-linear-gradient(0deg, transparent 0 4px, #0000000c 4px 5px);
+  box-shadow:
+    inset 2px 0 #5cffd006,
+    inset -2px 0 #c85c5c06;
+}
+.survey-torch {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 600px;
+  height: 600px;
+  margin: -300px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #b0e0d206, transparent 65%);
+}
+.survey-derelict {
+  position: absolute;
+  width: min(65vw, 700px);
+  aspect-ratio: 1;
+  top: 8%;
+  right: -15%;
+  border-radius: 50%;
+  opacity: 0.12;
+  background:
+    repeating-radial-gradient(ellipse at 40% 30%, #adc0b314 0 1px, #030807 3px 12px),
+    radial-gradient(circle at 35% 30%, #658478, #000 70%);
+  box-shadow: inset 12px 0 45px #82c2ac12;
+  animation: survey-breathe 12s ease-in-out infinite;
+}
+/* VEINS */
+.survey-veins {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.12;
+  animation: survey-breathe 9s ease-in-out infinite;
+}
+.survey-spores {
+  position: absolute;
+  inset: 0;
+}
+.survey-spore {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #cfd8d2;
+}
+.survey-wave {
+  position: absolute;
+  bottom: calc(28px + env(safe-area-inset-bottom));
+  right: 24px;
+  width: 180px;
+  opacity: 0.14;
+  animation: survey-breathe 7s ease-in-out infinite;
+}
+.survey-timecode {
+  position: absolute;
+  left: calc(18px + env(safe-area-inset-left));
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  font: 8px var(--font-mono);
+  letter-spacing: 0.18em;
+  color: #9aaea6;
+  opacity: 0.4;
+}
+/* BOOT SEQUENCE */
+.survey-boot {
+  position: absolute;
+  inset: 0;
+  background: #05080a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  animation: survey-boot 3.6s var(--survey-ease) forwards;
+}
+.survey-classification,
+.survey-status {
+  font: 9px var(--font-mono);
+  letter-spacing: 0.25em;
+  color: #9aaea6;
+  text-align: center;
+  padding: 0 20px;
+}
+.survey-status {
+  color: var(--survey-warning);
+  opacity: 0.6;
+}
+.survey-title {
+  font:
+    300 clamp(16px, 3vw, 40px) "Space Grotesk",
+    sans-serif;
+  letter-spacing: 0.18em;
+  color: #cfd8d2;
+}
+.survey-title span {
+  display: inline-block;
+  opacity: 0;
+  animation: survey-letter 1s var(--survey-ease) forwards;
+  animation-delay: calc(0.55s + var(--letter) * 0.075s);
+}
+.survey-heartbeat {
+  width: 3px;
+  height: 3px;
+  background: var(--survey-accent);
+  box-shadow: 0 0 30px 10px #5cffd012;
+  animation: survey-breathe 1.4s ease-in-out infinite;
+}
+.survey-letterbox {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: max(0px, calc((100svh - 100vw / 2.39) / 2));
+  background: #000;
+  animation: survey-bars 3.8s var(--survey-ease) forwards;
+}
+.survey-letterbox-top {
+  top: 0;
+  --bar-direction: -1;
+}
+.survey-letterbox-bottom {
+  bottom: 0;
+  --bar-direction: 1;
+}
+/* GLITCH: a single restrained optical disturbance, no flashing content. */
+.survey-interference .survey-grain {
+  opacity: 0.065;
+  transform: translate3d(3px, 1px, 0);
+}
+@keyframes survey-fog {
+  from {
+    transform: translate3d(-4%, 2%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(5%, -3%, 0) scale(1.12);
+  }
+}
+@keyframes survey-grain {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-2%, 1%);
+  }
+  50% {
+    transform: translate(1%, -2%);
+  }
+  75% {
+    transform: translate(-1%, 2%);
+  }
+}
+@keyframes survey-breathe {
+  0%,
+  100% {
+    opacity: 0.08;
+  }
+  50% {
+    opacity: 0.18;
+  }
+}
+@keyframes survey-boot {
+  0%,
+  65% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes survey-letter {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes survey-bars {
+  0% {
+    transform: scaleY(0);
+  }
+  20%,
+  65% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: translateY(calc(var(--bar-direction) * 105%));
+  }
+}
+@keyframes survey-emerge {
+  from {
+    opacity: 0.25;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes survey-scan {
+  to {
+    transform: translateY(110%);
+  }
+}
+@media (max-width: 640px) {
+  .survey-fog {
+    filter: blur(30px);
+  }
+  .survey-spore:nth-child(n + 13) {
+    display: none;
+  }
+  .survey-wave {
+    width: 100px;
+  }
+  .survey-timecode {
+    font-size: 7px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .survey-cinema
+    :is(.survey-boot, .survey-letterbox, .survey-grain, .survey-spores, .survey-torch) {
+    display: none;
+  }
+  .survey-cinema * {
+    animation: none !important;
+  }
+  html[data-theme="alien"] .survey-visible .reveal.in {
+    animation: none;
+  }
+  html[data-theme="alien"] article::after {
+    display: none;
+  }
+}

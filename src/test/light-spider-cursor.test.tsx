@@ -50,6 +50,49 @@ function tick(now: number) {
 }
 
 describe("Light-theme spider cursor isolation", () => {
+  it("runs a single Alien loop, responds to clicks, and restores other cursor states", async () => {
+    await theme("alien");
+    const { container, unmount } = render(<Cursor />);
+    fireEvent.mouseMove(window, { clientX: 130, clientY: 110 });
+    expect(frames.size).toBe(1);
+    fireEvent.pointerDown(window);
+    tick(performance.now() + 16);
+    expect(
+      Number((container.querySelector(".alien-pulse") as SVGElement).style.opacity),
+    ).toBeGreaterThan(0);
+    for (let i = 0; i < 5; i++) {
+      await theme("ocean");
+      expect(frames.size).toBe(0);
+      await theme("light");
+      expect(frames.size).toBe(1);
+      await theme("alien");
+      expect(frames.size).toBe(1);
+    }
+    expect(container.querySelectorAll(".alien-cursor")).toHaveLength(1);
+    unmount();
+    expect(frames.size).toBe(0);
+  });
+  it("turns and walks with movement, trails silk, and clears it when leaving light", async () => {
+    await theme("light");
+    const { container } = render(<Cursor />);
+    const leg = container.querySelector(".spider-leg")!;
+    fireEvent.mouseMove(window, { clientX: 100, clientY: 100 });
+    tick(performance.now());
+    const resting = leg.getAttribute("d");
+    fireEvent.mouseMove(window, { clientX: 120, clientY: 110 });
+    tick(performance.now() + 16);
+    expect(leg.getAttribute("d")).not.toBe(resting);
+    expect(container.querySelector(".light-spider-cursor > g")?.getAttribute("transform")).not.toBe(
+      "rotate(0.00)",
+    );
+    const silk = container.querySelector(".light-spider-web > path")!;
+    expect(silk.getAttribute("d")).toContain("L");
+    tick(performance.now() + 1000);
+    expect(silk.getAttribute("d")).toBe("");
+    await theme("ocean");
+    expect(silk.getAttribute("d")).toBe("");
+    expect(frames.size).toBe(0);
+  });
   it("animates only in light, retains pointer coordinates, and cleans up across repeated switches", async () => {
     await theme("night");
     const { container, unmount } = render(<Cursor />);

@@ -30,6 +30,7 @@ import {
   Tilt,
 } from "./effects";
 import { ThemePicker } from "./ThemePicker";
+import { AlienCinema } from "./AlienCinema";
 import { PortfolioAssistant } from "./PortfolioAssistant";
 import { SpaceGravity } from "./SpaceGravity";
 import { CinematicScroll, HeroLightField, SceneDetails } from "./CinematicEffects";
@@ -1263,6 +1264,7 @@ export function Portfolio() {
         Skip to content
       </a>
       <CinematicScroll />
+      <AlienCinema />
       <Atmosphere />
       <SpaceGravity />
       <CursorGlow />
