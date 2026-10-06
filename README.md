@@ -1,10 +1,10 @@
-﻿<!-- GitHub displays a profile README from a public repository named heyaftab/heyaftab. If copying this file there, also copy public/assets/Aftab.png or update its path. -->
+﻿<!-- GitHub displays a profile README from a public repository named heyaftab/heyaftab. If copying this file there, also copy public/assets/Aftab-profile.png or update its path. -->
 
 <div align="center">
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:8b7cff,50:22d3ee,100:f472b6&height=190&section=header&text=Aftab%20Uddin%20Ahmad&fontSize=44&fontColor=ffffff&fontAlignY=36&desc=Aspiring%20AI%20Engineer%20%C2%B7%20Python%20%C2%B7%20Backend%20%C2%B7%20Cloud&descSize=17&descAlignY=58" alt="Aftab Uddin Ahmad — aspiring AI engineer" />
 
-<img src="public/assets/Aftab.png" width="150" alt="Portrait of Aftab Uddin Ahmad" />
+<img src="public/assets/Aftab-profile.png" width="280" alt="Portrait of Aftab Uddin Ahmad" />
 
 <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=19&duration=3000&pause=1000&color=8B7CFF&center=true&vCenter=true&width=560&lines=CSE+student+%40+United+International+University;Building+toward+AI+engineering;Python+%26+FastAPI+developer;Full-stack+builder+%E2%80%94+Next.js+%C2%B7+Laravel" alt="CSE student at UIU, building toward AI engineering with Python, FastAPI, Next.js, and Laravel" /></a>
 
