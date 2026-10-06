@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { ArrowDown, ArrowUpRight, Download, Github, Linkedin, Facebook, Mail, Phone, MapPin, Menu, X, Trophy, Code2, BookOpen, Puzzle, ArrowRight } from "lucide-react";
-import { Cursor, NetworkField, Reveal, Tilt } from "./effects";
+import { CountUp, Cursor, NetworkField, Reveal, ScrollProgress, Tilt, Typewriter } from "./effects";
 import { ThemePicker } from "./ThemePicker";
 import { PortfolioAssistant } from "./PortfolioAssistant";
 
@@ -163,7 +163,11 @@ function Hero() {
             AFTAB<br />UDDIN AHMAD
           </h1>
           <p className="rise mt-6 font-mono text-sm text-muted-foreground sm:text-base" style={{ animationDelay: "240ms" }}>
-            Computer Science Student <span className="text-primary">→</span> <span className="text-accent-gradient font-display font-semibold">AI Engineer</span>
+            Computer Science Student <span className="text-primary">→</span>{" "}
+            <Typewriter
+              phrases={["AI Engineer", "Full-Stack Developer", "Problem Solver", "Lifelong Learner"]}
+              className="text-accent-gradient font-display font-semibold"
+            />
           </p>
           <p className="rise mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg" style={{ animationDelay: "360ms" }}>
             I am working toward a career in AI engineering, building a foundation in machine learning and intelligent systems while creating technology that solves real problems.
