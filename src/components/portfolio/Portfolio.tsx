@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import {
   Atmosphere,
+  CountUp,
   Cursor,
   CursorGlow,
   HeroGeometry,
