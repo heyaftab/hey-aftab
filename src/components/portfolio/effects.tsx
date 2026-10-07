@@ -334,10 +334,91 @@ export function CursorGlow() {
 const SIGNALS = ["INPUT", "LEARN", "BUILD", "OUTPUT"];
 export function InteractiveIllustration() {
   const [active, setActive] = useState(1);
+  const activeRef = useRef(1);
+  const root = useRef<HTMLDivElement>(null);
+  const art = useRef<HTMLDivElement>(null);
+  const svg = useRef<SVGSVGElement>(null);
+  const chooseStage = (index: number) => {
+    activeRef.current = index;
+    setActive(index);
+  };
+  useEffect(() => {
+    const container = root.current;
+    const graphic = svg.current;
+    if (!container || !graphic) return;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let inView = true;
+    const sync = () => {
+      const paused = motion.matches || document.hidden || !inView;
+      container.classList.toggle("signal-paused", paused);
+      if (paused) graphic.pauseAnimations?.();
+      else graphic.unpauseAnimations?.();
+    };
+    const observer = window.IntersectionObserver
+      ? new IntersectionObserver(([entry]) => {
+          inView = entry?.isIntersecting ?? false;
+          sync();
+        })
+      : undefined;
+    observer?.observe(container);
+    document.addEventListener("visibilitychange", sync);
+    motion.addEventListener("change", sync);
+    sync();
+    return () => {
+      observer?.disconnect();
+      document.removeEventListener("visibilitychange", sync);
+      motion.removeEventListener("change", sync);
+      container.classList.remove("signal-paused");
+      graphic.unpauseAnimations?.();
+    };
+  }, []);
+  const movePipeline = (event: React.PointerEvent<HTMLDivElement>) => {
+    const element = art.current;
+    if (
+      !element ||
+      event.pointerType === "touch" ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    )
+      return;
+    const bounds = element.getBoundingClientRect();
+    if (!bounds.width || !bounds.height) return;
+    const x = Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width));
+    const y = Math.max(0, Math.min(1, (event.clientY - bounds.top) / bounds.height));
+    element.style.setProperty("--pipeline-tilt-x", `${((x - 0.5) * 2.4).toFixed(2)}deg`);
+    element.style.setProperty("--pipeline-tilt-y", `${((0.5 - y) * 2).toFixed(2)}deg`);
+    const anchors = [30 / 320, 115 / 320, 205 / 320, 290 / 320];
+    const nearest = anchors.reduce(
+      (best, anchor, index) =>
+        Math.abs(anchor - x) < Math.abs(anchors[best]! - x) ? index : best,
+      0,
+    );
+    if (nearest !== activeRef.current) chooseStage(nearest);
+    element.querySelectorAll<SVGGElement>(".signal-node").forEach((node, index) => {
+      const dx = (x - anchors[index]!) * -2.2;
+      const dy = (y - 0.5) * -1.8;
+      node.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px)`;
+    });
+  };
+  const resetPipeline = () => {
+    const element = art.current;
+    if (!element) return;
+    element.style.removeProperty("--pipeline-tilt-x");
+    element.style.removeProperty("--pipeline-tilt-y");
+    element.querySelectorAll<SVGGElement>(".signal-node").forEach((node) => {
+      node.style.removeProperty("transform");
+    });
+    chooseStage(1);
+  };
   return (
-    <div className="signal-illustration">
-      <div className={`signal-art signal-stage-${active}`} aria-hidden="true">
-        <svg viewBox="0 0 320 140" fill="none">
+    <div ref={root} className="signal-illustration">
+      <div
+        ref={art}
+        className={`signal-art signal-stage-${active}`}
+        onPointerMove={movePipeline}
+        onPointerLeave={resetPipeline}
+        aria-hidden="true"
+      >
+        <svg ref={svg} viewBox="0 0 320 140" fill="none">
           <path className="signal-path" d="M30 70 C80 0 110 140 160 70 S240 0 290 70" />
           <path
             className="signal-path signal-path-secondary"
@@ -349,6 +430,13 @@ export function InteractiveIllustration() {
               <circle cx={x} cy="70" r="4" />
             </g>
           ))}
+          <circle className="signal-data-pulse" r="3" aria-hidden="true">
+            <animateMotion
+              dur="3.8s"
+              repeatCount="indefinite"
+              path="M30 70 C80 0 110 140 160 70 S240 0 290 70"
+            />
+          </circle>
         </svg>
         <div className="signal-core">
           <span />
@@ -362,9 +450,9 @@ export function InteractiveIllustration() {
             key={label}
             type="button"
             aria-pressed={active === i}
-            onClick={() => setActive(i)}
-            onMouseEnter={() => setActive(i)}
-            onFocus={() => setActive(i)}
+            onClick={() => chooseStage(i)}
+            onMouseEnter={() => chooseStage(i)}
+            onFocus={() => chooseStage(i)}
           >
             {label}
           </button>
@@ -574,32 +662,46 @@ export function CountUp({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (
-      !window.IntersectionObserver ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let raf = 0;
+    let completed = false;
+    const finish = () => {
+      completed = true;
+      cancelAnimationFrame(raf);
       setValue(to);
+    };
+    if (!window.IntersectionObserver || motion.matches) {
+      finish();
       return;
     }
-    let raf = 0;
     const io = new IntersectionObserver(
       ([e]) => {
-        if (!e?.isIntersecting) return;
+        if (completed || !e?.isIntersecting) return;
         io.disconnect();
         const start = performance.now();
         const step = (now: number) => {
+          if (motion.matches) {
+            finish();
+            return;
+          }
           const p = duration <= 0 ? 1 : Math.min(1, (now - start) / duration);
           setValue(Math.round(to * (1 - Math.pow(1 - p, 3))));
           if (p < 1) raf = requestAnimationFrame(step);
+          else completed = true;
         };
         raf = requestAnimationFrame(step);
       },
       { threshold: 0.5 },
     );
+    const onMotionChange = () => {
+      if (motion.matches) finish();
+    };
     io.observe(el);
+    motion.addEventListener("change", onMotionChange);
     return () => {
       io.disconnect();
       cancelAnimationFrame(raf);
+      motion.removeEventListener("change", onMotionChange);
     };
   }, [to, duration]);
   return (
@@ -634,9 +736,14 @@ export function ScrollProgress() {
 
 export function Cursor() {
   const [spiderTheme, setSpiderTheme] = useState(false);
+  const specialTheme = useRef(false);
   useEffect(() => {
-    const sync = () =>
-      setSpiderTheme(["ocean", "spider", "alien"].includes(document.documentElement.dataset["theme"] ?? ""));
+    const sync = () => {
+      const theme = document.documentElement.dataset["theme"] ?? "";
+      const special = ["light", "ocean", "spider", "alien"].includes(theme);
+      specialTheme.current = special;
+      setSpiderTheme(special);
+    };
     const observer = new MutationObserver(sync);
     observer.observe(document.documentElement, {
       attributes: true,
@@ -648,13 +755,45 @@ export function Cursor() {
   const dot = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<"dot" | "ring" | "view">("dot");
   const [enabled, setEnabled] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  const modeRef = useRef(mode);
   useEffect(() => {
     const media = window.matchMedia(
       "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
     );
+    const point = { x: 0, y: 0, tx: 0, ty: 0 };
+    let frame = 0;
+    let last = 0;
+    let hasPoint = false;
+    let pressTimer = 0;
     const hide = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      last = 0;
+      hasPoint = false;
+      window.clearTimeout(pressTimer);
+      setPressed(false);
       if (dot.current) dot.current.style.opacity = "0";
       document.body.classList.remove("has-cursor");
+    };
+    const tick = (now: number) => {
+      frame = 0;
+      const element = dot.current;
+      if (!element) return;
+      const dt = last ? Math.min((now - last) / 1000, 0.05) : 1 / 60;
+      last = now;
+      const smoothing = 1 - Math.exp(-dt * 52);
+      point.x += (point.tx - point.x) * smoothing;
+      point.y += (point.ty - point.y) * smoothing;
+      const dx = point.tx - point.x;
+      const dy = point.ty - point.y;
+      if (Math.hypot(dx, dy) < 0.2) {
+        point.x = point.tx;
+        point.y = point.ty;
+        last = 0;
+      }
+      element.style.transform = `translate3d(${point.x.toFixed(2)}px, ${point.y.toFixed(2)}px, 0)`;
+      if (last) frame = requestAnimationFrame(tick);
     };
     const sync = () => {
       setEnabled(media.matches);
@@ -668,20 +807,50 @@ export function Cursor() {
       if (!media.matches || !dot.current) return;
       document.body.classList.add("has-cursor");
       dot.current.style.opacity = "1";
-      if (dot.current)
-        dot.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+      point.tx = e.clientX;
+      point.ty = e.clientY;
+      if (specialTheme.current) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+        last = 0;
+        point.x = point.tx;
+        point.y = point.ty;
+        dot.current.style.transform = `translate3d(${point.x}px, ${point.y}px, 0)`;
+        hasPoint = true;
+      } else if (!hasPoint) {
+        point.x = point.tx;
+        point.y = point.ty;
+        dot.current.style.transform = `translate3d(${point.x}px, ${point.y}px, 0)`;
+        hasPoint = true;
+      } else if (!frame) frame = requestAnimationFrame(tick);
       const el = e.target instanceof Element ? e.target : null;
-      if (el?.closest("a, button, input, textarea")) setMode("ring");
-      else if (el?.closest("[data-cursor=view]")) setMode("view");
-      else setMode("dot");
+      const next = el?.closest("a, button, input, textarea")
+        ? "ring"
+        : el?.closest("[data-cursor=view]")
+          ? "view"
+          : "dot";
+      if (next !== modeRef.current) {
+        modeRef.current = next;
+        setMode(next);
+      }
+    };
+    const click = () => {
+      if (!media.matches || specialTheme.current) return;
+      setPressed(true);
+      window.clearTimeout(pressTimer);
+      pressTimer = window.setTimeout(() => setPressed(false), 130);
     };
     window.addEventListener("mousemove", move, { passive: true });
+    window.addEventListener("pointerdown", click, { passive: true });
     window.addEventListener("blur", hide);
     document.documentElement.addEventListener("mouseleave", hide);
     document.addEventListener("visibilitychange", visibility);
     media.addEventListener("change", sync);
     return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(pressTimer);
       window.removeEventListener("mousemove", move);
+      window.removeEventListener("pointerdown", click);
       window.removeEventListener("blur", hide);
       document.documentElement.removeEventListener("mouseleave", hide);
       document.removeEventListener("visibilitychange", visibility);
@@ -714,7 +883,7 @@ export function Cursor() {
             <i />
           </span>
           <div
-            className={`-translate-x-1/2 -translate-y-1/2 rounded-full grid place-items-center font-mono text-[10px] tracking-widest transition-all duration-300 ${size}`}
+            className={`planet-cursor-core -translate-x-1/2 -translate-y-1/2 rounded-full grid place-items-center font-mono text-[10px] tracking-widest transition-all duration-300 ${pressed && !spiderTheme ? "is-pressed" : ""} ${size}`}
           >
             {mode === "view" && "VIEW"}
           </div>

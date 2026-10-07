@@ -98,7 +98,7 @@ export function LightSpiderCursor() {
       spread += ((hover ? 1 : 0) - spread) * ease;
       const spiderTheme = ["ocean", "spider"].includes(document.documentElement.dataset["theme"] ?? "");
       if (spiderTheme) {
-        const blend = 1 - Math.exp(-dt * (travel > 0 ? 40 : 14));
+        const blend = 1 - Math.exp(-dt * (travel > 0 ? 64 : 22));
         velocityX += (Math.max(-2200, Math.min(2200, pendingX / dt)) - velocityX) * blend;
         velocityY += (Math.max(-2200, Math.min(2200, pendingY / dt)) - velocityY) * blend;
         spring(alert, hover ? 1 : 0, dt, 520, 36);
@@ -108,10 +108,10 @@ export function LightSpiderCursor() {
       const movement = Math.min(travel / Math.max(dt * 350, 1), 1);
       // Velocity bridges frames between mouse events instead of suppressing slow steps.
       const drive = spiderTheme
-        ? Math.max(movement, Math.min(Math.hypot(velocityX, velocityY) / 500, 1))
+        ? Math.max(movement, Math.min(Math.hypot(velocityX, velocityY) / 380, 1))
         : movement;
       walking +=
-        (drive - walking) * (1 - Math.exp(-dt * (spiderTheme ? (drive > walking ? 27 : 10) : 9)));
+        (drive - walking) * (1 - Math.exp(-dt * (spiderTheme ? (drive > walking ? 38 : 14) : 9)));
       travel = 0;
       const speed = spiderTheme ? walking : Math.min(Math.hypot(dx, dy) / 18, 1);
       // Three quiet activities, separated by pauses, after 1.8 seconds at rest.
@@ -124,7 +124,7 @@ export function LightSpiderCursor() {
       element.dataset["idleActivity"] =
         idleBlend > 0.1 ? ["groom", "silk", "alert"][idleMode] : "walking";
       // Spider reacts three times faster while retaining time-based smoothing.
-      const turnEase = spiderTheme ? 1 - Math.exp(-dt * 36) : ease;
+      const turnEase = spiderTheme ? 1 - Math.exp(-dt * 48) : ease;
       heading += (((((targetHeading - heading) % 360) + 540) % 360) - 180) * turnEase;
       const idleTurn = idleMode === 2 ? Math.sin(idleTime * 0.0014) * idle * 7 : 0;
       if (spiderTheme) {
@@ -140,7 +140,7 @@ export function LightSpiderCursor() {
           `rotate(${(heading + idleTurn).toFixed(2)}) skewX(${lean.position.toFixed(3)}) scale(${(1 - stretch * 0.35 + alert.position * 0.012 + breathing).toFixed(4)} ${(1 + stretch + alert.position * 0.012 + breathing).toFixed(4)})`,
         );
       } else body.current?.setAttribute("transform", `rotate(${(heading + idleTurn).toFixed(2)})`);
-      gait += dt * (spiderTheme ? 0.7 + speed * 16 : 2 + speed * 22);
+      gait += dt * (spiderTheme ? 0.9 + speed * 21 : 2 + speed * 22);
       legs.forEach((leg, index) => {
         const side = index < 4 ? -1 : 1;
         const row = index % 4;
