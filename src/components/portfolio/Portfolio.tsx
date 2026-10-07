@@ -294,6 +294,7 @@ function Hero() {
             AFTAB
             <br />
             UDDIN AHMAD
+            <span className="sr-only"> — Computer Science Student &amp; AI Engineer</span>
           </h1>
           <p
             className="rise mt-6 font-mono text-sm text-muted-foreground sm:text-base"
