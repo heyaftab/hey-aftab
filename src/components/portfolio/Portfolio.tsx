@@ -27,6 +27,7 @@ import {
   MorphingText,
   NetworkField,
   Reveal,
+  ScrollProgress,
   Tilt,
 } from "./effects";
 import { ThemePicker } from "./ThemePicker";
@@ -1274,6 +1275,7 @@ export function Portfolio() {
       <SpaceGravity />
       <CursorGlow />
       <Cursor />
+      <ScrollProgress />
       <Nav />
       <main id="main-content" tabIndex={-1}>
         <Hero />

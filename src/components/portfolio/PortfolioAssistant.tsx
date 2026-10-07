@@ -92,7 +92,74 @@ const ANSWERS: { terms: string[]; answer: string }[] = [
     terms: ["opportunity", "job", "internship", "hire", "available"],
     answer: "Aftab is open to AI opportunities. Use the Contact section to reach him.",
   },
+  {
+    terms: ["python", "pandas", "numpy", "scikit", "tensorflow", "pytorch", "data science"],
+    answer:
+      "Python is Aftab's main language for AI work — he uses it for machine learning experiments, scripting, and FastAPI backends.",
+  },
+  {
+    terms: ["frontend", "react", "next", "nextjs", "next.js", "ui", "javascript", "typescript", "tailwind"],
+    answer:
+      "On the frontend Aftab builds with React, Next.js, TypeScript, and Tailwind CSS — Goynar Gontobbo's storefront is a Next.js app.",
+  },
+  {
+    terms: ["backend", "api", "server", "laravel", "fastapi", "php", "rest"],
+    answer:
+      "For backends Aftab uses FastAPI (Python) and Laravel (PHP), building REST APIs like the ones behind the Course Planner and Goynar Gontobbo.",
+  },
+  {
+    terms: ["database", "databases", "sql", "mysql", "sqlite", "postgres", "postgresql"],
+    answer: "Aftab works with SQL databases — MySQL for Goynar Gontobbo and SQLite for the UIU Course Planner.",
+  },
+  {
+    terms: ["docker", "devops", "deploy", "deployment", "cloud", "aws", "vercel", "linux"],
+    answer: "Aftab deploys with Docker, Linux, AWS, and Vercel.",
+  },
+  {
+    terms: ["c++", "cpp", "c language", "competitive", "dsa", "algorithm", "algorithms", "data structures"],
+    answer: "Aftab uses C and C++ for algorithms, data structures, and microcontroller work like the Smart CNC Plotter.",
+  },
+  {
+    terms: ["hobby", "hobbies", "interest", "interests", "free time", "fun", "passion"],
+    answer: "Outside class Aftab enjoys building side projects, hackathons, and exploring new AI tools.",
+  },
+  {
+    terms: ["best project", "favorite project", "favourite project", "proudest", "biggest project"],
+    answer:
+      "Highlights: BozoScope won first place at UIU Tech Adda, and NHRE is his most ambitious system design. Goynar Gontobbo is his current build.",
+  },
+  {
+    terms: ["why hire", "strength", "strengths", "why should", "good at", "stand out"],
+    answer:
+      "Aftab combines full-stack skills (React, Next.js, FastAPI, Laravel) with an AI focus, ships real projects, and has won awards in competitions.",
+  },
+  {
+    terms: ["team", "teamwork", "collaborate", "collaboration", "leadership"],
+    answer:
+      "Aftab has worked in teams on the Smart CNC Plotter and a 12-hour hackathon where his team placed third.",
+  },
+  {
+    terms: ["age", "old", "year", "semester", "batch"],
+    answer: "Aftab is currently an undergraduate CSE student at UIU, expected to graduate in 2028.",
+  },
 ];
+
+const SYNONYMS: Record<string, string> = {
+  studies: "study", learn: "study", learning: "study", college: "university", uni: "university",
+  techs: "technology", stack: "tech stack", languages: "language", know: "skill", skills: "skill",
+  awards: "award", won: "award", win: "award", prize: "award", achievements: "achievement",
+  apps: "project", app: "project", built: "project", made: "project", build: "project",
+  mail: "email", gmail: "email", message: "contact", hire: "hire", hiring: "hire", jobs: "job",
+  internships: "internship", where: "location", live: "location", lives: "location",
+  db: "database", js: "javascript", ts: "typescript", ml: "machine learning",
+};
+
+const FOLLOW_UPS: Record<string, string[]> = {
+  default: ["What are his skills?", "Tell me about BozoScope", "Is he open to internships?"],
+  project: ["Tell me about NHRE", "What is Goynar Gontobbo?", "What's his best project?"],
+  skill: ["What backend does he use?", "Does he know Docker?", "Which databases?"],
+  contact: ["Where is he based?", "Can I see his GitHub?", "Download his resume"],
+};
 
 const QUICK_QUESTIONS = [
   "What is Aftab studying?",
@@ -106,7 +173,10 @@ function getAnswer(question: string) {
     .replace(/[^a-z0-9+#.\s-]/g, " ")
     .replace(/-/g, " ")
     .replace(/\s+/g, " ")
-    .trim();
+    .trim()
+    .split(" ")
+    .map((word) => SYNONYMS[word] ?? word.replace(/'s$/, ""))
+    .join(" ");
   const greetings: { pattern: RegExp; reply: string }[] = [
     {
       pattern:
@@ -156,7 +226,7 @@ function getAnswer(question: string) {
 
   const answer = ranked[0]?.score
     ? ranked[0].answer
-    : "I don't have that detail. I can answer questions about Aftab's education, skills, projects, or contact links.";
+    : "I don't have that detail. Try asking about Aftab's education, skills (frontend, backend, AI), projects, awards, or how to contact him.";
   return greetingReply ? `${greetingReply} ${answer}` : answer;
 }
 
@@ -170,24 +240,43 @@ export function PortfolioAssistant() {
         "Hello 👋 I can answer questions about Aftab's background, projects, skills, and contact details.",
     },
   ]);
+  const [typing, setTyping] = useState(false);
+  const [followUps, setFollowUps] = useState<string[]>([]);
   const endRef = useRef<HTMLDivElement>(null);
+  const timer = useRef<number>(0);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
 
   useEffect(() => {
     endRef.current?.scrollIntoView?.({
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
       block: "end",
     });
-  }, [messages, open]);
+  }, [messages, open, typing]);
 
   const sendMessage = (question: string) => {
     const cleaned = question.trim().slice(0, 300);
-    if (!cleaned) return;
-    setMessages((current) => [
-      ...current,
-      { role: "user", content: cleaned },
-      { role: "assistant", content: getAnswer(cleaned) },
-    ]);
+    if (!cleaned || typing) return;
+    const reply = getAnswer(cleaned);
+    setMessages((current) => [...current, { role: "user", content: cleaned }]);
     setInput("");
+    setFollowUps([]);
+    setTyping(true);
+    const lower = reply.toLowerCase();
+    const topic = /project|bozoscope|nhre|goynar|planner|plotter/.test(lower)
+      ? "project"
+      : /email|linkedin|github|facebook|contact/.test(lower)
+        ? "contact"
+        : /python|react|fastapi|laravel|sql|docker|toolkit/.test(lower)
+          ? "skill"
+          : "default";
+    timer.current = window.setTimeout(
+      () => {
+        setTyping(false);
+        setMessages((current) => [...current, { role: "assistant", content: reply }]);
+        setFollowUps((FOLLOW_UPS[topic] ?? []).filter((q) => q !== cleaned));
+      },
+      Math.min(1200, 350 + reply.length * 4),
+    );
   };
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -238,6 +327,30 @@ export function PortfolioAssistant() {
                 </p>
               </div>
             ))}
+            {typing && (
+              <div className="assistant-message flex justify-start" aria-label="Assistant is typing">
+                <p className="typing-dots rounded-2xl rounded-bl-md border bg-background/80 px-3.5 py-3">
+                  <span />
+                  <span />
+                  <span />
+                </p>
+              </div>
+            )}
+            {!typing && followUps.length > 0 && messages.length > 1 && (
+              <div className="flex flex-wrap gap-2">
+                {followUps.map((question, i) => (
+                  <button
+                    key={question}
+                    type="button"
+                    onClick={() => sendMessage(question)}
+                    style={{ animationDelay: `${i * 70}ms` }}
+                    className="assistant-chip rounded-full border bg-background/50 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                  >
+                    {question}
+                  </button>
+                ))}
+              </div>
+            )}
             {messages.length === 1 && (
               <div className="space-y-2 pt-1">
                 <p className="px-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -288,7 +401,7 @@ export function PortfolioAssistant() {
         aria-label={open ? "Close portfolio assistant" : "Chat with Aftab's portfolio assistant"}
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
-        className="ml-auto flex h-14 items-center gap-2.5 rounded-full border border-primary/30 bg-primary px-5 text-sm font-semibold text-primary-foreground shadow-xl shadow-primary/20 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/30"
+        className="assistant-launcher ml-auto flex h-14 items-center gap-2.5 rounded-full border border-primary/30 bg-primary px-5 text-sm font-semibold text-primary-foreground shadow-xl shadow-primary/20 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/30"
       >
         {open ? <X size={19} /> : <MessageCircle size={19} />}
         <span>{open ? "Close" : "Ask Aftab's assistant"}</span>
