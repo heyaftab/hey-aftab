@@ -27,6 +27,7 @@ import {
   MorphingText,
   NetworkField,
   Reveal,
+  ScrollProgress,
   Tilt,
 } from "./effects";
 import { ThemePicker } from "./ThemePicker";
