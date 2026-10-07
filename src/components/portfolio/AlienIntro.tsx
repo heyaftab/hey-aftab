@@ -51,7 +51,6 @@ export function AlienIntro({ repeatVisit = false }: { repeatVisit?: boolean }) {
       window.clearTimeout(secretTimer);
       html.removeAttribute("data-alien-intro");
       html.removeAttribute("data-alien-flash");
-      html.removeAttribute("data-alien-shake");
       html.style.removeProperty("--alien-intro-cursor-origin");
     };
     const stop = () => {
@@ -95,7 +94,6 @@ export function AlienIntro({ repeatVisit = false }: { repeatVisit?: boolean }) {
       timers.push(
         window.setTimeout(() => {
           html.removeAttribute("data-alien-flash");
-          if (!ended) html.dataset["alienShake"] = "active";
         }, 400),
       );
       timers.push(window.setTimeout(stop, 800));
@@ -124,14 +122,6 @@ export function AlienIntro({ repeatVisit = false }: { repeatVisit?: boolean }) {
           }, delay),
         );
       });
-    if (!reduced.matches && (!seen || preview)) {
-      timers.push(
-        window.setTimeout(() => {
-          if (!ended && !document.hidden) html.dataset["alienShake"] = "active";
-        }, 3500),
-      );
-      timers.push(window.setTimeout(() => html.removeAttribute("data-alien-shake"), 3900));
-    }
     const move = (event: PointerEvent) => {
       if (ended || !html.dataset["alienIntro"] || !fine.matches || event.pointerType === "touch")
         return;

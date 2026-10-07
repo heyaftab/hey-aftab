@@ -1,5 +1,9 @@
 ﻿<!-- GitHub displays a profile README from a public repository named heyaftab/heyaftab. If copying this file there, also copy public/assets/Aftab-profile.png or update its path. -->
 
+<!-- markdownlint-disable MD033 -->
+
+# Aftab Uddin Ahmad
+
 <div align="center">
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:8b7cff,50:22d3ee,100:f472b6&height=190&section=header&text=Aftab%20Uddin%20Ahmad&fontSize=44&fontColor=ffffff&fontAlignY=36&desc=Aspiring%20AI%20Engineer%20%C2%B7%20Python%20%C2%B7%20Backend%20%C2%B7%20Cloud&descSize=17&descAlignY=58" alt="Aftab Uddin Ahmad — aspiring AI engineer" />
@@ -34,23 +38,23 @@ I'm a **Computer Science & Engineering student at United International Universit
 
 <div align="center">
 
-**Languages**
+### Languages
 
 ![Python, C, C++, Java, JavaScript, TypeScript, PHP](https://skillicons.dev/icons?i=py,c,cpp,java,js,ts,php)
 
-**Backend & APIs**
+### Backend & APIs
 
 ![FastAPI, Node.js, Express, Laravel](https://skillicons.dev/icons?i=fastapi,nodejs,express,laravel)
 
-**Frontend**
+### Frontend
 
 ![React, Next.js, Tailwind CSS, HTML, CSS](https://skillicons.dev/icons?i=react,nextjs,tailwind,html,css)
 
-**Databases**
+### Databases
 
 ![PostgreSQL, MySQL, SQLite](https://skillicons.dev/icons?i=postgres,mysql,sqlite)
 
-**Cloud & Tools**
+### Cloud & Tools
 
 ![Docker, AWS, Linux, Git, GitHub, Vercel, Postman](https://skillicons.dev/icons?i=docker,aws,linux,git,github,vercel,postman)
 
@@ -105,3 +109,5 @@ I'm open to internships, junior roles, and collaborations — especially where *
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:f472b6,50:22d3ee,100:8b7cff&height=110&section=footer" alt="Decorative purple, cyan, and pink wave footer" />
 
 </div>
+
+<!-- markdownlint-enable MD033 -->

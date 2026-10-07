@@ -11,7 +11,7 @@ html[data-theme="night"] .galuxy-background {
   overflow: hidden;
   pointer-events: none;
   background: #080c16;
-  --galuxy-image-height: calc(100vw * 824 / 394);
+  --galuxy-image-height: calc(100vw * 1808 / 870);
   --galuxy-scroll-duration: 100s;
 }
 html[data-theme="night"] .galuxy-background::before {
@@ -19,14 +19,18 @@ html[data-theme="night"] .galuxy-background::before {
   position: absolute;
   inset: 0;
   height: calc(100% + var(--galuxy-image-height));
-  background: url("../../assets/GaluxyBG.png") center top / 100% var(--galuxy-image-height) repeat-y;
+  background: url("../../assets/G-BG.png") center top / 100% var(--galuxy-image-height) repeat-y;
+  /* Keep the chosen artwork crisp while easing its brightest colors slightly. */
+  filter: saturate(0.94) contrast(1.02);
   animation: galuxy-background-scroll var(--galuxy-scroll-duration) linear infinite;
 }
 html[data-theme="night"] .galuxy-background::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(#080c1640, #080c1660);
+  background:
+    radial-gradient(ellipse at 50% 45%, transparent 38%, #05081238 100%),
+    linear-gradient(#080c162b, #080c1642);
 }
 html[data-theme="night"] .galuxy-background-paused::before {
   animation-play-state: paused;

@@ -26,30 +26,6 @@ html[data-theme="alien"][data-alien-flash="echo"] .alien-intro-mobile-venom {
     visibility: hidden;
   }
 }
-html[data-theme="alien"][data-alien-shake="active"] .portfolio-shell main {
-  animation: alien-intro-shake 400ms ease-out both;
-}
-@keyframes alien-intro-shake {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  15% {
-    transform: translate(-4px, 1px);
-  }
-  32% {
-    transform: translate(3px, -2px);
-  }
-  50% {
-    transform: translate(-2px, 1px);
-  }
-  70% {
-    transform: translate(1px, -1px);
-  }
-  85% {
-    transform: translate(-0.5px, 0);
-  }
-}
 html[data-theme="alien"] .alien-intro[data-phase="fading"] {
   opacity: 0;
   transition: opacity 0.5s ease;
@@ -141,14 +117,6 @@ html[data-theme="alien"][data-alien-intro="glitch"] .alien-intro-distortion {
     repeating-linear-gradient(0deg, #a5bbb20a 0 1px, transparent 2px 11px),
     radial-gradient(ellipse at 34% 55%, #a6c8b515, transparent 55%);
 }
-html[data-theme="alien"][data-alien-intro="glitch"] .portfolio-shell main {
-  animation: alien-intro-shift 0.24s ease-out both;
-}
-html[data-theme="alien"][data-alien-intro="glitch"] .portfolio-shell main :is(h1, h2, h3) {
-  text-shadow:
-    -1px 0 #b7808870,
-    1px 0 #75b6c170;
-}
 html[data-theme="alien"][data-alien-intro="glitch"] .alien-cursor .alien-core {
   transform: scale(0.7, 1.1);
 }
@@ -160,15 +128,6 @@ html[data-theme="alien"][data-alien-intro="glitch"] .alien-cursor .alien-core {
   to {
     opacity: 1;
     translate: 0 0;
-  }
-}
-@keyframes alien-intro-shift {
-  0%,
-  100% {
-    transform: none;
-  }
-  35% {
-    transform: translate(1px, -1px) skewX(0.08deg);
   }
 }
 @keyframes alien-intro-static {
@@ -184,9 +143,6 @@ html[data-theme="alien"][data-alien-intro="glitch"] .alien-cursor .alien-core {
   html[data-theme="alien"] .alien-intro-mobile-venom {
     display: none;
   }
-  html[data-theme="alien"][data-alien-shake] .portfolio-shell main {
-    animation: none !important;
-  }
   html[data-theme="alien"] .alien-intro {
     transition: none !important;
   }
@@ -198,9 +154,6 @@ html[data-theme="alien"][data-alien-intro="glitch"] .alien-cursor .alien-core {
   html[data-theme="alien"] .alien-intro-distortion,
   html[data-theme="alien"] .alien-intro-secret {
     display: none;
-  }
-  html[data-theme="alien"][data-alien-intro] .portfolio-shell main :is(h1, h2, h3) {
-    text-shadow: none;
   }
 }
 @media (hover: none), (pointer: coarse) {
