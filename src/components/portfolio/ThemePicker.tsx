@@ -48,7 +48,7 @@ function DaylightEmblem({ size = 17 }: { size?: number }) {
 }
 
 const THEMES = [
-  { id: "night", label: "Galaxy", Icon: Moon },
+  { id: "night", label: "Galuxy", Icon: Moon },
   { id: "ocean", label: "Spider", Icon: SpiderEmblem },
   { id: "light", label: "Soft daylight", Icon: DaylightEmblem },
   { id: "alien", label: "Alien signal", Icon: Orbit },

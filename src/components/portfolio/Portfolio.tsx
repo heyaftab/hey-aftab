@@ -24,6 +24,7 @@ import {
   CursorGlow,
   HeroGeometry,
   InteractiveIllustration,
+  MorphingText,
   NetworkField,
   Reveal,
   ScrollProgress,
@@ -41,7 +42,7 @@ import { CinematicScroll, HeroLightField, SceneDetails } from "./CinematicEffect
 
 const LINKS = {
   github: "https://github.com/heyaftab",
-  linkedin: "https://www.linkedin.com/in/aftab-uddin-ahmed-7b3034294/",
+  linkedin: "https://www.linkedin.com/in/aftab-uddin-ahmad-7b303429/",
   facebook: "https://www.facebook.com/aftabuddinahmad26/",
   email: "aftabuddinahmad26@gmail.com",
   phone: "01795364351",
@@ -84,53 +85,6 @@ function Section({
       </Reveal>
       <div className="mt-14">{children}</div>
     </section>
-  );
-}
-
-function PortfolioIntro() {
-  const [phase, setPhase] = useState<"initializing" | "online" | "name">("initializing");
-  const [visible, setVisible] = useState(false);
-  const [fading, setFading] = useState(false);
-  const started = useRef(false);
-  useEffect(() => {
-    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (motion.matches) return;
-    try {
-      if (sessionStorage.getItem("portfolio-system-intro-v1") && !started.current) return;
-      sessionStorage.setItem("portfolio-system-intro-v1", "1");
-    } catch {
-      // Continue with a one-time intro if session storage is unavailable.
-    }
-    started.current = true;
-    setVisible(true);
-    const timers = [
-      window.setTimeout(() => setPhase("online"), 280),
-      window.setTimeout(() => setPhase("name"), 560),
-      window.setTimeout(() => setFading(true), 980),
-      window.setTimeout(() => setVisible(false), 1240),
-    ];
-    const skip = () => {
-      if (!motion.matches) return;
-      timers.forEach((timer) => window.clearTimeout(timer));
-      setVisible(false);
-    };
-    motion.addEventListener("change", skip);
-    return () => {
-      timers.forEach((timer) => window.clearTimeout(timer));
-      motion.removeEventListener("change", skip);
-    };
-  }, []);
-  if (!visible) return null;
-  const message =
-    phase === "initializing"
-      ? "SYSTEM INITIALIZING"
-      : phase === "online"
-        ? "INTERFACE ONLINE"
-        : "AFTAB UDDIN AHMAD";
-  return (
-    <div className="portfolio-intro" data-fading={fading} aria-hidden="true">
-      <span key={phase}>{message}</span>
-    </div>
   );
 }
 
@@ -327,7 +281,7 @@ function Hero() {
       </div>
       <div className="relative mx-auto grid min-h-[calc(100svh-5rem)] max-w-6xl items-center gap-8 px-5 pb-12 sm:min-h-[calc(100vh-6rem)] sm:gap-12 sm:px-8 sm:pb-16 lg:grid-cols-[1.25fr_1fr]">
         <div className="order-2 lg:order-1">
-          <p className="eyebrow hero-enter flex items-center gap-2" style={{ animationDelay: "0ms" }}>
+          <p className="eyebrow rise flex items-center gap-2">
             <span
               className="h-1.5 w-1.5 rounded-full bg-primary"
               style={{ animation: "pulse-dot 2s infinite" }}
@@ -335,30 +289,32 @@ function Hero() {
             Dhaka, Bangladesh · Open to AI opportunities
           </p>
           <h1
-            className="hero-name text-gradient hero-enter mt-6 text-[clamp(3rem,11vw,5.25rem)] font-semibold leading-[0.94] sm:mt-7 sm:text-7xl lg:text-[5.5rem] xl:text-[6.5rem]"
-            style={{ animationDelay: "80ms" }}
+            className="hero-name text-gradient rise mt-5 text-[clamp(2.6rem,11vw,4.5rem)] font-semibold leading-[0.94] sm:mt-6 sm:text-7xl xl:text-8xl"
+            style={{ animationDelay: "120ms" }}
           >
             AFTAB
             <br />
             UDDIN AHMAD
+            <span className="sr-only"> — Computer Science Student &amp; AI Engineer</span>
           </h1>
           <p
-            className="hero-enter mt-6 max-w-2xl font-mono text-sm leading-relaxed text-muted-foreground sm:mt-7 sm:text-base"
-            style={{ animationDelay: "160ms" }}
+            className="rise mt-6 font-mono text-sm text-muted-foreground sm:text-base"
+            style={{ animationDelay: "240ms" }}
           >
-            Computer Science Student <span className="text-primary">→</span> Aspiring AI engineer,
-            problem solver, creative builder, and systems thinker.
+            Computer Science Student <span className="text-primary">→</span> <MorphingText />
           </p>
           <p
-            className="hero-enter mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg"
-            style={{ animationDelay: "240ms" }}
+            className="rise mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-lg"
+            style={{ animationDelay: "360ms" }}
           >
             I am working toward a career in AI engineering, building a foundation in machine
             learning and intelligent systems while creating technology that solves real problems.
           </p>
-          <div className="hero-enter mt-10 flex flex-wrap gap-3" style={{ animationDelay: "320ms" }}>
+          <div className="rise mt-10 flex flex-wrap gap-3" style={{ animationDelay: "480ms" }}>
             <MagneticButton
-              href="#projects"
+              href={`${LINKS.github}?tab=repositories`}
+              target="_blank"
+              rel="noreferrer"
               className="group bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_0_40px_-8px_var(--glow)] hover:shadow-[0_16px_32px_-14px_var(--glow)]"
             >
               Explore My Work{" "}
@@ -376,8 +332,8 @@ function Hero() {
             </MagneticButton>
           </div>
           <div
-            className="hero-enter mt-8 flex flex-wrap gap-5 font-mono text-xs text-muted-foreground"
-            style={{ animationDelay: "400ms" }}
+            className="rise mt-8 flex flex-wrap gap-5 font-mono text-xs text-muted-foreground"
+            style={{ animationDelay: "600ms" }}
           >
             <a
               href={LINKS.github}
@@ -404,13 +360,13 @@ function Hero() {
               <Facebook size={14} /> Facebook
             </a>
           </div>
-          <div className="hero-enter mt-8 max-w-sm" style={{ animationDelay: "480ms" }}>
+          <div className="rise mt-8 max-w-sm" style={{ animationDelay: "720ms" }}>
             <InteractiveIllustration />
           </div>
         </div>
         <div
-          className="hero-enter order-1 mx-auto w-full max-w-[min(62vw,240px)] sm:max-w-sm lg:order-2"
-          style={{ animationDelay: "100ms" }}
+          className="rise order-1 mx-auto w-full max-w-[min(62vw,240px)] sm:max-w-sm lg:order-2"
+          style={{ animationDelay: "200ms" }}
         >
           <div ref={img} className="portrait-stage relative will-change-transform">
             <div className="glow-orb absolute -inset-10 opacity-70" />
@@ -476,7 +432,7 @@ function SystemMap() {
 
 function About() {
   const cards = [
-    { icon: Code2, t: "BUILD", d: "Turning ideas into useful systems and intelligent applications." },
+    { icon: Code2, t: "BUILD", d: "Turning ideas into working software systems." },
     {
       icon: BookOpen,
       t: "LEARN",
@@ -558,7 +514,7 @@ function About() {
 
 const SKILLS: { cat: string; items: string[] }[] = [
   {
-    cat: "AI Engineering Foundation",
+    cat: "Software Engineering Foundation",
     items: ["Python", "Data Structures & Algorithms", "OOP", "FastAPI", "REST APIs"],
   },
   { cat: "Programming", items: ["C", "C++", "Python", "JavaScript", "TypeScript", "PHP", "Java"] },
@@ -928,7 +884,7 @@ function Mindset() {
     "Learn and iterate",
   ];
   return (
-    <Section eyebrow="05 — Engineering mindset" title="How I approach intelligent systems.">
+    <Section eyebrow="05 — Engineering mindset" title="How I approach software.">
       <div className="relative">
         <div className="absolute bottom-0 left-[1.4rem] top-0 w-px bg-gradient-to-b from-primary/60 via-border to-transparent md:left-1/2" />
         {steps.map((s, i) => (
@@ -953,7 +909,7 @@ function Mindset() {
 function Journey() {
   const items = [
     ["2023", "Started B.Sc. in Computer Science & Engineering."],
-    ["2026", "Building foundations in AI, machine learning, and intelligent systems."],
+    ["2026", "Building foundations in AI, machine learning, and software engineering."],
     ["2026", "Built Smart CNC Plotter project."],
     ["2026", "Achieved 3rd place in a 12-hour hackathon."],
     ["2027", "Advanced project development and internship preparation."],
@@ -982,13 +938,7 @@ function Journey() {
 
 function GithubAndResume() {
   return (
-    <section
-      aria-labelledby="github-resume-heading"
-      className="mx-auto grid max-w-6xl gap-6 px-5 sm:px-8 md:grid-cols-2"
-    >
-      <h2 id="github-resume-heading" className="sr-only">
-        GitHub and resume
-      </h2>
+    <section className="mx-auto grid max-w-6xl gap-6 px-5 sm:px-8 md:grid-cols-2">
       <Reveal className="h-full">
         <div className="glass group flex h-full flex-col rounded-lg p-8 sm:p-10">
           <p className="eyebrow">Building with code</p>
@@ -1079,7 +1029,7 @@ function Contact() {
     "w-full rounded-md border bg-background/60 px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/60";
   const contacts = [
     { icon: Mail, l: "Email", v: LINKS.email, h: `mailto:${LINKS.email}` },
-    { icon: Linkedin, l: "LinkedIn", v: "aftab-uddin-ahmed-7b3034294", h: LINKS.linkedin },
+    { icon: Linkedin, l: "LinkedIn", v: "aftab-uddin-ahmed", h: LINKS.linkedin },
     { icon: Github, l: "GitHub", v: "heyaftab", h: LINKS.github },
     { icon: Facebook, l: "Facebook", v: "aftabuddinahmad26", h: LINKS.facebook },
     { icon: Phone, l: "Phone", v: LINKS.phone, h: `tel:${LINKS.phone}` },
@@ -1089,9 +1039,9 @@ function Contact() {
       <div className="grid gap-12 lg:grid-cols-2">
         <Reveal>
           <p className="text-lg leading-relaxed text-muted-foreground">
-            I’m building a strong AI engineering foundation and looking for opportunities to work on
-            real products, intelligent applications, and ambitious digital experiences that solve
-            meaningful problems.
+            I’m building a strong engineering foundation and looking for opportunities to work on
+            real products, software systems, and ambitious digital experiences that solve meaningful
+            problems.
           </p>
           <ul className="mt-10 divide-y border-y">
             {contacts.map((c) => (
@@ -1316,7 +1266,6 @@ export function Portfolio() {
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>
-      <PortfolioIntro />
       <CinematicScroll />
       <AlienCinema />
       <LightSurvey />
