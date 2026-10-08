@@ -1,0 +1,26 @@
+.project-visual {
+  container-type: inline-size;
+}
+.project-flow .flow-node {
+  overflow-wrap: anywhere;
+}
+/* Use available diagram width, not viewport width: a desktop card is half-width. */
+@container (min-width: 430px) {
+  .project-flow-horizontal {
+    flex-direction: row;
+  }
+  .project-flow-horizontal .flow-step {
+    flex: 1 1 0;
+    flex-direction: row;
+  }
+  .project-flow-horizontal .flow-step:last-child {
+    flex: 0.8 1 0;
+  }
+  .project-flow-horizontal .flow-node {
+    flex: 1 1 0;
+  }
+  .project-flow-horizontal .flow-arrow {
+    rotate: 0deg;
+    transform: none;
+  }
+}
