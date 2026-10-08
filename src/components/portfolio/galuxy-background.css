@@ -1,6 +1,6 @@
 /* GALUXY BACKGROUND START - isolated to the existing night theme. */
-/* Hide the white-theme fallback until the saved Galuxy portrait is selected. */
-html[data-theme="night"] .hero-photo-card .white-profile-image {
+/* Hide the white-theme fallback until the saved theme's portrait is selected. */
+html:not([data-theme="light"]) .hero-photo-card .white-profile-image {
   visibility: hidden;
 }
 html[data-theme="night"] .hero-photo-card .galaxy-profile-image {

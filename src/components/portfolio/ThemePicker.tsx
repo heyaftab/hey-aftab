@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from "react";
+﻿import { useLayoutEffect, useRef, useState } from "react";
 import { Moon, Orbit } from "lucide-react";
 import { createPortal } from "react-dom";
 import "./theme-transitions.css";
@@ -73,7 +73,7 @@ export function ThemePicker() {
   const selected = useRef<ThemeId>("light");
   const sequence = useRef(0);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const initial = getInitialTheme();
     selected.current = initial;
     document.documentElement.dataset["theme"] = initial;
