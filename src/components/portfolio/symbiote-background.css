@@ -7,13 +7,32 @@ html[data-theme="alien"] .symbiote-background {
   pointer-events: none;
   contain: strict;
   --symbiote-ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --alien-image-height: 258.59vw;
+  --alien-scroll-duration: 60s;
+  --alien-start-offset: calc(var(--alien-image-height) * -0.22);
 }
 html[data-theme="alien"] .symbiote-base {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 52% 24%, #12201b55, transparent 48%),
-    radial-gradient(ellipse at 12% 75%, #25202b28, transparent 50%), #010305;
+  background: #010305;
+}
+html[data-theme="alien"] .symbiote-base::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: calc(100% + var(--alien-image-height) - var(--alien-start-offset));
+  background-image:
+    linear-gradient(180deg, #01030542, #01030535 52%, #01030566),
+    url("../../assets/Alien-Background.jpg");
+  background-position: center top;
+  background-size: 100% 100%, auto var(--alien-image-height);
+  background-repeat: no-repeat, repeat-y;
+  opacity: 0.82;
+  animation: alien-background-pan var(--alien-scroll-duration) linear infinite;
+}
+@keyframes alien-background-pan {
+  from { transform: translateY(var(--alien-start-offset)); }
+  to { transform: translateY(calc(var(--alien-start-offset) - var(--alien-image-height))); }
 }
 html[data-theme="alien"] .symbiote-form {
   position: absolute;
@@ -31,6 +50,18 @@ html[data-theme="alien"] .symbiote-form {
     radial-gradient(ellipse at 30% 40%, #293d3248, #010306c0 48%, transparent 70%);
   box-shadow: inset 28px -18px 80px #00020390;
   animation: symbiote-flow 95s var(--symbiote-ease) infinite alternate;
+}
+/* Let the chosen artwork read clearly; retain only its animated particle field. */
+html[data-theme="alien"] .symbiote-background :is(
+  .symbiote-form,
+  .symbiote-nerves,
+  .symbiote-smoke,
+  .symbiote-sense,
+  .symbiote-ripple,
+  .symbiote-texture,
+  .symbiote-vignette
+) {
+  display: none;
 }
 html[data-theme="alien"] .symbiote-form-one {
   left: -35%;
@@ -103,6 +134,11 @@ html[data-theme="alien"] .symbiote-dust i {
   background: #687a7d;
   opacity: 0.13;
   box-shadow: 0 0 3px #687a7d20;
+  animation: symbiote-spore-pulse 2.7s ease-in-out infinite alternate;
+}
+@keyframes symbiote-spore-pulse {
+  from { opacity: 0.08; scale: 0.75; }
+  to { opacity: 0.34; scale: 1.35; }
 }
 html[data-theme="alien"] .symbiote-sense {
   position: absolute;
@@ -242,6 +278,9 @@ html[data-theme="alien"] .symbiote-paused .symbiote-form::after {
   }
 }
 @media (max-width: 767px), (prefers-reduced-motion: reduce) {
+  html[data-theme="alien"] .symbiote-base::before {
+    animation: none !important;
+  }
   html[data-theme="alien"] .symbiote-background :not(.symbiote-venom-flash) {
     animation: none !important;
   }

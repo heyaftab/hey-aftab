@@ -3,7 +3,7 @@ import "./alien-cinema.css";
 import { SymbioteBackground } from "./SymbioteBackground";
 import { AlienIntro } from "./AlienIntro";
 
-const SURVEY = { particleCount: 24 };
+const SURVEY = { particleCount: 100 };
 
 export function AlienCinema() {
   const [active, setActive] = useState(false);
@@ -163,6 +163,7 @@ function SurveyAtmosphere() {
               left: `${(i * 37.7) % 100}%`,
               top: `${(i * 23.3) % 100}%`,
               opacity: 0.08 + (i % 3) * 0.035,
+              animationDelay: `${-(i % 13) * 0.27}s`,
             }}
           />
         ))}

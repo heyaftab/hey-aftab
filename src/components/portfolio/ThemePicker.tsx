@@ -54,28 +54,27 @@ const THEMES = [
   { id: "alien", label: "Alien signal", Icon: Orbit },
 ] as const;
 type ThemeId = (typeof THEMES)[number]["id"];
-const legacyThemeName = (value: string | null): ThemeId | null => {
-  if (value === "spider") return "ocean";
-  if ((THEMES as readonly { id: ThemeId }[]).some((theme) => theme.id === value)) {
-    return value as ThemeId;
+const getInitialTheme = (): ThemeId => {
+  try {
+    const saved = localStorage.getItem("portfolio-theme");
+    if (saved === "spider") return "ocean";
+    if ((THEMES as readonly { id: ThemeId }[]).some(({ id }) => id === saved)) {
+      return saved as ThemeId;
+    }
+  } catch {
+    /* Storage may be blocked; use the first-visit default. */
   }
-  return null;
+  return "light";
 };
 
 export function ThemePicker() {
-  const [theme, setTheme] = useState<ThemeId>("night");
+  const [theme, setTheme] = useState<ThemeId>("light");
   const [arrival, setArrival] = useState<{ theme: ThemeId; key: number } | null>(null);
-  const selected = useRef<ThemeId>("night");
+  const selected = useRef<ThemeId>("light");
   const sequence = useRef(0);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => {
-    let saved: string | null = null;
-    try {
-      saved = localStorage.getItem("portfolio-theme");
-    } catch {
-      /* Storage may be blocked. */
-    }
-    const initial = legacyThemeName(saved) ?? "night";
+    const initial = getInitialTheme();
     selected.current = initial;
     document.documentElement.dataset["theme"] = initial;
     setTheme(initial);
@@ -94,7 +93,11 @@ export function ThemePicker() {
     }
     clearTimeout(timer.current);
     // Alien already owns its transmission title sequence in AlienCinema.
-    if (next !== "alien" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (
+      next !== "alien" &&
+      next !== "ocean" &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
       setArrival({ theme: next, key: ++sequence.current });
       timer.current = setTimeout(() => setArrival(null), 2200);
     } else setArrival(null);
@@ -140,42 +143,6 @@ export function ThemePicker() {
                   ))}
                 </div>
               </>
-            )}
-            {arrival.theme === "ocean" && (
-              <svg
-                className="spider-arrival-web"
-                viewBox="0 0 1000 800"
-                preserveAspectRatio="xMidYMid slice"
-              >
-                <g fill="none" stroke="currentColor" strokeWidth=".7">
-                  <path d="M500 340L0 0M500 340L1000 0M500 340L1000 800M500 340L0 800M500 340L500 0M500 340L500 800M500 340L0 340M500 340L1000 340" />
-                  {[70, 150, 260, 390, 520].map((r) => (
-                    <path
-                      key={r}
-                      d={`M ${500 - r} 340 Q ${500 - r * 0.6} ${340 - r * 0.6} 500 ${340 - r} Q ${500 + r * 0.6} ${340 - r * 0.6} ${500 + r} 340 Q ${500 + r * 0.6} ${340 + r * 0.6} 500 ${340 + r} Q ${500 - r * 0.6} ${340 + r * 0.6} ${500 - r} 340 Z`}
-                    />
-                  ))}
-                </g>
-                <g
-                  className="spider-arrival-creature"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                >
-                  <path d="M500 0V310" opacity=".5" />
-                  <ellipse cx="500" cy="330" rx="7" ry="11" fill="currentColor" />
-                  <ellipse cx="500" cy="315" rx="4" ry="5" fill="currentColor" />
-                  {[-1, 1].flatMap((side) =>
-                    [0, 1, 2, 3].map((row) => (
-                      <path
-                        key={`${side}-${row}`}
-                        d={`M${500 + side * 3} ${314 + row * 4} L${500 + side * 18} ${300 + row * 12} L${500 + side * 29} ${296 + row * 17}`}
-                      />
-                    )),
-                  )}
-                </g>
-              </svg>
             )}
             {arrival.theme === "light" && (
               <>

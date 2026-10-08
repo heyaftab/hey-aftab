@@ -1,4 +1,14 @@
 /* GALUXY BACKGROUND START - isolated to the existing night theme. */
+/* Hide the white-theme fallback until the saved Galuxy portrait is selected. */
+html[data-theme="night"] .hero-photo-card .white-profile-image {
+  visibility: hidden;
+}
+html[data-theme="night"] .hero-photo-card .galaxy-profile-image {
+  transform: scale(1.12);
+}
+html[data-theme="night"] .hero-photo-card:hover .galaxy-profile-image {
+  transform: scale(1.16);
+}
 .galuxy-background {
   display: none;
 }

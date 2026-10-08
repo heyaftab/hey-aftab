@@ -597,7 +597,7 @@ function Flow({ steps, vertical = false }: { steps: string[]; vertical?: boolean
           {i < steps.length - 1 && (
             <ArrowRight
               size={14}
-              className="flow-arrow shrink-0 rotate-90 text-primary"
+              className={`flow-arrow shrink-0 text-primary ${vertical ? "flow-arrow-vertical" : "flow-arrow-responsive"}`}
             />
           )}
         </div>

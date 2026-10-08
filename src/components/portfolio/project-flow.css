@@ -4,23 +4,47 @@
 .project-flow .flow-node {
   overflow-wrap: anywhere;
 }
+.flow-arrow-vertical,
+.flow-arrow-responsive {
+  transform: rotate(90deg);
+}
+/* Keep compact horizontal architecture labels intact inside the project preview. */
+html:is([data-theme="ocean"], [data-theme="spider"]) .project-flow-horizontal .flow-node {
+  overflow-wrap: normal;
+  white-space: nowrap;
+  padding-inline: 4px;
+  font-size: 9px;
+  letter-spacing: 0.015em;
+}
+html:is([data-theme="ocean"], [data-theme="spider"]) .project-flow-horizontal .flow-step { gap: 6px; }
+html:is([data-theme="ocean"], [data-theme="spider"]) .project-flow-horizontal .flow-arrow { width: 12px; height: 12px; }
 /* Use available diagram width, not viewport width: a desktop card is half-width. */
 @container (min-width: 430px) {
   .project-flow-horizontal {
     flex-direction: row;
   }
   .project-flow-horizontal .flow-step {
-    flex: 1 1 0;
+    flex: 0 0 auto;
     flex-direction: row;
   }
-  .project-flow-horizontal .flow-step:last-child {
-    flex: 0.8 1 0;
+  .project-flow-horizontal .flow-step:last-child { flex: 0 0 auto; }
+  html:is([data-theme="ocean"], [data-theme="spider"]) .project-flow-horizontal .flow-node {
+    flex: 0 0 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    font-size: clamp(7px, 1.7cqw, 9px);
+    letter-spacing: 0;
   }
-  .project-flow-horizontal .flow-node {
-    flex: 1 1 0;
-  }
-  .project-flow-horizontal .flow-arrow {
-    rotate: 0deg;
+  .project-flow-horizontal .flow-arrow-responsive {
     transform: none;
   }
+}
+
+/* Keep the large Spider pointer from obscuring the mini architecture diagrams. */
+html:is([data-theme="ocean"], [data-theme="spider"]) body:has(.project-visual:hover) .planet-cursor {
+  opacity: 0 !important;
+}
+html:is([data-theme="ocean"], [data-theme="spider"]) body.has-cursor .project-visual {
+  cursor: default;
 }

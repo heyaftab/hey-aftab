@@ -1,18 +1,25 @@
 /* SPIDER BACKGROUND START ? all styling isolated to the Spider theme. */
-html[data-theme="ocean"] .spider-background,
-html[data-theme="spider"] .spider-background {
+/* The cached image layer is rendered only for the Spider and Ocean themes. */
+.spider-background {
+  display: none;
   position: fixed;
   inset: 0;
-  /* A stable height prevents toolbar show/hide from jumping the artwork on phones. */
   height: 100lvh;
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
+}
+html[data-theme="ocean"] .spider-background,
+html[data-theme="spider"] .spider-background {
+  display: block;
   --spider-fog-opacity: 0.26;
   --spider-web-opacity: 0.28;
   --spider-atmosphere-ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --spider-image-height: calc(100vw * 24000 / 7680);
+  --spider-scroll-duration: 60s;
+  --spider-start-offset: calc(var(--spider-image-height) * -0.22);
 }
-/* Slowly pan through the tall artwork while the page scrolls independently. */
+/* Loop the tall artwork from top to bottom, then restart at the top. */
 html[data-theme="ocean"] .spider-bg-bed,
 html[data-theme="spider"] .spider-bg-bed {
   position: absolute;
@@ -23,19 +30,24 @@ html[data-theme="ocean"] .spider-bg-bed::before,
 html[data-theme="spider"] .spider-bg-bed::before {
   content: "";
   position: absolute;
-  inset: 0;
-  height: max(100%, calc(100vw * 2021 / 778));
-  background:
-    linear-gradient(180deg, #07111640, #07111659 60%, #07101280),
-    url("../../assets/Spiderman-Background.png") center / cover no-repeat;
-  animation: spider-artwork-pan 90s var(--spider-atmosphere-ease) infinite alternate;
+  inset: 0 0 auto;
+  height: calc(100% + var(--spider-image-height) - var(--spider-start-offset));
+  background: url("../../assets/Spiderman-BackGround.jpg") center top / 100% var(--spider-image-height) repeat-y;
+  background-color: #071116;
+  animation:
+    spider-artwork-pan var(--spider-scroll-duration) linear infinite,
+    spider-background-reveal 900ms cubic-bezier(0.2, 0.7, 0.1, 1) both;
+}
+@keyframes spider-background-reveal {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 @keyframes spider-artwork-pan {
   from {
-    transform: translateY(0);
+    transform: translateY(var(--spider-start-offset));
   }
   to {
-    transform: translateY(min(0px, calc(100lvh - 100%)));
+    transform: translateY(calc(var(--spider-start-offset) - var(--spider-image-height)));
   }
 }
 html[data-theme="ocean"] .spider-bg-paused .spider-bg-bed::before,
@@ -54,8 +66,8 @@ html[data-theme="ocean"] #home .hero-system-labels,
 html[data-theme="spider"] #home .hero-system-labels {
   display: none;
 }
-html[data-theme="ocean"] :is(.grid-bg, .panel-grid, .spider-bg-web, .spider-bg-filament),
-html[data-theme="spider"] :is(.grid-bg, .panel-grid, .spider-bg-web, .spider-bg-filament) {
+html[data-theme="ocean"] :is(.grid-bg, .panel-grid, .spider-bg-web, .spider-bg-filament, .spider-bg-fog, .spider-bg-vignette, .scene-details, .space-starfield),
+html[data-theme="spider"] :is(.grid-bg, .panel-grid, .spider-bg-web, .spider-bg-filament, .spider-bg-fog, .spider-bg-vignette, .scene-details, .space-starfield) {
   display: none;
 }
 html[data-theme="ocean"] .portfolio-shell::before,

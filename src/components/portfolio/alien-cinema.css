@@ -90,6 +90,19 @@ html[data-theme="alien"] :is(a, button):focus-visible {
   color: var(--survey-accent);
   contain: strict;
 }
+html[data-theme="alien"] .survey-cinema :is(
+  .survey-derelict,
+  .survey-fog,
+  .survey-grain,
+  .survey-vignette,
+  .survey-torch,
+  .survey-veins,
+  .survey-wave,
+  .survey-timecode,
+  .survey-letterbox
+) {
+  display: none;
+}
 .survey-depth {
   position: absolute;
   inset: -7%;
@@ -169,6 +182,11 @@ html[data-theme="alien"] :is(a, button):focus-visible {
   height: 2px;
   border-radius: 50%;
   background: #cfd8d2;
+  animation: survey-spore-pulse 3.2s ease-in-out infinite alternate;
+}
+@keyframes survey-spore-pulse {
+  from { opacity: 0.05; scale: 0.65; }
+  to { opacity: 0.3; scale: 1.5; }
 }
 .survey-wave {
   position: absolute;

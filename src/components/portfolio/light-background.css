@@ -21,6 +21,10 @@ html[data-theme="light"] .bg-light {
   contain: strict;
   background: linear-gradient(180deg, var(--bg-1), var(--bg-2));
 }
+html[data-theme="light"] .hero-photo-card .white-profile-image {
+  transform: scale(1.45) translate(2%, -11%) !important;
+  transform-origin: center 50%;
+}
 html[data-theme="light"] .bg-light > div {
   position: absolute;
   inset: 0;

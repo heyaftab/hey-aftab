@@ -1,12 +1,19 @@
 import { useLayoutEffect, useState } from "react";
+import GalaxyProfile from "../../assets/Galaxy-Profile.jpg";
+import WhiteProfile from "../../assets/White_Profile.png";
 import "./spider-portrait.css";
 
 export function SpiderPortrait() {
   const [spider, setSpider] = useState(false);
+  const [whiteTheme, setWhiteTheme] = useState(true);
+  const [galaxyTheme, setGalaxyTheme] = useState(false);
   const [revealed, setRevealed] = useState(false);
   useLayoutEffect(() => {
     const sync = () => {
-      setSpider(["ocean", "spider"].includes(document.documentElement.dataset["theme"] ?? ""));
+      const theme = document.documentElement.dataset["theme"] ?? "";
+      setSpider(["ocean", "spider"].includes(theme));
+      setWhiteTheme(theme === "light");
+      setGalaxyTheme(theme === "night");
       setRevealed(false);
     };
     const observer = new MutationObserver(sync);
@@ -20,9 +27,9 @@ export function SpiderPortrait() {
   if (!spider)
     return (
       <img
-        src="/assets/Aftab.png"
+        src={whiteTheme ? WhiteProfile : galaxyTheme ? GalaxyProfile : "/assets/Aftab.png"}
         alt="Portrait of Aftab Uddin Ahmad"
-        className="h-full w-full object-cover object-center"
+        className={`h-full w-full object-cover object-center ${whiteTheme ? "white-profile-image" : galaxyTheme ? "galaxy-profile-image" : ""}`}
         fetchPriority="high"
       />
     );

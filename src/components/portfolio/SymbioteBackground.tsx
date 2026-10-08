@@ -238,13 +238,13 @@ export function SymbioteBackground() {
       </svg>
       <div className="symbiote-smoke" />
       <div className="symbiote-dust">
-        {Array.from({ length: 14 }, (_, i) => (
+        {Array.from({ length: 128 }, (_, i) => (
           <i
             key={i}
             style={{
               left: `${(i * 37.3) % 100}%`,
               top: `${(i * 19.7) % 100}%`,
-              animationDelay: `${-i * 7}s`,
+              animationDelay: `${-(i % 17) * 0.31}s`,
             }}
           />
         ))}

@@ -1,7 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import spiderBackgroundUrl from "@/assets/Spiderman-BackGround.jpg?url";
 import "./spider-background.css";
 
-// Keep the atmosphere and its listeners mounted exclusively in Spider.
+// Keep the Spider artwork warm in cache so switching themes has no image-load gap.
 export function SpiderBackground() {
   const [active, setActive] = useState(false);
   useLayoutEffect(() => {
@@ -15,13 +16,19 @@ export function SpiderBackground() {
     sync();
     return () => observer.disconnect();
   }, []);
-  return active ? <WebAtmosphere /> : null;
+  return (
+    <>
+      <link rel="preload" as="image" href={spiderBackgroundUrl} />
+      <WebAtmosphere active={active} />
+    </>
+  );
 }
 
-function WebAtmosphere() {
+function WebAtmosphere({ active }: { active: boolean }) {
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const element = root.current!;
+    const element = root.current;
+    if (!element || !active) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
     const layers = Array.from(element.querySelectorAll<HTMLElement>("[data-depth]"));
@@ -89,9 +96,9 @@ function WebAtmosphere() {
       reduced.removeEventListener("change", sync);
       fine.removeEventListener("change", leave);
     };
-  }, []);
+  }, [active]);
   return (
-    <div ref={root} className="spider-background" aria-hidden="true">
+    <div ref={root} className="spider-background" data-active={active} aria-hidden="true">
       <div className="spider-bg-bed" />
       {[0.4, 0.7, 1].map((depth, i) => (
         <div key={depth} className="spider-bg-layer" data-depth={depth}>
