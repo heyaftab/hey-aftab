@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Project flow diagrams use container-width responsive styling in a dedicated stylesheet, so half-width project visuals cannot inherit unsuitable viewport breakpoints.

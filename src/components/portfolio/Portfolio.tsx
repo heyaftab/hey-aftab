@@ -39,6 +39,7 @@ import { SpiderBackground } from "./SpiderBackground";
 import { GaluxyBackground } from "./GaluxyBackground";
 import { SpiderPortrait } from "./SpiderPortrait";
 import { CinematicScroll, HeroLightField, SceneDetails } from "./CinematicEffects";
+import "./project-flow.css";
 
 const LINKS = {
   github: "https://github.com/heyaftab",
