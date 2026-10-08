@@ -584,19 +584,19 @@ function Skills() {
 
 function Flow({ steps, vertical = false }: { steps: string[]; vertical?: boolean }) {
   return (
-    <div className={`flex ${vertical ? "flex-col" : "flex-col sm:flex-row"} items-stretch gap-2`}>
+    <div className={`project-flow flex w-full min-w-0 flex-col items-stretch gap-2 ${vertical ? "" : "project-flow-horizontal"}`}>
       {steps.map((s, i) => (
         <div
           key={s}
-          className={`flow-step flex ${vertical ? "flex-col" : "flex-col sm:flex-row"} items-center gap-2`}
+          className="flow-step flex min-w-0 flex-col items-center gap-2"
         >
-          <div className="flow-node w-full whitespace-nowrap rounded border bg-background/60 px-3 py-2 text-center font-mono text-[11px] tracking-wider">
+          <div className="flow-node w-full min-w-0 rounded border bg-background/60 px-2 py-2 text-center font-mono text-[11px]">
             {s}
           </div>
           {i < steps.length - 1 && (
             <ArrowRight
               size={14}
-              className={`shrink-0 text-primary ${vertical ? "rotate-90" : "rotate-90 sm:rotate-0"}`}
+              className="flow-arrow shrink-0 rotate-90 text-primary"
             />
           )}
         </div>
@@ -812,7 +812,7 @@ function Projects() {
                     )}
                   </div>
                 </div>
-                <div className="project-visual relative flex items-center justify-center border-t bg-surface/60 p-8 sm:p-10 lg:border-l lg:border-t-0">
+                <div className="project-visual relative flex min-w-0 items-center justify-center border-t bg-surface/60 p-8 sm:p-10 lg:border-l lg:border-t-0">
                   <div className="grid-bg absolute inset-0 opacity-60" />
                   <div className="relative w-full max-w-md">{p.visual}</div>
                 </div>
