@@ -1028,12 +1028,23 @@ function Contact() {
         body: JSON.stringify({ name, email, message, website: fd.get("website") }),
       });
       const result = (await response.json().catch(() => ({}))) as { error?: string };
-      setStatus(response.ok ? "ok" : result.error === "email_not_configured" ? "setup" : "fail");
+      if (response.ok) {
+        setStatus("ok");
+      } else {
+        setStatus(result.error === "email_not_configured" ? "setup" : "fail");
+        openMailFallback(name, email, message);
+      }
     } catch {
       setStatus("fail");
+      openMailFallback(name, email, message);
     } finally {
       sending.current = false;
     }
+  };
+  const openMailFallback = (name: string, email: string, message: string) => {
+    const subject = encodeURIComponent(`Portfolio message from ${name}`);
+    const body = encodeURIComponent(`From: ${name}\nReply to: ${email}\n\n${message}`);
+    window.location.href = `mailto:${LINKS.email}?subject=${subject}&body=${body}`;
   };
   const field =
     "w-full rounded-md border bg-background/60 px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/60";
@@ -1163,12 +1174,14 @@ function Contact() {
             )}
             {status === "setup" && (
               <p role="status" className="text-sm text-muted-foreground">
-                Email delivery is not configured yet. Please email me directly for now.
+                Your mail app just opened with the message pre-filled — press send there and it
+                reaches Aftab directly.
               </p>
             )}
             {status === "fail" && (
               <p role="alert" className="notification-error text-sm text-destructive">
-                Couldn't send right now. Please email me directly.
+                Couldn't send directly, so your mail app opened with the message pre-filled — press
+                send there to reach Aftab.
               </p>
             )}
           </form>
