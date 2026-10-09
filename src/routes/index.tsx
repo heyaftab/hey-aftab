@@ -16,6 +16,29 @@ export const Route = createFileRoute("/")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ProfilePage",
+          mainEntity: {
+            "@type": "Person",
+            name: "Aftab Uddin Ahmad",
+            jobTitle: "Computer Science Student & AI Engineer",
+            memberOf: {
+              "@type": "CollegeOrUniversity",
+              name: "United International University",
+            },
+            sameAs: [
+              "https://github.com/heyaftab",
+              "https://www.linkedin.com/in/aftab-uddin-ahmad-7b303429/",
+              "https://www.facebook.com/aftabuddinahmad26/",
+            ],
+          },
+        }),
+      },
+    ],
   }),
   component: Portfolio,
 });
