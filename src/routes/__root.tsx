@@ -80,8 +80,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Aftab Uddin Ahmad" },
-      { name: "description", content: "Portfolio of Aftab Uddin Ahmad, aspiring AI engineer." },
+      { title: "Aftab Uddin Ahmad — AI Engineer Portfolio", key: "title" },
+      {
+        name: "description",
+        content: "Portfolio of Aftab Uddin Ahmad, aspiring AI engineer.",
+        key: "description",
+      },
       { name: "author", content: "Aftab Uddin Ahmad" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
