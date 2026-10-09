@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 import {
   ArrowDown,
   ArrowUpRight,
@@ -933,6 +934,14 @@ function Journey() {
           </Reveal>
         ))}
       </ol>
+      <Reveal delay={400}>
+        <Link
+          to="/ai-engineer-roadmap"
+          className="mt-6 inline-flex items-center gap-2 rounded-md border px-5 py-3 text-sm transition-colors hover:border-primary/50"
+        >
+          Read my full AI engineer roadmap <ArrowRight size={15} />
+        </Link>
+      </Reveal>
     </Section>
   );
 }
