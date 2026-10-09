@@ -31,9 +31,9 @@ export const Route = createFileRoute("/")({
               name: "United International University",
             },
             sameAs: [
-              "https://github.com/aftabuddinahmad",
-              "https://www.linkedin.com/in/aftabuddinahmad",
-              "https://www.facebook.com/aftabuddinahmad",
+              "https://github.com/heyaftab",
+              "https://www.linkedin.com/in/aftab-uddin-ahmad-7b303429/",
+              "https://www.facebook.com/aftabuddinahmad26/",
             ],
           },
         }),
