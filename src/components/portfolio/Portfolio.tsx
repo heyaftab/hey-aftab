@@ -48,7 +48,7 @@ const LINKS = {
   facebook: "https://www.facebook.com/aftabuddinahmad26/",
   email: "aftabuddinahmad26@gmail.com",
   phone: "01795364351",
-  resume: "/Aftab_Uddin_Ahmad_AI_Engineer_CV.docx",
+  resume: "/Aftab_Uddin_Ahmad_AI_Engineer_CV_Pro.pdf",
 };
 
 const NAV = ["Home", "About", "Skills", "Projects", "Achievements", "Journey", "Contact"];
