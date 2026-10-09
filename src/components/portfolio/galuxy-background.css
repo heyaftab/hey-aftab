@@ -4,10 +4,10 @@ html:not([data-theme="light"]) .hero-photo-card .white-profile-image {
   visibility: hidden;
 }
 html[data-theme="night"] .hero-photo-card .galaxy-profile-image {
-  transform: scale(1.12);
+  transform: scale(1.38);
 }
 html[data-theme="night"] .hero-photo-card:hover .galaxy-profile-image {
-  transform: scale(1.16);
+  transform: scale(1.42);
 }
 .galuxy-background {
   display: none;
@@ -29,7 +29,7 @@ html[data-theme="night"] .galuxy-background::before {
   position: absolute;
   inset: 0;
   height: calc(100% + var(--galuxy-image-height));
-  background: url("../../assets/G-BG.png") center top / 100% var(--galuxy-image-height) repeat-y;
+  background: url("../../assets/Galaxy-Background.png") center top / 100% var(--galuxy-image-height) repeat-y;
   /* Keep the chosen artwork crisp while easing its brightest colors slightly. */
   filter: saturate(0.94) contrast(1.02);
   animation: galuxy-background-scroll var(--galuxy-scroll-duration) linear infinite;
