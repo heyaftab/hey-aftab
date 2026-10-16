@@ -32,7 +32,9 @@ html[data-theme="spider"] .spider-bg-bed::before {
   position: absolute;
   inset: 0 0 auto;
   height: calc(100% + var(--spider-image-height) - var(--spider-start-offset));
-  background: url("../../assets/Spiderman-BackGround.jpg") center top / 100% var(--spider-image-height) repeat-y;
+  background:
+    url("../../assets/Spiderman-BackGround.webp") center top / 100% var(--spider-image-height)
+    repeat-y;
   background-color: #071116;
   animation:
     spider-artwork-pan var(--spider-scroll-duration) linear infinite,
@@ -54,7 +56,7 @@ html[data-theme="ocean"] .spider-bg-paused .spider-bg-bed::before,
 html[data-theme="spider"] .spider-bg-paused .spider-bg-bed::before {
   animation-play-state: paused;
 }
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce), (max-width: 767px), (pointer: coarse) {
   html[data-theme="ocean"] .spider-bg-bed::before,
   html[data-theme="spider"] .spider-bg-bed::before {
     animation: none;

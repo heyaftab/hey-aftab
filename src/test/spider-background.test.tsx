@@ -20,11 +20,13 @@ it("mounts only in Spider and cancels its frame on repeated theme switches", asy
   });
   const { container, unmount } = render(<SpiderBackground />);
   expect(container.querySelector(".spider-background")).toBeNull();
+  expect(container.querySelector('link[rel="preload"][as="image"]')).toBeNull();
   for (const other of ["night", "light", "alien"]) {
     await act(async () => {
       document.documentElement.dataset["theme"] = "ocean";
     });
     expect(container.querySelectorAll(".spider-background")).toHaveLength(1);
+    expect(container.querySelector('link[rel="preload"][as="image"]')).toBeNull();
     expect(pending.size).toBe(1);
     fireEvent.scroll(window);
     expect(pending.size).toBe(1);

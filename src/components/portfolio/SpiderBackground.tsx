@@ -1,8 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import spiderBackgroundUrl from "@/assets/Spiderman-BackGround.jpg?url";
 import "./spider-background.css";
 
-// Keep the Spider artwork warm in cache so switching themes has no image-load gap.
 export function SpiderBackground() {
   const [active, setActive] = useState(false);
   useLayoutEffect(() => {
@@ -16,12 +14,7 @@ export function SpiderBackground() {
     sync();
     return () => observer.disconnect();
   }, []);
-  return (
-    <>
-      <link rel="preload" as="image" href={spiderBackgroundUrl} />
-      <WebAtmosphere active={active} />
-    </>
-  );
+  return active ? <WebAtmosphere active={active} /> : null;
 }
 
 function WebAtmosphere({ active }: { active: boolean }) {

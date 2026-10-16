@@ -29,7 +29,9 @@ html[data-theme="night"] .galuxy-background::before {
   position: absolute;
   inset: 0;
   height: calc(100% + var(--galuxy-image-height));
-  background: url("../../assets/Galaxy-Background.png") center top / 100% var(--galuxy-image-height) repeat-y;
+  background:
+    url("../../assets/Galaxy-Background.webp") center top / 100% var(--galuxy-image-height)
+    repeat-y;
   /* Keep the chosen artwork crisp while easing its brightest colors slightly. */
   filter: saturate(0.94) contrast(1.02);
   animation: galuxy-background-scroll var(--galuxy-scroll-duration) linear infinite;
@@ -53,8 +55,9 @@ html[data-theme="night"] .galuxy-background-paused::before {
     transform: translateY(calc(var(--galuxy-image-height) * -1));
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  html[data-theme="night"] .galuxy-background::before {
+@media (prefers-reduced-motion: reduce), (max-width: 767px), (pointer: coarse) {
+  html[data-theme="night"] .galuxy-background::before,
+  html[data-theme="night"] .galuxy-eclipse-orbit i {
     animation: none;
   }
 }

@@ -23,7 +23,7 @@ html[data-theme="alien"] .symbiote-base::before {
   height: calc(100% + var(--alien-image-height) - var(--alien-start-offset));
   background-image:
     linear-gradient(180deg, #01030542, #01030535 52%, #01030566),
-    url("../../assets/Alien-Background.jpg");
+    url("../../assets/Alien-Background.webp");
   background-position: center top;
   background-size: 100% 100%, auto var(--alien-image-height);
   background-repeat: no-repeat, repeat-y;
@@ -277,7 +277,7 @@ html[data-theme="alien"] .symbiote-paused .symbiote-form::after {
     display: none;
   }
 }
-@media (max-width: 767px), (prefers-reduced-motion: reduce) {
+@media (max-width: 767px), (pointer: coarse), (prefers-reduced-motion: reduce) {
   html[data-theme="alien"] .symbiote-base::before {
     animation: none !important;
   }

@@ -522,10 +522,10 @@ const SKILLS: { cat: string; items: string[] }[] = [
   { cat: "Programming", items: ["C", "C++", "Python", "JavaScript", "TypeScript", "PHP", "Java"] },
   { cat: "Frontend", items: ["HTML", "CSS", "React", "Next.js", "Tailwind CSS"] },
   { cat: "Backend", items: ["Laravel", "Node.js", "Express", "FastAPI", "REST APIs"] },
-  { cat: "Database", items: ["MySQL", "PostgreSQL", "SQLite", "SQL Server"] },
+  { cat: "Database", items: ["MySQL", "PostgreSQL", "SQLite", "SQL Server", "Laravel"] },
   {
     cat: "Tools & Infrastructure",
-    items: ["Git", "GitHub", "Docker", "Postman", "Linux", "AWS", "Vercel"],
+    items: ["Git", "GitHub", "Docker", "Postman", "Linux", "AWS", "Render", "Railway", "Vercel"],
   },
 ];
 const STRONG = new Set([
@@ -536,9 +536,13 @@ const STRONG = new Set([
   "Python",
   "JavaScript",
   "PHP",
+  "Laravel",
+  "Node.js",
   "MySQL",
   "Git",
   "GitHub",
+  "Railway",
+  "Vercel",
 ]);
 
 function Skills() {
@@ -547,39 +551,41 @@ function Skills() {
   const shown = active === "All" ? SKILLS : SKILLS.filter((s) => s.cat === active);
   return (
     <Section id="skills" eyebrow="02 — Stack" title="The tools I build with.">
-      <Reveal className="flex flex-wrap gap-2">
-        {cats.map((c) => (
-          <button
-            key={c}
-            onClick={() => setActive(c)}
-            className={`rounded-md border px-4 py-2 font-mono text-xs transition-all ${active === c ? "border-primary/60 bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground"}`}
-          >
-            {c}
-          </button>
-        ))}
-      </Reveal>
-      <div className="mt-10 divide-y border-y">
-        {shown.map((s) => (
-          <div key={s.cat} className="skill-row grid gap-4 py-7 md:grid-cols-[220px_1fr]">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
-              {s.cat}
-            </p>
-            <div className="flex flex-wrap gap-2.5">
-              {s.items.map((it) => (
-                <span
-                  key={it}
-                  className={`rounded-md border px-4 py-2 text-sm transition-all duration-300 hover:-translate-y-0.5 ${STRONG.has(it) ? "border-primary/40 bg-primary/[0.07] text-foreground shadow-[0_0_24px_-12px_var(--glow)] hover:border-primary" : "text-muted-foreground hover:border-foreground/30 hover:text-foreground"}`}
-                >
-                  {it}
-                </span>
-              ))}
+      <div className="glass rounded-xl border border-border/80 p-4 shadow-xl sm:p-6">
+        <Reveal className="flex flex-wrap gap-2">
+          {cats.map((c) => (
+            <button
+              key={c}
+              onClick={() => setActive(c)}
+              className={`rounded-md border px-4 py-2 font-mono text-xs font-semibold transition-all sm:text-sm ${active === c ? "border-primary/70 bg-primary/15 text-primary" : "border-border/80 bg-background/75 text-foreground/90 hover:border-primary/55 hover:bg-primary/10"}`}
+            >
+              {c}
+            </button>
+          ))}
+        </Reveal>
+        <div className="mt-8 divide-y divide-border/80 border-y border-border/80">
+          {shown.map((s) => (
+            <div key={s.cat} className="skill-row grid gap-4 py-7 md:grid-cols-[220px_1fr]">
+              <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-foreground/90 sm:text-sm">
+                {s.cat}
+              </p>
+              <div className="flex flex-wrap gap-2.5">
+                {s.items.map((it) => (
+                  <span
+                    key={it}
+                    className={`rounded-md border px-4 py-2 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 ${STRONG.has(it) ? "border-primary/60 bg-primary/20 text-foreground shadow-[0_0_24px_-12px_var(--glow)] hover:border-primary" : "border-border/80 bg-background/75 text-foreground/90 hover:border-primary/55 hover:bg-primary/10 hover:text-foreground"}`}
+                  >
+                    {it}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <p className="mt-5 flex items-center gap-2 font-mono text-xs font-semibold text-foreground/85 sm:text-sm">
+          <span className="h-2 w-2 rounded-sm bg-primary" /> Highlighted — current core strengths
+        </p>
       </div>
-      <p className="mt-6 flex items-center gap-2 font-mono text-xs text-muted-foreground">
-        <span className="h-2 w-2 rounded-sm bg-primary" /> Highlighted — current core strengths
-      </p>
     </Section>
   );
 }
@@ -661,6 +667,8 @@ function CncVisual() {
 }
 
 function Projects() {
+  const secondaryProjectActionClass =
+    "inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-4 py-2.5 text-sm font-semibold text-primary transition-colors hover:border-primary/60 hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2";
   const projects: {
     n: string;
     title: string;
@@ -669,6 +677,7 @@ function Projects() {
     desc: string;
     tech: string[];
     github?: string;
+    live?: string;
     demo?: string;
     presentation?: string;
     details?: string;
@@ -678,10 +687,11 @@ function Projects() {
       n: "01",
       title: "National Healthcare Record Exchange",
       cat: "NHRE · Healthcare Information System",
-      badge: "Featured presentation",
-      desc: "A presentation introducing a centralized platform for managing and sharing healthcare information. It covers authentication, role-based workflows, clinical records, notifications, and relational data management.",
+      badge: "Live healthcare platform",
+      desc: "A centralized platform for managing and sharing healthcare information, with authentication, role-based workflows, clinical records, notifications, and relational data management.",
       tech: ["PHP", "MySQL", "HTML", "CSS", "JavaScript"],
       github: "https://github.com/heyaftab/national-healthcare-record-exchange",
+      live: "https://national-healthcare-record-exchange-production.up.railway.app/",
       presentation: "https://nhre.lovable.app",
       visual: <Flow steps={["PATIENT", "PROVIDER", "RECORDS", "DATABASE", "NOTIFY"]} />,
     },
@@ -689,9 +699,10 @@ function Projects() {
       n: "02",
       title: "Goynar Gontobbo",
       cat: "Full-Stack E-Commerce Platform",
-      badge: "Real-world project",
+      badge: "Live · In development",
       desc: "Building a production-oriented jewellery commerce platform for a real business. The system connects a Next.js storefront to a Laravel API and MySQL data model, with structured catalogs, product variants, inventory, and separate customer and admin workflows for product and order operations.",
       tech: ["Next.js", "TypeScript", "Tailwind CSS", "Laravel", "PHP", "MySQL"],
+      live: "https://goynar-gontobbo.vercel.app/",
       visual: <Flow vertical steps={["CUSTOMER", "FRONTEND · NEXT.JS", "LARAVEL API", "MYSQL"]} />,
     },
     {
@@ -740,7 +751,7 @@ function Projects() {
             <Tilt>
               <article
                 data-cursor="view"
-                className="glass group relative grid overflow-hidden rounded-lg transition-colors duration-500 hover:border-primary/30 lg:grid-cols-2"
+                className="glass group relative grid overflow-hidden rounded-xl transition-colors duration-500 hover:border-primary/30 lg:grid-cols-[1.1fr_0.9fr]"
               >
                 <div className="glow-orb pointer-events-none absolute -right-20 -top-20 h-64 w-64 opacity-0 transition-opacity duration-700 group-hover:opacity-60" />
                 <div className="relative flex flex-col p-7 sm:p-10">
@@ -766,15 +777,25 @@ function Projects() {
                       </span>
                     ))}
                   </div>
-                  <div className="mt-8 flex flex-wrap gap-3 pt-2 lg:mt-auto">
+                  <div className="mt-8 flex flex-wrap gap-2 pt-2 lg:mt-auto">
+                    {p.live && (
+                      <a
+                        href={p.live}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
+                      >
+                        Live site <ArrowUpRight size={15} />
+                      </a>
+                    )}
                     {p.presentation && (
                       <a
                         href={p.presentation}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
+                        className={secondaryProjectActionClass}
                       >
-                        <BookOpen size={15} /> View NHRE presentation <ArrowUpRight size={15} />
+                        <BookOpen size={15} /> Presentation <ArrowUpRight size={15} />
                       </a>
                     )}
                     {p.github && (
@@ -782,7 +803,11 @@ function Projects() {
                         href={p.github}
                         target="_blank"
                         rel="noreferrer"
-                        className={`inline-flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-transform hover:-translate-y-0.5 ${p.presentation ? "border hover:border-primary/50" : "bg-primary text-primary-foreground"}`}
+                        className={
+                          p.presentation || p.live
+                            ? secondaryProjectActionClass
+                            : "inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
+                        }
                       >
                         <Github size={15} /> GitHub
                       </a>
@@ -792,7 +817,7 @@ function Projects() {
                         href={p.demo}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-2 rounded-md border px-4 py-2.5 text-sm transition-colors hover:border-primary/50"
+                        className={secondaryProjectActionClass}
                       >
                         Try BozoScope <ArrowUpRight size={15} />
                       </a>
@@ -802,19 +827,19 @@ function Projects() {
                         href={p.details}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-2 rounded-md border px-4 py-2.5 text-sm transition-colors hover:border-primary/50"
+                        className={secondaryProjectActionClass}
                       >
                         Project details <ArrowUpRight size={15} />
                       </a>
                     )}
-                    {!p.github && !p.details && !p.demo && (
+                    {!p.github && !p.details && !p.demo && !p.live && !p.presentation && (
                       <span className="inline-flex items-center gap-2 rounded-md border px-4 py-2.5 font-mono text-xs text-muted-foreground">
                         In active development
                       </span>
                     )}
                   </div>
                 </div>
-                <div className="project-visual relative flex min-w-0 items-center justify-center border-t bg-surface/60 p-8 sm:p-10 lg:border-l lg:border-t-0">
+                <div className="project-visual relative flex min-h-72 min-w-0 items-center justify-center border-t bg-surface/60 p-7 sm:p-10 lg:border-l lg:border-t-0">
                   <div className="grid-bg absolute inset-0 opacity-60" />
                   <div className="relative w-full max-w-md">{p.visual}</div>
                 </div>

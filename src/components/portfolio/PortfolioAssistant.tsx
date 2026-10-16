@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Bot, MessageCircle, Send, Sparkles, X } from "lucide-react";
+import { MessageCircle, Send, X } from "lucide-react";
+import "./assistant-widget.css";
+import { renderAssistantMarkdown } from "./assistant-markdown";
 
 type Message = { role: "assistant" | "user"; content: string };
 
@@ -33,12 +35,12 @@ const ANSWERS: { terms: string[]; answer: string }[] = [
   {
     terms: ["goynar", "gontobbo", "jewellery", "ecommerce", "e-commerce"],
     answer:
-      "Goynar Gontobbo is a jewellery commerce platform in development, built with Next.js, Laravel, and MySQL.",
+      "Goynar Gontobbo is a live jewellery commerce storefront in active development, built with Next.js, Laravel, and MySQL: https://goynar-gontobbo.vercel.app/.",
   },
   {
     terms: ["healthcare", "nhre", "medical", "record exchange", "health"],
     answer:
-      "NHRE is a healthcare information system concept covering role-based access, clinical records, and notifications. Its presentation is at nhre.lovable.app.",
+      "NHRE is a live healthcare information system covering role-based access, clinical records, and notifications: https://national-healthcare-record-exchange-production.up.railway.app/. Its presentation is at https://nhre.lovable.app.",
   },
   {
     terms: ["cnc", "plotter", "microcontroller", "embedded", "hardware"],
@@ -98,7 +100,17 @@ const ANSWERS: { terms: string[]; answer: string }[] = [
       "Python is Aftab's main language for AI work — he uses it for machine learning experiments, scripting, and FastAPI backends.",
   },
   {
-    terms: ["frontend", "react", "next", "nextjs", "next.js", "ui", "javascript", "typescript", "tailwind"],
+    terms: [
+      "frontend",
+      "react",
+      "next",
+      "nextjs",
+      "next.js",
+      "ui",
+      "javascript",
+      "typescript",
+      "tailwind",
+    ],
     answer:
       "On the frontend Aftab builds with React, Next.js, TypeScript, and Tailwind CSS — Goynar Gontobbo's storefront is a Next.js app.",
   },
@@ -109,19 +121,31 @@ const ANSWERS: { terms: string[]; answer: string }[] = [
   },
   {
     terms: ["database", "databases", "sql", "mysql", "sqlite", "postgres", "postgresql"],
-    answer: "Aftab works with SQL databases — MySQL for Goynar Gontobbo and SQLite for the UIU Course Planner.",
+    answer:
+      "Aftab works with SQL databases — MySQL for Goynar Gontobbo and SQLite for the UIU Course Planner.",
   },
   {
     terms: ["docker", "devops", "deploy", "deployment", "cloud", "aws", "vercel", "linux"],
     answer: "Aftab deploys with Docker, Linux, AWS, and Vercel.",
   },
   {
-    terms: ["c++", "cpp", "c language", "competitive", "dsa", "algorithm", "algorithms", "data structures"],
-    answer: "Aftab uses C and C++ for algorithms, data structures, and microcontroller work like the Smart CNC Plotter.",
+    terms: [
+      "c++",
+      "cpp",
+      "c language",
+      "competitive",
+      "dsa",
+      "algorithm",
+      "algorithms",
+      "data structures",
+    ],
+    answer:
+      "Aftab uses C and C++ for algorithms, data structures, and microcontroller work like the Smart CNC Plotter.",
   },
   {
     terms: ["hobby", "hobbies", "interest", "interests", "free time", "fun", "passion"],
-    answer: "Outside class Aftab enjoys building side projects, hackathons, and exploring new AI tools.",
+    answer:
+      "Outside class Aftab enjoys building side projects, hackathons, and exploring new AI tools.",
   },
   {
     terms: ["best project", "favorite project", "favourite project", "proudest", "biggest project"],
@@ -145,13 +169,40 @@ const ANSWERS: { terms: string[]; answer: string }[] = [
 ];
 
 const SYNONYMS: Record<string, string> = {
-  studies: "study", learn: "study", learning: "study", college: "university", uni: "university",
-  techs: "technology", stack: "tech stack", languages: "language", know: "skill", skills: "skill",
-  awards: "award", won: "award", win: "award", prize: "award", achievements: "achievement",
-  apps: "project", app: "project", built: "project", made: "project", build: "project",
-  mail: "email", gmail: "email", message: "contact", hire: "hire", hiring: "hire", jobs: "job",
-  internships: "internship", where: "location", live: "location", lives: "location",
-  db: "database", js: "javascript", ts: "typescript", ml: "machine learning",
+  studies: "study",
+  learn: "study",
+  learning: "study",
+  college: "university",
+  uni: "university",
+  techs: "technology",
+  stack: "tech stack",
+  languages: "language",
+  know: "skill",
+  skills: "skill",
+  awards: "award",
+  won: "award",
+  win: "award",
+  prize: "award",
+  achievements: "achievement",
+  apps: "project",
+  app: "project",
+  built: "project",
+  made: "project",
+  build: "project",
+  mail: "email",
+  gmail: "email",
+  message: "contact",
+  hire: "hire",
+  hiring: "hire",
+  jobs: "job",
+  internships: "internship",
+  where: "location",
+  live: "location",
+  lives: "location",
+  db: "database",
+  js: "javascript",
+  ts: "typescript",
+  ml: "machine learning",
 };
 
 const FOLLOW_UPS: Record<string, string[]> = {
@@ -285,55 +336,73 @@ export function PortfolioAssistant() {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 z-[60] sm:bottom-7 sm:right-7">
+    <div className="eli-widget fixed bottom-3 right-3 z-[60] sm:bottom-6 sm:right-6">
       {open && (
         <section
-          aria-label="Aftab portfolio assistant"
-          className="assistant-panel mb-3 flex h-[min(34rem,calc(100svh-7rem))] w-[min(24rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-3xl border bg-popover text-popover-foreground shadow-2xl shadow-black/30 ring-1 ring-primary/15"
+          aria-label="ELI assistant"
+          className="eli-panel assistant-panel mb-3 flex h-[min(72dvh,620px)] w-[min(400px,calc(100vw-24px))] flex-col overflow-hidden rounded-[28px] border bg-popover text-popover-foreground"
         >
-          <header className="relative overflow-hidden border-b bg-surface/80 px-5 py-4">
-            <div className="glow-orb pointer-events-none absolute -right-16 -top-24 h-48 w-48 opacity-50" />
-            <div className="relative flex items-center gap-3">
-              <span className="grid h-10 w-10 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
-                <Bot size={20} />
-              </span>
-              <div className="min-w-0 flex-1">
-                <h2 className="font-display text-sm font-semibold">Aftab's portfolio assistant</h2>
-                <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Concise ·
-                  portfolio-based
-                </p>
-              </div>
-              <button
-                type="button"
-                aria-label="Close assistant"
-                onClick={() => setOpen(false)}
-                className="grid h-9 w-9 place-items-center rounded-xl text-muted-foreground transition-colors hover:bg-background hover:text-foreground"
-              >
-                <X size={17} />
-              </button>
+          <header className="eli-header flex items-center gap-3 border-b px-5 py-4">
+            <span className="eli-avatar-wrap relative shrink-0">
+              <img
+                src="/assets/site-logo.png"
+                alt=""
+                className="eli-avatar h-11 w-11 rounded-2xl"
+              />
+              <span className="eli-online-dot" role="img" aria-label="Online" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <h2 className="eli-name">ELI</h2>
+              <p className="eli-subtitle">Aftab's AI assistant</p>
             </div>
+            <button
+              type="button"
+              aria-label="Close assistant"
+              onClick={() => setOpen(false)}
+              className="eli-close grid h-9 w-9 place-items-center rounded-xl text-muted-foreground transition-colors"
+            >
+              <X size={18} />
+            </button>
           </header>
-          <div className="flex-1 space-y-4 overflow-y-auto px-4 py-5" aria-live="polite">
-            {messages.map((message, index) => (
-              <div
-                key={`${index}-${message.role}`}
-                className={`assistant-message flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <p
-                  className={`max-w-[88%] whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${message.role === "user" ? "rounded-br-md bg-primary text-primary-foreground" : "rounded-bl-md border bg-background/80 text-foreground"}`}
+          <div
+            className="eli-messages flex-1 space-y-4 overflow-y-auto px-4 py-5"
+            aria-live="polite"
+          >
+            {messages.map((message, index) => {
+              const showAvatar =
+                message.role === "assistant" &&
+                (index === 0 || messages[index - 1]?.role !== "assistant");
+              return (
+                <div
+                  key={`${index}-${message.role}`}
+                  className={`eli-message-row flex items-end gap-2 ${message.role === "user" ? "justify-end" : "justify-start"}`}
                 >
-                  {message.content}
-                </p>
-              </div>
-            ))}
+                  {message.role === "assistant" &&
+                    (showAvatar ? (
+                      <img src="/assets/site-logo.png" alt="" className="eli-message-avatar" />
+                    ) : (
+                      <span className="eli-avatar-spacer" aria-hidden="true" />
+                    ))}
+                  <div
+                    className={`eli-bubble ${message.role === "user" ? "eli-user-bubble" : "eli-assistant-bubble"}`}
+                  >
+                    {renderAssistantMarkdown(message.content)}
+                  </div>
+                </div>
+              );
+            })}
             {typing && (
-              <div className="assistant-message flex justify-start" aria-label="Assistant is typing">
-                <p className="typing-dots rounded-2xl rounded-bl-md border bg-background/80 px-3.5 py-3">
+              <div className="eli-message-row flex items-end gap-2 justify-start">
+                <img src="/assets/site-logo.png" alt="" className="eli-message-avatar" />
+                <div
+                  className="eli-bubble eli-assistant-bubble eli-typing"
+                  role="status"
+                  aria-label="ELI is typing"
+                >
                   <span />
                   <span />
                   <span />
-                </p>
+                </div>
               </div>
             )}
             {!typing && followUps.length > 0 && messages.length > 1 && (
@@ -344,7 +413,7 @@ export function PortfolioAssistant() {
                     type="button"
                     onClick={() => sendMessage(question)}
                     style={{ animationDelay: `${i * 70}ms` }}
-                    className="assistant-chip rounded-full border bg-background/50 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                    className="eli-chip assistant-chip rounded-full border px-3 py-1.5 text-xs transition-colors"
                   >
                     {question}
                   </button>
@@ -356,55 +425,69 @@ export function PortfolioAssistant() {
                 <p className="px-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                   Try asking
                 </p>
-                {QUICK_QUESTIONS.map((question) => (
-                  <button
-                    key={question}
-                    type="button"
-                    onClick={() => sendMessage(question)}
-                    className="block w-full rounded-xl border bg-background/50 px-3 py-2.5 text-left text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
-                  >
-                    {question}
-                  </button>
-                ))}
+                <div className="eli-suggestions">
+                  {QUICK_QUESTIONS.map((question, index) => (
+                    <button
+                      key={question}
+                      type="button"
+                      onClick={() => sendMessage(question)}
+                      className="eli-chip block w-full rounded-full border px-3 py-2.5 text-left text-xs transition-colors"
+                    >
+                      <span aria-hidden="true">{["🎓", "💼", "✉️"][index]}</span>
+                      {question}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
             <div ref={endRef} />
           </div>
-          <form onSubmit={onSubmit} className="flex items-center gap-2 border-t bg-surface/60 p-3">
+          <form onSubmit={onSubmit} className="eli-composer flex items-end gap-2 border-t p-3">
             <label className="sr-only" htmlFor="portfolio-assistant-input">
-              Ask about Aftab
+              Ask ELI about Aftab
             </label>
-            <input
+            <textarea
               id="portfolio-assistant-input"
               value={input}
               onChange={(event) => setInput(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !event.shiftKey) {
+                  event.preventDefault();
+                  sendMessage(input);
+                }
+              }}
               maxLength={300}
-              placeholder="Ask about Aftab..."
-              className="h-11 min-w-0 flex-1 rounded-xl border bg-background px-3.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/60"
+              rows={1}
+              placeholder="Ask ELI about Aftab..."
+              className="eli-input min-h-11 min-w-0 flex-1 resize-none rounded-2xl border bg-background px-3.5 py-3 text-sm outline-none transition-colors"
             />
             <button
               type="submit"
               disabled={!input.trim()}
               aria-label="Send message"
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20 disabled:cursor-not-allowed disabled:opacity-45"
+              className="eli-send grid h-11 w-11 shrink-0 place-items-center rounded-2xl text-white transition-all disabled:cursor-not-allowed"
             >
               <Send size={16} />
             </button>
           </form>
-          <p className="flex items-center justify-center gap-1.5 pb-2 font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
-            <Sparkles size={10} className="text-primary" /> Portfolio knowledge only
+          <p className="eli-disclaimer px-4 pb-3 text-center text-[10px] text-muted-foreground">
+            AI can make mistakes. Contact Aftab directly for anything important.
           </p>
         </section>
       )}
       <button
         type="button"
-        aria-label={open ? "Close portfolio assistant" : "Chat with Aftab's portfolio assistant"}
+        aria-label={open ? "Close ELI" : "Chat with ELI"}
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
-        className="assistant-launcher ml-auto flex h-14 items-center gap-2.5 rounded-full border border-primary/30 bg-primary px-5 text-sm font-semibold text-primary-foreground shadow-xl shadow-primary/20 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/30"
+        className="eli-toggle assistant-launcher ml-auto grid h-14 w-14 place-items-center rounded-full border text-primary-foreground shadow-xl transition-all"
       >
-        {open ? <X size={19} /> : <MessageCircle size={19} />}
-        <span>{open ? "Close" : "Ask Aftab's assistant"}</span>
+        <span className={`eli-toggle-icon ${open ? "is-visible" : ""}`} aria-hidden={!open}>
+          <X size={21} />
+        </span>
+        <span className={`eli-toggle-icon ${open ? "" : "is-visible"}`} aria-hidden={open}>
+          <MessageCircle size={21} />
+        </span>
       </button>
     </div>
   );

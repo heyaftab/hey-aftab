@@ -54,7 +54,7 @@ describe("Contact form regressions", () => {
       expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
     expect(screen.getAllByRole("link", { name: "Download Resume" })).toHaveLength(2);
     expect(
-      screen.getByRole("button", { name: "Chat with Aftab's portfolio assistant" }),
+      screen.getByRole("button", { name: "Chat with ELI" }),
     ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
     expect(screen.getByRole("button", { name: "Close menu" })).toHaveAttribute(

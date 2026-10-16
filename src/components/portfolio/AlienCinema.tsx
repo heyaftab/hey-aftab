@@ -3,7 +3,7 @@ import "./alien-cinema.css";
 import { SymbioteBackground } from "./SymbioteBackground";
 import { AlienIntro } from "./AlienIntro";
 
-const SURVEY = { particleCount: 100 };
+const SURVEY = { particleCount: 24 };
 
 export function AlienCinema() {
   const [active, setActive] = useState(false);
@@ -39,6 +39,7 @@ function SurveyAtmosphere() {
     const el = root.current!;
     const shell = el.closest<HTMLElement>(".portfolio-shell")!;
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const lowPower = window.matchMedia("(max-width: 767px), (pointer: coarse)");
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
     let frame = 0;
     let x = 0,
@@ -63,7 +64,7 @@ function SurveyAtmosphere() {
     scenes.forEach((scene) => (io ? io.observe(scene) : scene.classList.add("survey-visible")));
     // ATMOSPHERE / PARTICLES: a single loop for all depth layers, capped particle count.
     const tick = (now: number) => {
-      if (media.matches || document.hidden) {
+      if (media.matches || lowPower.matches || document.hidden) {
         frame = 0;
         return;
       }
@@ -81,9 +82,9 @@ function SurveyAtmosphere() {
     const sync = () => {
       cancelAnimationFrame(frame);
       frame = 0;
-      el.classList.toggle("survey-paused", document.hidden);
+      el.classList.toggle("survey-paused", document.hidden || lowPower.matches);
       el.classList.remove("survey-interference");
-      if (!media.matches && !document.hidden) {
+      if (!media.matches && !lowPower.matches && !document.hidden) {
         frame = requestAnimationFrame(tick);
       } else {
         fog.forEach((layer) => layer.style.removeProperty("transform"));
@@ -91,7 +92,7 @@ function SurveyAtmosphere() {
       }
     };
     const move = (event: MouseEvent) => {
-      if (media.matches || !fine.matches) return;
+      if (media.matches || lowPower.matches || !fine.matches) return;
       x = event.clientX / window.innerWidth - 0.5;
       y = event.clientY / window.innerHeight - 0.5;
       el.querySelector<HTMLElement>(".survey-torch")!.style.transform =
@@ -105,6 +106,7 @@ function SurveyAtmosphere() {
     window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("visibilitychange", sync);
     media.addEventListener("change", sync);
+    lowPower.addEventListener("change", sync);
     return () => {
       cancelAnimationFrame(frame);
       io?.disconnect();
@@ -112,6 +114,7 @@ function SurveyAtmosphere() {
       window.removeEventListener("scroll", onScroll);
       document.removeEventListener("visibilitychange", sync);
       media.removeEventListener("change", sync);
+      lowPower.removeEventListener("change", sync);
       scenes.forEach((scene) => scene.classList.remove("survey-visible"));
     };
   }, []);

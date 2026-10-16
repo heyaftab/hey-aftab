@@ -1,8 +1,6 @@
 ﻿<!-- GitHub displays a profile README from a public repository named heyaftab/heyaftab. If copying this file there, also copy public/assets/Aftab-profile.png or update its path. -->
 
-<!-- markdownlint-disable MD033 -->
-
-# Aftab Uddin Ahmad
+<!-- markdownlint-disable MD033 MD041 -->
 
 <div align="center">
 
@@ -62,15 +60,28 @@ I'm a **Computer Science & Engineering student at United International Universit
 
 ---
 
+## Run locally
+
+Install [Node.js 22.12 or newer](https://nodejs.org/), then run:
+
+```sh
+npm install
+npm run dev
+```
+
+Open the local URL printed in the terminal (usually `http://localhost:8080/`).
+In VS Code, choose **Terminal → Run Task → Start preview**; the task installs
+dependencies first, then starts the dev server.
+
 ## 🚀 Featured Projects
 
-| Project                                           | What it is                                                                                                                                                                                                                                                                      | Stack                                                   |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| 💎 **Goynar Gontobbo**                            | Jewellery commerce platform in development, with a structured catalog, product variants, inventory, a Laravel API, and separate customer and admin workflows.                                                                                                                   | `Next.js` `TypeScript` `Tailwind CSS` `Laravel` `MySQL` |
-| 🏥 **NHRE — National Healthcare Record Exchange** | Healthcare information system presentation covering authentication, clinical records, notifications, role-based workflows, and relational data management. [Source](https://github.com/heyaftab/national-healthcare-record-exchange) · [Presentation](https://nhre.lovable.app) | `PHP` `MySQL` `JavaScript` `HTML` `CSS`                 |
-| 📚 **UIU CSE Course Planner**                     | Course search, trimester planning, and credit tracking for UIU CSE students. [Source](https://github.com/heyaftab/uiu-course-planner)                                                                                                                                           | `Python` `FastAPI` `SQLite` `HTML` `CSS` `JavaScript`   |
-| 📷 **BozoScope**                                  | Browser camera app with nine filters, photo capture, and local downloads, built solo in a 40-minute challenge. **1st place at UIU Developers Hub's Tech Adda.** [Demo](https://lnkd.in/gNA4abVE)                                                                                | `Browser Camera` `Photo Filters` `Local Download`       |
-| 🤖 **Smart CNC Plotter**                          | Team-built automated plotting prototype connecting microcontroller programming, motor control, and hardware interfacing. [Project details](https://lnkd.in/p/gNNXr2y6)                                                                                                          | `Embedded Programming` `Microcontrollers` `Electronics` |
+| Project                                           | What it is                                                                                                                                                                                                                                                                                                                                                    | Stack                                                   |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| 💎 **Goynar Gontobbo**                             | Live jewellery commerce storefront in active development, with a structured catalog, product variants, inventory, a Laravel API, and separate customer and admin workflows. [Live site](https://goynar-gontobbo.vercel.app/)                                                                                                                                  | `Next.js` `TypeScript` `Tailwind CSS` `Laravel` `MySQL` |
+| 🏥 **NHRE — National Healthcare Record Exchange**  | Live healthcare information system covering authentication, clinical records, notifications, role-based workflows, and relational data management. [Live site](https://national-healthcare-record-exchange-production.up.railway.app/) · [Source](https://github.com/heyaftab/national-healthcare-record-exchange) · [Presentation](https://nhre.lovable.app) | `PHP` `MySQL` `JavaScript` `HTML` `CSS`                 |
+| 📚 **UIU CSE Course Planner**                      | Course search, trimester planning, and credit tracking for UIU CSE students. [Source](https://github.com/heyaftab/uiu-course-planner)                                                                                                                                                                                                                         | `Python` `FastAPI` `SQLite` `HTML` `CSS` `JavaScript`   |
+| 📷 **BozoScope**                                   | Browser camera app with nine filters, photo capture, and local downloads, built solo in a 40-minute challenge. **1st place at UIU Developers Hub's Tech Adda.** [Demo](https://lnkd.in/gNA4abVE)                                                                                                                                                              | `Browser Camera` `Photo Filters` `Local Download`       |
+| 🤖 **Smart CNC Plotter**                           | Team-built automated plotting prototype connecting microcontroller programming, motor control, and hardware interfacing. [Project details](https://lnkd.in/p/gNNXr2y6)                                                                                                                                                                                        | `Embedded Programming` `Microcontrollers` `Electronics` |
 
 ### ⚡ 12-Hour Hackathon
 

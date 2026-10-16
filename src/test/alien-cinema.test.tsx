@@ -87,3 +87,34 @@ it("keeps Alien static when reduced motion is requested", async () => {
   expect(container.querySelector(".survey-cinema")).not.toBeNull();
   expect(vi.getTimerCount()).toBe(0);
 });
+
+it("pauses the continuous atmosphere on small and coarse-pointer devices", async () => {
+  vi.useFakeTimers();
+  vi.stubGlobal(
+    "IntersectionObserver",
+    class {
+      observe() {}
+      disconnect() {}
+    },
+  );
+  vi.spyOn(window, "matchMedia").mockImplementation((media) => ({
+    matches: media.includes("(max-width: 767px)") || media.includes("(pointer: coarse)"),
+    media,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  }));
+  const requestFrame = vi.spyOn(window, "requestAnimationFrame");
+  document.documentElement.dataset["theme"] = "alien";
+  const { container } = render(
+    <div className="portfolio-shell">
+      <AlienCinema />
+    </div>,
+  );
+  expect(container.querySelector(".survey-cinema")).toHaveClass("survey-paused");
+  expect(requestFrame).not.toHaveBeenCalled();
+  expect(vi.getTimerCount()).toBe(0);
+});
