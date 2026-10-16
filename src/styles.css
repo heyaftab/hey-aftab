@@ -500,8 +500,15 @@ a.bg-primary:hover, button.bg-primary:hover { filter: saturate(1.14) brightness(
 .portfolio-shell button:disabled { scale: 1; }
 .portfolio-shell header nav > a { box-shadow: 0 0 24px -8px var(--glow); }
 .portfolio-shell header > ul { animation: menu-enter 350ms var(--ease-spring) both; }
-.hero-photo-card img { transition: transform 900ms var(--ease-spring), filter 600ms ease; }
-.hero-photo-card:hover img { transform: scale(1.045); filter: saturate(1.12); }
+.hero-photo-card img {
+  object-position: center 58%;
+  transform: scale(1.1);
+  transition: transform 900ms var(--ease-spring), filter 600ms ease;
+}
+.hero-photo-card:hover img {
+  transform: scale(1.13);
+  filter: saturate(1.12);
+}
 .portrait-depth-ring::after {
   content: ""; position: absolute; left: 50%; top: -4px; width: 8px; height: 8px;
   border-radius: 50%; background: var(--cyan); box-shadow: 0 0 16px var(--cyan);
